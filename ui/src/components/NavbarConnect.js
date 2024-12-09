@@ -4,9 +4,7 @@ import { SpeedDial, SpeedDialAction, Avatar } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import HomeIcon from '@mui/icons-material/Home';
-import BuildIcon from '@mui/icons-material/Build';
 const NavbarConnect = () => {
   const [sessionCookies, , removeSessionCookies] = useCookies([
     'username_token',
@@ -34,22 +32,16 @@ const NavbarConnect = () => {
   );
   const adminActions = [
     { icon: <HomeIcon />, name: 'Home', link: '/' },
-    // { icon: <BuildIcon />, name: 'Projects', link: '/projects' },
-    // { icon: <AssignmentIndIcon />, name: 'Requests', link: '/requests' },
     { icon: <AccountCircleIcon />, name: 'User Profile', link: `/users/` },
     { icon: <ExitToAppIcon />, name: 'Logout', onClick: handleLogout },
   ];
   const userActions = [
     { icon: <HomeIcon />, name: 'Home', link: '/home' },
-    // { icon: <BuildIcon />, name: 'Projects', link: '/projects' },
-    // { icon: <AssignmentIndIcon />, name: 'Requests', link: '/requests' },
     { icon: <AccountCircleIcon />, name: 'User Profile', link: `/users/` },
     { icon: <ExitToAppIcon />, name: 'Logout', onClick: handleLogout },
   ];
   const loggedOutActions = [
     { icon: <HomeIcon />, name: 'Home', link: '/home' },
-    // { icon: <BuildIcon />, name: 'Projects', link: '/projects' },
-
     { icon: <ExitToAppIcon />, name: 'Login Page', link: '/login' },
   ];
   const isAdmin = sessionCookies.userPriv_Token === true;

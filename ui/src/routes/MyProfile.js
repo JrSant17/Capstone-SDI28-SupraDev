@@ -34,7 +34,7 @@ import { Layout as DashboardLayout } from '../layouts/layout.js';
 import { paths } from '../paths';
 import { SocialConnections } from '../social/social-connections';
 import { SocialTimeline } from '../social/social-timeline';
-import UsersProjects from '../UsersProjects';
+import UsersProjects from '../view/UsersProjects.js';
 import Dialog from '@mui/material/Dialog';
 
 
