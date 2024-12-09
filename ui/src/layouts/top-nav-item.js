@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
-// import ChevronDownIcon from '@untitled-ui/icons-react/build/esm/ChevronDown';
-// import ChevronRightIcon from '@untitled-ui/icons-react/build/esm/ChevronRight';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import SvgIcon from '@mui/material/SvgIcon';
 
+import {RouterLink} from '../components/router-link';
 import { Dropdown, DropdownMenu, DropdownTrigger } from '../components/dropdown';
-import { RouterLink } from '../components/router-link';
 
 const renderChildItems = ({ items, depth = 0 }) => {
   return items.map((item) => {

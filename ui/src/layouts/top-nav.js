@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
-// import Menu01Icon from '@untitled-ui/icons-react/build/esm/Menu01';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -11,14 +10,11 @@ import { useTheme } from '@mui/material/styles';
 import { Logo } from '../components/logo';
 import { RouterLink } from '../components/router-link';
 import { Scrollbar } from '../components/scrollbar';
-// import { usePathname } from '../hooks/use-pathname';
 import { paths } from '../paths';
 
-import { AccountButton } from './buttons/account-button';
-import { ContactsButton } from './buttons/contacts-button';
-// import { LanguageSwitch } from './language-switch';
-// import { NotificationsButton } from './notifications-button';
-import { TenantSwitch } from './buttons/tenant-switch';
+import { AccountButton } from '../components/buttons/account-button';
+import { ContactsButton } from '../components/buttons/contacts-button';
+import { TenantSwitch } from '../components/buttons/tenant-switch';
 import { TopNavSection } from './top-nav-section';
 
 const useCssVars = (color) => {

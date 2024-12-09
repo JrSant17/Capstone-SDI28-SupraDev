@@ -7,7 +7,7 @@ import {
 import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Notification from './Notifications'
+import Notification from '../components/Notifications'
 
 const HoverCard = styled(motion(Card))(({ theme }) => ({
     '&:hover': {

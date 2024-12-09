@@ -1,9 +1,9 @@
 import type { FC } from 'react';
 import PropTypes from 'prop-types';
-import BookOpen01 from '../icons/book-open-01';
-import Briefcase01 from '../icons/briefcase-01';
-import HomeSmile from '../icons/home-smile';
-import Mail03 from '../icons/mail-03';
+import BookOpen01 from '../assets/svg/book-open-01';
+import Briefcase01 from '../assets/svg/briefcase-01';
+import HomeSmile from '../assets/svg/home-smile';
+import Mail03 from '../assets/svg/mail-03';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';

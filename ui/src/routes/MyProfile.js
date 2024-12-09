@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useCookies, CookiesProvider } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
-import MessageChatSquareIcon from './icons/message-chat-square';
-import DotsHorizontalIcon from './icons/dots-horizontal';
-import Image03Icon from './icons/image-03';
+import MessageChatSquareIcon from '../assets/svg/message-chat-square.js';
+import DotsHorizontalIcon from '../assets/svg/dots-horizontal.js';
+import Image03Icon from '../assets/svg/image-03.js';
 // import UserPlus02Icon from './icons/user-plus-02';
-import Edit from './icons/edit';
+import Edit from '../assets/svg/edit.js';
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -25,21 +25,18 @@ import { useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 
 
-import EditProfileForm from './EditProfileForm';
-import { socialApi } from './social/index.js';
-import { RouterLink } from './components/router-link';
-// import { Seo } from './components/seo';
-import { useMounted } from './hooks/use-mounted';
-import { usePageView } from './hooks/use-page-view';
-import { Layout as DashboardLayout } from './layouts/layout.js';
-import { paths } from './paths';
-import { SocialConnections } from './social/social-connections';
-import { SocialTimeline } from './social/social-timeline';
-// import Projects from './Projects'
-import UsersProjects from './UsersProjects';
-// import Modal from '@mui/material/Modal';
+import EditProfileForm from '../view/EditProfileForm.js';
+import { socialApi } from '../social/index.js';
+import { RouterLink } from '../components/router-link';
+import { useMounted } from '../hooks/use-mounted';
+import { usePageView } from '../hooks/use-page-view';
+import { Layout as DashboardLayout } from '../layouts/layout.js';
+import { paths } from '../paths';
+import { SocialConnections } from '../social/social-connections';
+import { SocialTimeline } from '../social/social-timeline';
+import UsersProjects from '../view/UsersProjects.js';
 import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
+
 
 const tabs = [
   { label: 'Timeline', value: 'timeline' },
