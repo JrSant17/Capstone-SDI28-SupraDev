@@ -10,15 +10,13 @@ const Projects = (props) => {
   const { profile, ...other } = props;
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
-  const [username, setUsername] = useState("")
+  const [username, setUsername] = useState("");
   const maxLength = 22;
   const [filterVar, setFilterVar] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const navigate = useNavigate();
   const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token']);
   const [allUsers, setAllUsers] = useState([]);
-
-
 
   useEffect(() => {
     fetch("http://localhost:8080/projects")
@@ -35,37 +33,44 @@ const Projects = (props) => {
   const fetchUsers = () => {
     fetch('http://localhost:8080/users')
       .then((res) => res.json())
-      .then((projectsData) => setAllUsers(projectsData))
-  }
+      .then((projectsData) => setAllUsers(projectsData));
+  };
 
   const findSubmitter = (assocSubId) => {
     let outputUsername;
     let outputUserImg;
+  
     for (let element in allUsers) {
       if (allUsers[element].id === assocSubId) {
         outputUsername = allUsers[element].username;
         outputUserImg = allUsers[element].profile_pic;
+  
         return (
-          <div style={{ display: 'flex', position: 'absolute', bottom: '0' }}>
-            <p style={{ marginBottom: 'auto', textAlign: 'left' }}><Avatar src={outputUserImg} alt="User Avatar" style={{ float: 'left', outlineWidth: '1px', outlineColor: 'red', width: '40px', height: '40px' }} /></p>
-            <p style={{ marginLeft: '5px', marginTop: '22px' }}>{outputUsername}</p>
+          <div style={{ display: 'flex', alignItems: 'center', position: 'absolute', bottom: '0' }}>
+            <Avatar
+              src={outputUserImg}
+              alt="User Avatar"
+              style={{ outlineWidth: '1px', outlineColor: 'red', width: '40px', height: '40px' }}/>
+            <span style={{ marginLeft: '8px', marginTop: 'auto', textAlign: 'left' }}>
+              {outputUsername}
+            </span>
           </div>
-        )
+        );
       }
     }
-  }
+    return null;
+  };
+  
 
   const findAcceptor = (assocAccId) => {
     let outputUsername;
     for (let element in allUsers) {
       if (allUsers[element].id === assocAccId) {
         outputUsername = allUsers[element].username;
-        return (
-          outputUsername
-        )
+        return outputUsername;
       }
     }
-  }
+  };
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -94,10 +99,8 @@ const Projects = (props) => {
   };
 
   const handleProjectClick = (projectId) => {
-    // Navigate to the detailed summary page for the clicked project
     navigate(`/projects/${projectId}`);
   };
-
 
   const HoverCard = styled(motion(Card))({
     '&:hover': {
@@ -114,7 +117,6 @@ const Projects = (props) => {
     return text.slice(0, maxLength) + '...';
   }
 
-
   const cardStyle = {
     position: 'relative',
     height: 200,
@@ -127,13 +129,9 @@ const Projects = (props) => {
     cursor: "pointer"
   };
 
-
-
   return (
-
     <div>
       <p>  </p>
-
       <Box
         padding="20px"
         height="90%"
@@ -144,7 +142,6 @@ const Projects = (props) => {
           marginBottom: "50px",
           backgroundColor: "rgba(255,255,255, 0.85)",
           borderRadius: "25px",
-          //background: "rgba(255,255,255, 0.85)"
         }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
           {" "}
@@ -159,15 +156,11 @@ const Projects = (props) => {
           indicatorColor="primary"
           textColor="primary"
           bgcolor="primary">
-          <Tab bgcolor="blue" label="All" />
+          <Tab label="All" />
           <Tab label="Unaccepted" />
           <Tab label="Accepted" />
           <Tab label="Complete" />
-          {sessionCookies.userPriv_Token === true ? (
-            <Tab label="Pending" />
-          ) : (
-            <></>
-          )}
+          {sessionCookies.userPriv_Token === true && <Tab label="Pending" />}
         </Tabs>
 
       </Box>
@@ -184,7 +177,7 @@ const Projects = (props) => {
             style={cardStyle}
             key={project.id}
             onClick={() => handleProjectClick(project.id)}>
-            <div key={project.id} style={{ textAlign: "center", marginBottom:'auto' }}>
+            <div key={project.id} style={{ textAlign: "center", marginBottom: 'auto' }}>
               <h2>{truncateText(project.name, maxLength)}</h2>
               <h3
                 style={{
@@ -201,15 +194,14 @@ const Projects = (props) => {
                     : "Not Accepted"}
               </h3>
 
-
               <p style={{ marginLeft: "4px", marginTop: 'auto', textAlign: "left" }}>
                 Problem Statement: {truncateText(project.problem_statement, maxLength)}
               </p>
             </div>
-            <div style={{display: 'flex'}}>
+            <div style={{ display: 'flex' }}>
               {findSubmitter(project.submitter_id)}
-              <strong style={{position: 'absolute', bottom: '0', right: '0', display: 'flex', marginRight: '8px'}}>
-                  <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '18px', marginLeft: '5px', marginRight: '2px'}} alt='supradoubloons' height='20px' width='20px'/><p style={{color: 'blue'}}>{project.bounty_payout}</p>
+              <strong style={{ position: 'absolute', bottom: '0', right: '0', display: 'flex', marginRight: '8px' }}>
+                <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{ marginTop: '18px', marginLeft: '5px', marginRight: '2px' }} alt='supradoubloons' height='20px' width='20px' /><p style={{ color: 'blue' }}>{project.bounty_payout}</p>
               </strong>
             </div>
           </HoverCard>
@@ -222,7 +214,6 @@ const Projects = (props) => {
 Projects.propTypes = {
   projects: PropTypes.array,
   outputUsername: PropTypes.array
-  // profile: PropTypes.object.isRequired,
 };
 
 export default Projects;
