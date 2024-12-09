@@ -1,19 +1,18 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import './App.css';
-import Login from "./Login";
+import Login from "./routes/Login";
 import Navbar from "./Navbar";
-import SupracoderProfilePage from "./SupracoderProfilePage";
-import Home from "./Home";
-import MyBounties from "./MyBounties";
-import Projects from "./Projects";
-import LandingPage from './LandingPage';
-import ProjectSubmission from "./ProjectSubmission";
-import BountyDetailsPage from "./BountyDetailsPage";
-import GenUser from "./MyProfile";
-import OtherUser from "./OthersProfile";
-import ChatPage from "./ChatPage";
-import UserList from "./UserList";
+import SupracoderProfilePage from "./routes/SupracoderProfilePage";
+import Home from "./routes/Home";
+import MyBounties from "./routes/MyBounties";
+import Projects from "./routes/Projects";
+import LandingPage from './routes/LandingPage';
+import ProjectSubmission from "./routes/ProjectSubmission";
+import BountyDetailsPage from "./routes/BountyDetailsPage";
+import GenUser from "./routes/MyProfile";
+import OtherUser from "./routes/OthersProfile";
+import UserList from "./routes/UserList";
 
 function Content() {
   const location = useLocation();
@@ -50,10 +49,10 @@ function Content() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/requests" element={<ProjectSubmission />} />
         <Route path="/projects/:projectId" element={<BountyDetailsPage />} />
-        <Route path="/bounties/:bountyId/chat" element={<ChatPage />} />
         <Route path="/users" element={<GenUser />} />
         <Route path="/users/:id" element={<OtherUser />} />
         <Route path="/userlist" element={<UserList />} />
+        <Route path="/mybounties" element={<MyBounties />} />
       </Routes>
     </>
   );

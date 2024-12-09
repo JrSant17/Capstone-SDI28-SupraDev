@@ -33,5 +33,3 @@ const Notification = ({ project, username, submitter, submitterImg, acceptedImg,
 );
 
 export default Notification;
-
-//  {project.is_completed} ? `${allUsers.username} Just Completed ${project.name}` : project.is_accepted ? 'Accepted' : 'Unaccepted'
