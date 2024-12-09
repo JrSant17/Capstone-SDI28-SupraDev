@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useCookies, CookiesProvider } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
-import MessageChatSquareIcon from './icons/message-chat-square';
-import DotsHorizontalIcon from './icons/dots-horizontal';
-import Image03Icon from './icons/image-03';
+import MessageChatSquareIcon from './assets/svg/message-chat-square.js';
+import DotsHorizontalIcon from './assets/svg/dots-horizontal.js';
+import Image03Icon from './assets/svg/image-03.js';
 // import UserPlus02Icon from './icons/user-plus-02';
-import Edit from './icons/edit';
+import Edit from './assets/svg/edit.js';
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';

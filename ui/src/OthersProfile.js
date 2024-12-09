@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import MessageChatSquareIcon from './icons/message-chat-square';
-import DotsHorizontalIcon from './icons/dots-horizontal';
-import Image03Icon from './icons/image-03';
-import UserPlus02Icon from './icons/user-plus-02';
+import MessageChatSquareIcon from './assets/svg/message-chat-square.js';
+import DotsHorizontalIcon from './assets/svg/dots-horizontal.js';
+import Image03Icon from './assets/svg/image-03.js';
+import UserPlus02Icon from './assets/svg/user-plus-02.js';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';

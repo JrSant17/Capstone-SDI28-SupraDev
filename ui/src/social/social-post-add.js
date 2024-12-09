@@ -2,10 +2,10 @@ import { useCookies, CookiesProvider } from 'react-cookie';
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import Attachment01 from '../icons/attachment-01';
-import FaceSmile from '../icons/face-smile';
-import Image01 from '../icons/image-01';
-import Link01 from '../icons/link-01';
+import Attachment01 from '../assets/svg/attachment-01';
+import FaceSmile from '../assets/svg/face-smile';
+import Image01 from '../assets/svg/image-01';
+import Link01 from '../assets/svg/link-01';
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
