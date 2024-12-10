@@ -16,9 +16,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { blueGrey } from '@mui/material/colors';
 import { socialApi } from '../social/index.js';
-import { RouterLink } from '../components/router-link';
 import { useMounted } from '../hooks/use-mounted';
 import { Layout as DashboardLayout } from '../layouts/layout.js';
 import { paths } from '../paths';
@@ -322,7 +320,6 @@ const OtherUser = () => {
               </Button>
             )}
             <Button
-              component={RouterLink}
               href={paths.dashboard.chat}
               size="small"
               startIcon={

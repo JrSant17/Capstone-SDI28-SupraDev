@@ -5,7 +5,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import SvgIcon from '@mui/material/SvgIcon';
 
-import {RouterLink} from '../components/router-link';
 import { Dropdown, DropdownMenu, DropdownTrigger } from '../components/dropdown';
 
 const renderChildItems = ({ items, depth = 0 }) => {
@@ -75,7 +74,6 @@ const renderChildItems = ({ items, depth = 0 }) => {
             target: '_blank',
           }
         : {
-            component: RouterLink,
             href: item.path,
           }
       : {};
@@ -210,7 +208,6 @@ export const TopNavItem = (props) => {
           target: '_blank',
         }
       : {
-          component: RouterLink,
           href: path,
         }
     : {};

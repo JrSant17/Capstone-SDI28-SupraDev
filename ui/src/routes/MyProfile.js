@@ -27,11 +27,9 @@ import { motion } from 'framer-motion';
 
 import EditProfileForm from '../view/EditProfileForm.js';
 import { socialApi } from '../social/index.js';
-import { RouterLink } from '../components/router-link';
 import { useMounted } from '../hooks/use-mounted';
 import { usePageView } from '../hooks/use-page-view';
 import { Layout as DashboardLayout } from '../layouts/layout.js';
-import { paths } from '../paths';
 import { SocialConnections } from '../social/social-connections';
 import { SocialTimeline } from '../social/social-timeline';
 import UsersProjects from '../view/UsersProjects.js';

@@ -8,7 +8,6 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
 import { Logo } from '../components/logo';
-import { RouterLink } from '../components/router-link';
 import { Scrollbar } from '../components/scrollbar';
 import { paths } from '../paths';
 
@@ -192,7 +191,6 @@ export const TopNav = (props) => {
             </IconButton>
           )}
           <Box
-            component={RouterLink}
             href={paths.index}
             sx={{
               borderColor: 'var(--nav-logo-border)',
