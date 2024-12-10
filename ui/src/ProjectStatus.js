@@ -17,6 +17,58 @@ const ProjectStatus = () => {
     const [chatposts, setChatposts] = useState([]);
     const [userdata, setUserdata] = useState([])
     const [currentUserDoubloons, setCurrentUserDoubloons] = useState()
+    // const [currentMilestoneIndex, setCurrentMilestoneIndex] = useState(-1);
+
+    const milestones = [
+        "Kickoff",
+        "Developing",
+        "Testing",
+        "Staging",
+        "Seeking Funds",
+        "Deploy",
+        "Sustainment"
+    ];
+
+    const [currentMilestoneIndex, setCurrentMilestoneIndex] = useState(-1); // No milestones active initially
+    const [milestoneTimestamps, setMilestoneTimestamps] = useState(
+        milestones.map(() => ({ started: null, completed: null }))
+    );
+
+    const moveToNextMilestone = () => {
+        if (currentMilestoneIndex < milestones.length - 1) {
+            const now = new Date().toLocaleString();
+            setMilestoneTimestamps(prev => {
+                const updated = [...prev];
+                if (!updated[currentMilestoneIndex + 1].started) {
+                    updated[currentMilestoneIndex + 1].started = now;
+                }
+                if (currentMilestoneIndex >= 0) {
+                    updated[currentMilestoneIndex].completed = now;
+                }
+                return updated;
+            });
+            setCurrentMilestoneIndex(currentMilestoneIndex + 1);
+        }
+    };
+
+    const moveToPreviousMilestone = () => {
+        if (currentMilestoneIndex > 0) {
+            const now = new Date().toLocaleString();
+            setMilestoneTimestamps(prev => {
+                const updated = [...prev];
+                updated[currentMilestoneIndex].started = null;
+                updated[currentMilestoneIndex].completed = null;
+                return updated;
+            });
+            setCurrentMilestoneIndex(currentMilestoneIndex - 1);
+        }
+    };
+
+    const getStatusClass = (index) => {
+        if (index < currentMilestoneIndex) return "active";
+        if (index === currentMilestoneIndex) return "current";
+        return "inactive";
+    };
 
     const handleAddComment = () => {
         if (newComment.trim()) {
@@ -39,9 +91,6 @@ const ProjectStatus = () => {
             .then((res) => res.json())
             .then((doubloonies) => { setCurrentUserDoubloons(doubloonies[0].supradoubloons) })
     }
-
-    const progressBarFill = document.querySelector(".progress-bar-fill");
-
 
 
     const userImgRender = (userIdFromPost) => {
@@ -203,21 +252,8 @@ const ProjectStatus = () => {
         navigate('/projects');
     }
 
-    // const ProgressBar = () => {
-    //     const [currentStep, setCurrentStep] = useState(0);
-    //     const steps = ["One", "Two", "Three", "Complete"];
-    //     const nextStep = () => {
-    //         if (currentStep < steps.length - 1) setCurrentStep(currentStep + 1);
-    //     };
-    //     const prevStep = () => {
-    //         if (currentStep > 0) setCurrentStep(currentStep - 1);
-    //     };
-    //     const getStepClasses = (index) => {
-    //         if (index < currentStep) return "progress__step progress__step--complete";
-    //         if (index === currentStep) return "progress__step progress__step--active";
-    //         return "progress__step";
-    //     };
-    // }
+
+
 
     return (
         <>
@@ -225,16 +261,17 @@ const ProjectStatus = () => {
                 <Paper elevation={5} style={{ borderRadius: '25px', background: 'rgba(255,255,255, 0.85)', padding: '40px', marginTop: '25px', maxWidth: '800px', width: '100%', overflow: 'auto', marginBottom: "50px" }}>
 
                     <Typography
-                        
+
                         variant="h4"
                         gutterBottom
                         style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
                         {bounty.name}
                         <div>
-                            <small>Application Acceptance Date:</small><br></br>
-                            <small>Application Start Date:</small>
+                            <small className='details-container'>Application Acceptance Date:</small><br></br>
+                            <small className='details-container'>Need By Date:</small><br></br>
+                            <small className='details-container'>Product Owner:</small>
                         </div>
-                        
+
                     </Typography>
 
                     {sessionCookies.userPriv_Token === true &&
@@ -347,34 +384,59 @@ const ProjectStatus = () => {
                     <Typography
                         variant="h6"
                         style={{ fontWeight: "500", color: "#616161" }}>
-                        Product Status:
-                        {/* <div className="progress-bar-container">
-                            <div className="progress">
-                                <div
-                                    className="progress__bg"
-                                    style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
-                                />
-                                {steps.map((step, index) => (
-                                    <div key={index} className={getStepClasses(index)}>
-                                        <div className="progress__indicator">
-                                            {index < currentStep && <span className="fa fa-check" />}
+                        <p className='product-status'>Product Status:</p>
+                        <div>
+                            <div className="milestone-wrapper">
+                                <div className="milestone-container">
+                                    {milestones.map((milestone, index) => (
+                                        <div key={index} className={`milestone ${getStatusClass(index)}`}>
+                                            {milestone}
                                         </div>
-                                        <div className="progress__label">{step}</div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
+                                <div className="button-container">
+                                    <button
+                                        onClick={moveToPreviousMilestone}
+                                        disabled={currentMilestoneIndex <= 0}
+                                    >
+                                        Previous
+                                    </button>
+                                    <button
+                                        onClick={moveToNextMilestone}
+                                        disabled={currentMilestoneIndex === milestones.length - 1}
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                                <div className="timestamp-list">
+                                    <h3>Milestone History</h3>
+                                    <ul>
+                                        {milestones.map((milestone, index) => (
+                                            <li key={index}>
+                                                <strong>{milestone}</strong>
+                                                <div>
+                                                    {milestoneTimestamps[index].started && (
+                                                        <small>
+                                                            {milestone}: Started on {milestoneTimestamps[index].started}
+                                                        </small>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    {milestoneTimestamps[index].completed && (
+                                                        <small className='completed-date'>
+                                                            {milestone}: Completed on {milestoneTimestamps[index].completed}
+                                                        </small>
+                                                    )}
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
-                            <div className="progress__actions">
-                                <button onClick={prevStep} disabled={currentStep === 0}>
-                                    Back
-                                </button>
-                                <button onClick={nextStep} disabled={currentStep === steps.length - 1}>
-                                    Next
-                                </button>
-                            </div>
-                        </div> */}
+                        </div>
 
                     </Typography>
-                    <Typography
+                    {/* <Typography
                         paragraph
                         style={{
                             fontSize: "1rem",
@@ -387,7 +449,7 @@ const ProjectStatus = () => {
                         variant="h6"
                         style={{ fontWeight: "500", color: "#616161" }}>
                         Submitter ID: {bounty.submitter_id}
-                    </Typography>
+                    </Typography> */}
                     {/* Git Text render */}
 
                     <Typography
@@ -401,7 +463,7 @@ const ProjectStatus = () => {
                     <Typography
                         color="textSecondary"
                         align="right"
-                        style={{ marginTop: "1.5rem" }}>
+                        style={{ marginTop: "1.5rem", "text-align": "center" }}>
                         Thank you for viewing this bounty detail. Check back often for
                         updates!
                     </Typography>

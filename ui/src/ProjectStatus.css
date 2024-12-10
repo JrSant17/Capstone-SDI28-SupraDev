@@ -1,36 +1,183 @@
-.progress {
-    position: relative;
+/* Container for the milestone progress bar */
+.milestone-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
-    height: 10px;
-    background-color: #E5E5E5;
-  }
-  .progress__bg {
-    height: 10px;
-    background-color: #2183DD;
-    transition: width 0.2s;
-  }
-  .progress__step {
-    position: absolute;
-    top: -15px;
-    width: 25px;
-    height: 25px;
-    border: 2px solid #808080;
-    border-radius: 50%;
-    background-color: white;
+    height: 50px;
+    margin-bottom: 30px;
+    /* border: 2px solid #000; */
+}
+
+/* Base styling for each milestone */
+.milestone {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000000;
+    border-right: 1px solid #000;
+    transition: all 0.3s ease;
+    height: 50px;
+}
+
+/* Remove right border on the last milestone */
+.milestone:last-child {
+    border-right: none;
+}
+
+/* Inactive milestone - dimmed state */
+.milestone.inactive {
+    opacity: 0.4;
+}
+
+/* Current milestone - highlighted */
+.milestone.current {
+    background-color: #4caf50; /* Green for active milestone */
+    opacity: 1;
+}
+
+/* Completed milestones - slightly dull but visible */
+.milestone.active {
+    background-color: #2196f3; /* Blue for completed milestones */
+    opacity: 1;
+}
+
+/* Individual milestone colors based on progress */
+.milestone-container .milestone:nth-child(1) {
+    background-color: #4caf50;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.milestone-container .milestone:nth-child(2) {
+    background-color: #2196f3;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.milestone-container .milestone:nth-child(3) {
+    background-color: #ffeb3b; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.milestone-container .milestone:nth-child(4) {
+    background-color: #009688; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.milestone-container .milestone:nth-child(5) {
+    background-color: #00bcd4; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.milestone-container .milestone:nth-child(6) {
+    background-color: #ff9800; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.milestone-container .milestone:nth-child(7) {
+    background-color: #e91e63; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Buttons styling */
+button {
+    padding: 10px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
     text-align: center;
-    z-index: 1;
-  }
-  .progress__step--complete .progress__indicator {
-    background-color: #009900;
-    border-color: #2183DD;
-  }
-  .progress__step--active .progress__indicator {
-    border-color: #2183DD;
-  }
-  .progress__label {
-    position: absolute;
-    top: 35px;
-    font-size: 12px;
-    text-align: center;
+    width: 90px;
+    background-color: #faf0f0;
+    border-radius: 12px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-color: #faf0f02a;
+}
+
+.milestone-timestamps {
+    font-size: 0.8rem;
+    color: gray;
+    margin-top: 20px;
+
+}
+
+.milestone-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.milestone-container {
+    display: flex;
+    justify-content: space-around;
     width: 100%;
-  }
+    padding: 20px;
+    /* transform: rotate(90deg); */
+}
+
+.milestone {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: -50px;
+}
+
+.timestamp-container {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.timestamp-list {
+    margin-top: -15px;
+    width: 80%;
+    text-align: left;
+    margin-top: -50px;
+}
+
+.timestamp-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.timestamp-list li {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.timestamp-list small {
+    display: block;
+    /* color: #555; */
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.details-container {
+    font-size: medium;
+    font-weight: bold;
+}
+
+.completed-date {
+    color: #4caf50;
+
+}
+
+.product-status {
+    font-weight: bold;
+}
