@@ -148,7 +148,7 @@ const Projects = (props) => {
         }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
           {" "}
-          Bounties{" "}
+          Open Projects{" "}
           {users.username}
         </Typography>
 

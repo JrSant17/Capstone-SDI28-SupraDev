@@ -319,7 +319,7 @@ const ProjectDetailsPage = () => {
           <Typography
             variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            Problem Statement:
+            Project Details:
           </Typography>
           <Typography
             paragraph

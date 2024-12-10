@@ -94,18 +94,6 @@ app.get('/projects/:id', (req, res) => {
 })
 
 
-// table.increments('id');
-// table.string('name');
-// table.string('problem_statement');
-// table.integer('submitter_id');
-// table.foreign('submitter_id').references('user_table.id');
-// table.boolean('is_approved');
-// table.boolean('is_accepted');
-// table.integer('accepted_by_id');
-// table.foreign('accepted_by_id').references('user_table.id');
-// table.boolean('is_completed');
-
-
 app.post('/projects', (req, res) => {
   const { submitter_id, accepted_by_id, name, problem_statement, is_accepted, is_approved, is_completed, bounty_payout, github_url } = req.body;
 
