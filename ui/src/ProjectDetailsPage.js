@@ -363,7 +363,7 @@ const ProjectDetailsPage = () => {
           <Typography
           variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            SupraCoders Needed: {coders_needed.coders_needed !== undefined ? coders_needed.coders_needed : "loading"}
+            SupraCoders Needed: {bounty.coders_needed !== undefined ? bounty.coders_needed : "loading..."}
           </Typography>
 
 
