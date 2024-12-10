@@ -17,7 +17,6 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { socialApi } from '../social/index.js';
 import { useMounted } from '../hooks/use-mounted';
-import { paths } from '../paths';
 import { SocialConnections } from '../social/social-connections';
 import { SocialTimeline } from '../social/social-timeline';
 import Projects from './Projects.js'
@@ -242,7 +241,6 @@ const OtherUser = () => {
               </Button>
             )}
             <Button
-              href={paths.dashboard.chat}
               size="small"
               startIcon={
                 <SvgIcon>
