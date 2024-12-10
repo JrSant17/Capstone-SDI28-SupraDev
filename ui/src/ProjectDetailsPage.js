@@ -229,6 +229,14 @@ import { useCookies } from 'react-cookie';
             style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
             {bounty.name}
           </Typography>
+          <Button variant="contained"
+          color = "primary"
+          components="a"
+          href={`/projects/${projectId}/status`}
+          style={{ marginBottom: "irem"}}
+          >
+            View Project Status
+          </Button>
 
           {sessionCookies.userPriv_Token === true &&
             bounty.is_approved === false &&
