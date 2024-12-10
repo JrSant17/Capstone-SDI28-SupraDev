@@ -1,11 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useCookies, CookiesProvider } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
-import MessageChatSquareIcon from '../assets/svg/message-chat-square.js';
 import DotsHorizontalIcon from '../assets/svg/dots-horizontal.js';
-import Image03Icon from '../assets/svg/image-03.js';
-// import UserPlus02Icon from './icons/user-plus-02';
 import Edit from '../assets/svg/edit.js';
 
 import Avatar from '@mui/material/Avatar';
@@ -20,18 +17,14 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { blueGrey } from '@mui/material/colors';
 import { useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 
 
 import EditProfileForm from '../view/EditProfileForm.js';
 import { socialApi } from '../social/index.js';
-import { RouterLink } from '../components/router-link';
 import { useMounted } from '../hooks/use-mounted';
 import { usePageView } from '../hooks/use-page-view';
-import { Layout as DashboardLayout } from '../layouts/layout.js';
-import { paths } from '../paths';
 import { SocialConnections } from '../social/social-connections';
 import { SocialTimeline } from '../social/social-timeline';
 import UsersProjects from '../view/UsersProjects.js';
@@ -156,7 +149,6 @@ const useProjects = () => {
 const GenUser = () => {
   const profile = useProfile();
   const [currentTab, setCurrentTab] = useState('timeline');
-  const [status, setStatus] = useState('not_connected');
   const posts = usePosts();
   const projects = useProjects();
   const [usersQuery, setUsersQuery] = useState('');
@@ -471,8 +463,6 @@ useEffect(() => {
     </>
   );
 };
-
-GenUser.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default GenUser;
 

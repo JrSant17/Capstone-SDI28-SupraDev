@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import MessageChatSquareIcon from '../assets/svg/message-chat-square.js';
 import DotsHorizontalIcon from '../assets/svg/dots-horizontal.js';
-import Image03Icon from '../assets/svg/image-03.js';
 import UserPlus02Icon from '../assets/svg/user-plus-02.js';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -16,51 +15,16 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { blueGrey } from '@mui/material/colors';
 import { socialApi } from '../social/index.js';
-import { RouterLink } from '../components/router-link';
 import { useMounted } from '../hooks/use-mounted';
-import { Layout as DashboardLayout } from '../layouts/layout.js';
-import { paths } from '../paths';
 import { SocialConnections } from '../social/social-connections';
 import { SocialTimeline } from '../social/social-timeline';
 import Projects from './Projects.js'
-// import Modal from '@mui/material/Modal';
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
 
 const tabs = [
   { label: 'Timeline', value: 'timeline' },
   { label: 'Connections', value: 'connections' }
-  // { label: 'Projects', value:'projects'}
 ];
-
-const useProfile = () => {
-  const isMounted = useMounted();
-  const [profile, setProfile] = useState(null);
-
-  const handleProfileGet = useCallback(async () => {
-    try {
-      const response = await socialApi.getProfile();
-
-      if (isMounted()) {
-        setProfile(response);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }, [isMounted]);
-
-  useEffect(
-    () => {
-      handleProfileGet();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  return profile;
-};
 
 const usePosts = () => {
   const isMounted = useMounted();
@@ -155,19 +119,21 @@ const OtherUser = () => {
   const projects = useProjects();
   const [usersQuery, setUsersQuery] = useState('');
   const users = useUsers(usersQuery);
-  const navigate = useNavigate();
 
-  const userRefetch = async () => {
-    await fetch(`http://localhost:8080/users/${id}`)
-        .then((res) => res.json())
-      .then((fetchData) => setUserObj(fetchData[0]))
-  }
-
+  const userRefetch = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/users/${id}`);
+      const fetchData = await response.json();
+      setUserObj(fetchData[0]);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [id]);
+  
   useEffect(() => {
-    // Fetch the profile of the user with the specified ID
     const fetchUserProfile = async () => {
       try {
-        const response = await socialApi.getProfile(id); // Adjust the API call based on your backend
+        const response = await socialApi.getProfile(id);
         if (isMounted()) {
           setProfile(response);
         }
@@ -177,17 +143,15 @@ const OtherUser = () => {
     };
     userRefetch();
     fetchUserProfile();
-  }, [id, isMounted]);
+  }, [id, isMounted, userRefetch]);
+  
 
   const handleConnect = async () => {
-    // Implement your connection logic here
     try {
-      // Send a connection request to the user with the specified ID
-      const response = await socialApi.connectWithUser(id); // Adjust the API call based on your backend
+      const response = await socialApi.connectWithUser(id);
 
       if (response.status === 200) {
-        setStatus('pending'); // Update the connection status
-        // Handle success or update UI accordingly
+        setStatus('pending');
       } else {
         setStatus('pending2')
         console.error('Failed to connect with the user');
@@ -219,51 +183,6 @@ const OtherUser = () => {
       }}
     >
       <Container maxWidth="lg">
-        {/* <Box
-          style={{ backgroundImage: `url(${profile.cover})` }}
-          sx={{
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
-            borderRadius: 3,
-            height: 348,
-            position: 'relative',
-            '&:hover': {
-              '& button': {
-                visibility: 'visible',
-              },
-            },
-          }}
-        >
-          <Button
-            startIcon={
-              <SvgIcon>
-                <Image03Icon />
-              </SvgIcon>
-            }
-            sx={{
-              backgroundColor: blueGrey[900],
-              bottom: {
-                lg: 24,
-                xs: 'auto',
-              },
-              color: 'common.white',
-              position: 'absolute',
-              right: 24,
-              top: {
-                lg: 'auto',
-                xs: 24,
-              },
-              visibility: 'hidden',
-              '&:hover': {
-                backgroundColor: blueGrey[900],
-              },
-            }}
-            variant="contained"
-          >
-            Change Cover
-          </Button>
-        </Box> */}
         <Stack
           alignItems="center"
           direction="row"
@@ -322,8 +241,6 @@ const OtherUser = () => {
               </Button>
             )}
             <Button
-              component={RouterLink}
-              href={paths.dashboard.chat}
               size="small"
               startIcon={
                 <SvgIcon>
@@ -386,6 +303,5 @@ const OtherUser = () => {
   );
 };
 
-OtherUser.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default OtherUser;
