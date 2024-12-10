@@ -5,7 +5,6 @@
 const { SHA256 } = require('crypto-js');
 
 exports.seed = async function(knex) {
-  // Deletes ALL existing entries
   await knex.schema.raw('TRUNCATE user_table CASCADE');
   await knex('user_table').del();
   await knex('user_table').insert([
