@@ -1,6 +1,5 @@
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import reportWebVitals from './utils/reportWebVitals';
 
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
@@ -76,4 +75,3 @@ root.render(
   </React.StrictMode>
 );
 
-reportWebVitals();

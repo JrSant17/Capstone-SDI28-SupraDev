@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Box, Grid, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Typography } from '@mui/material';
 
 const Notification = ({ project, username, submitter, submitterImg, acceptedImg, submittedUserId, acceptedUserId }) => (
   <Box display="flex" alignItems="center" mb={1}>

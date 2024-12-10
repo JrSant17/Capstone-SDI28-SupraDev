@@ -43,7 +43,6 @@ export const paths = {
       gridLists: '/components/lists/grid-lists',
     },
     forms: '/components/forms',
-    modals: '/components/modals',
     charts: '/components/charts',
     buttons: '/components/buttons',
     typography: '/components/typography',
