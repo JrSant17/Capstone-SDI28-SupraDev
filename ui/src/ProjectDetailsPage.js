@@ -349,7 +349,7 @@ const ProjectDetailsPage = () => {
             color="textSecondary"
             align="right"
             style={{ marginTop: "1.5rem" }}>
-            Thank you for viewing this bounty detail. Check back often for
+            Thank you for viewing this Project. Check back often for
             updates!
           </Typography>
 

@@ -203,7 +203,7 @@ const Projects = (props) => {
 
 
               <p style={{ marginLeft: "4px", marginTop: 'auto', textAlign: "left" }}>
-                Problem Statement: {truncateText(project.problem_statement, maxLength)}
+                Project Details: {truncateText(project.problem_statement, maxLength)}
               </p>
             </div>
             <div style={{display: 'flex'}}>
