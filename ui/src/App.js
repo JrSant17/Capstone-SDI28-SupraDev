@@ -23,6 +23,8 @@ import { Helmet } from "react-helmet";
 
 import UserList from "./UserList"
 
+import ProjectStatus from './ProjectStatus';
+
 
 
 function Content() {
@@ -58,6 +60,7 @@ function Content() {
         <Route path="/users/:id" element={<OtherUser />} />
         {/* <Route path="/supracoders/:id" element={<SupraCoderDetails />} /> */}
         <Route path="/userlist" element={<UserList />} />
+        <Route path="/projects/:projectId/status" element={<ProjectStatus />} />
       </Routes>
     </>
   );
