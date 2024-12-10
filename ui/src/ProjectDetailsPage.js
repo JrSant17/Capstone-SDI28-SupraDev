@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar } from '@mui/material';
 import { useCookies } from 'react-cookie';
 
-const ProjectDetailsPage = () => {
+const ProjecttDetailsPage = () => {
   const [bounty, setBounty] = useState(null);
   const { projectId } = useParams();
   const [doubloons, setDoubloons] = useState("")
@@ -41,7 +41,7 @@ const ProjectDetailsPage = () => {
   const userImgRender = (userIdFromPost) => {
     let imgToRender = '';
     let idOfMatch;
-    for (let element in userdata) {     
+    for (let element in userdata) {
       if (userdata[element].id == userIdFromPost) {
         imgToRender = userdata[element].profile_pic;
         idOfMatch = userdata[element].id;
@@ -58,7 +58,7 @@ const ProjectDetailsPage = () => {
     await fetch(`http://localhost:8080/bounties/${projectId}/messages`)
         .then((res) => res.json())
         .then((commentData) => setChatposts(commentData))
-  } 
+  }
 
   useEffect(() => {
     fetch(`http://localhost:8080/projects/${projectId}`)
@@ -101,7 +101,7 @@ const ProjectDetailsPage = () => {
     console.log(typeof(parseInt(projectId)))
     console.log(typeof(sessionCookies.user_id_token))
     console.log(typeof(newComment))
-    
+
     fetch(`http://localhost:8080/bounties/${projectId}/messages`, {
       method: "POST",
       headers: {
@@ -241,7 +241,7 @@ const ProjectDetailsPage = () => {
             ) : (
               <></>
             )}
-            <> </> 
+            <> </>
             <div style={{display: 'flex'}}>
                 <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '25px', marginLeft: '25px', marginRight: '7px'}} alt='supradoubloons' height='30px' width='30px'/><p style={{color: 'blue'}}>{bounty.bounty_payout}</p>
             </div>

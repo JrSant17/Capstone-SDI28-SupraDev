@@ -110,8 +110,8 @@ import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 
-const MyBounties = (props) => {
-  
+const MyBoutnties = (props) => {
+
   const { profile, ...other } = props;
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
