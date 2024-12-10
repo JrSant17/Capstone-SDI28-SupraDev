@@ -130,6 +130,19 @@ const ProjectDetailsPage = () => {
       })
     })
   }
+  
+
+  fetch(`http://localhost:8080/users/${userId}/email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      "email": userdata.email,
+    })
+  })
+
+
 
 
   const handleAccept = () => {
@@ -353,6 +366,12 @@ const ProjectDetailsPage = () => {
             Submitter ID: {bounty.submitter_id}
           </Typography>
           {/* Git Text render */}
+
+          <Typography
+          variant="h6"
+            style={{ fontWeight: "500", color: "#616161" }}>
+            Contact Info: {userdata.email}
+          </Typography>
 
           <Typography
             variant="h6"
