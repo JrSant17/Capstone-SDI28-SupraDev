@@ -93,6 +93,24 @@ app.get('/projects/:id', (req, res) => {
     .catch(err => console.log(err))
 })
 
+app.get('/projects/:id/coders_needed' , (req, res) => {
+  const projectId= req.params.id;
+  knex('project_table')
+  .select('coders_needed')
+  .where({ id: projectId})
+  .then((result) => {
+    if(result.length > 0) {
+    res.json({coders_needed: result[0].coders_needed});
+  }else{
+    res.json({message: "Project not found"})
+  }
+  })
+  .catch(err => {
+    console.error("Error fetching coders needed" ,err);
+    res.json({message: "internal server error"});
+  });
+});
+
 
 app.post('/projects', (req, res) => {
   const { submitter_id, accepted_by_id, name, problem_statement, is_accepted, is_approved, is_completed, bounty_payout, github_url, coders_needed } = req.body;
@@ -129,6 +147,7 @@ app.post('/projects', (req, res) => {
         });
     })
 });
+
 
 //Bounty Chat
 

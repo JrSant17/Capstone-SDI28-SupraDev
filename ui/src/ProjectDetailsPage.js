@@ -15,7 +15,7 @@ const ProjectDetailsPage = () => {
   const [chatposts, setChatposts] = useState([]);
   const [userdata, setUserdata] = useState([])
   const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
-  const [codersNeeded, setCodersNeeded] =useState("");
+  const [coders_needed, setCodersNeeded] =useState({coders_needed: 0});
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -38,6 +38,18 @@ const ProjectDetailsPage = () => {
         .then((res) => res.json())
         .then((doubloonies) => {setCurrentUserDoubloons(doubloonies[0].supradoubloons)})
   }
+
+  const fetchCodersNeeded = async () => {
+    await fetch (`http://localhost:8080/projects/${projectId}/coders_needed`)
+    .then((res) => res.json())
+    .then((data) => {
+      setCodersNeeded(data.coders_needed);
+    })
+    .catch((error) => {
+      console.error("There was an error fetching coders needed", error);
+    })
+  }
+
 
   const userImgRender = (userIdFromPost) => {
     let imgToRender = '';
@@ -75,7 +87,10 @@ const ProjectDetailsPage = () => {
       fetchPosts();
       fetchUsers();
       fetchCurrentUserDoubloons()
+      fetchCodersNeeded()
   }, []);
+
+
 
   if (!bounty) {
     return <Typography align="center" style={{ marginTop: '2rem' }}>Loading...</Typography>;
@@ -128,7 +143,7 @@ const ProjectDetailsPage = () => {
         "is_accepted": true,
         "accepted_by_id": sessionCookies.user_id_token,
         "github_url": gitlink,
-        "coders_needed": codersNeeded
+        "coders_needed": coders_needed
       })
     })
     navigate('/projects');
@@ -348,7 +363,7 @@ const ProjectDetailsPage = () => {
           <Typography
           variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            SupraCoders Needed: {codersNeeded.coders_needed}
+            SupraCoders Needed: {coders_needed.coders_needed !== undefined ? coders_needed.coders_needed : "loading"}
           </Typography>
 
 
