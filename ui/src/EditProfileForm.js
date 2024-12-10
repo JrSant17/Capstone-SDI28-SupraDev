@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { TextField, Button, TextareaAutosize, Box } from '@mui/material';
+import { TextField, Button, TextareaAutosize, Box, RadioGroup, FormControlLabel } from '@mui/material';
 
 const EditProfileFormContainer = styled(Box)`
   display: flex;
@@ -167,15 +167,12 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             />
           </div>
           <div className="form-group">
-            <TextField
-              fullWidth
-              label="Working Hours"
-              variant="outlined"
-              id="availability"
-              value={availability}
-              style={{marginBottom: '10px'}}
-              onChange={(e) => setAvailability(e.target.value)}
-            />
+            <RadioGroup id='radio-group' label='Set Your availability' onChange={(e) => setAvailability(e.target.value)}>
+              <FormControlLabel value={true} control={<Radio />} label='Available!'/>
+              <FormControlLabel value={false} control={<Radio />} label='On leave B)'/>
+              <FormControlLabel value={false} control={<Radio />} label='On Lunch :D'/>
+              <FormControlLabel value={false} control={<Radio />} label='Out Sick :('/>
+            </RadioGroup>
           </div>
           <div className="form-group">
             <TextField
