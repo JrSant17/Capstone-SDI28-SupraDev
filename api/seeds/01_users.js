@@ -26,7 +26,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://everydaypower.com/wp-content/uploads/2023/01/HAL-9000-Quotes-From-The-Famous-Space-Odyssey-Series.jpg',
       profile_pic: 'default_admin.jpg',
       user_summary: 'System administrator with extensive experience in security and development.',
-      time_available: '00:00:00',
+      time_available: 10,
       is_supracoder: false,
       supradoubloons: 1000
     },
@@ -47,7 +47,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://e7.pngegg.com/pngimages/136/22/png-clipart-user-profile-computer-icons-girl-customer-avatar-angle-heroes-thumbnail.png',
       profile_pic: 'bodie_profile.jpg',
       user_summary: 'IT professional with expertise in troubleshooting and network security.',
-      time_available: '10:00:00',
+      time_available: 10,
       is_supracoder: false,
       supradoubloons: 250
     },
@@ -68,7 +68,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://as1.ftcdn.net/v2/jpg/02/85/15/18/1000_F_285151855_XaVw4eFq1QufklRbMFDxdAJos1OadAD1.jpg',
       profile_pic: 'remi_profile.jpg',
       user_summary: 'Operations specialist with experience in flight control systems.',
-      time_available: '08:00:00',
+      time_available: 10,
       is_supracoder: false,
       supradoubloons: 300
     },
@@ -89,7 +89,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://lh3.googleusercontent.com/I29quGiEZq6W7xSBXssYej2xQvTLQaSIvgF5XkTDCGZeaP2ZJN_FPfIcWqGWK97pIGM',
       profile_pic: 'harley_profile.jpg',
       user_summary: 'Eccentric developer with a unique blend of software and psychology expertise.',
-      time_available: '18:00:00',
+      time_available: 10,
       is_supracoder: true,
       supradoubloons: 450
     },
@@ -110,7 +110,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRDIrswYVBFlvEI-7lrWALPKIGQCo2n46BbjmJBcuSgkhw2R-1m-knYmVM1WVEavvij6E&usqp=CAU',
       profile_pic: 'misato_profile.jpg',
       user_summary: 'Experienced operations director with strong leadership and strategic planning skills.',
-      time_available: '12:00:00',
+      time_available: 10,
       is_supracoder: false,
       supradoubloons: 750
     },
@@ -131,7 +131,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://i.pinimg.com/736x/98/72/73/9872732415e47ec3ed6c1cece23cfc86.jpg',
       profile_pic: 'bruce_profile.jpg',
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
-      time_available: '20:00:00',
+      time_available: 10,
       is_supracoder: true,
       supradoubloons: 1000
     },
@@ -152,7 +152,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://i.pinimg.com/736x/98/72/73/9872732415e47ec3ed6c1cece23cfc86.jpg',
       profile_pic: 'bruce_profile.jpg',
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
-      time_available: '20:00:00',
+      time_available: 10,
       is_supracoder: true,
       supradoubloons: 1000
     },
@@ -173,7 +173,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://i.pinimg.com/736x/98/72/73/9872732415e47ec3ed6c1cece23cfc86.jpg',
       profile_pic: 'bruce_profile.jpg',
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
-      time_available: '20:00:00',
+      time_available: 10,
       is_supracoder: false,
       supradoubloons: 1000
     },
@@ -194,7 +194,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://i.pinimg.com/736x/98/72/73/9872732415e47ec3ed6c1cece23cfc86.jpg',
       profile_pic: 'bruce_profile.jpg',
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
-      time_available: '20:00:00',
+      time_available: 10,
       is_supracoder: false,
       supradoubloons: 1000
     },
@@ -215,7 +215,7 @@ exports.seed = async function(knex) {
       avatar_url: 'https://i.pinimg.com/736x/98/72/73/9872732415e47ec3ed6c1cece23cfc86.jpg',
       profile_pic: 'bruce_profile.jpg',
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
-      time_available: '20:00:00',
+      time_available: 10,
       is_supracoder: false,
       supradoubloons: 1000
     },
