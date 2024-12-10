@@ -36,7 +36,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
   const [experience, setExperience] = React.useState(user.experience);
   const [languages, setLanguages] = React.useState(user.languages);
   const [opsystems, setOpSystems] = React.useState(user.opsystems);
-
+  const [week_hours, setWeekHours] = React.useState(user.week_hours);
+  const [availability, setAvailability] = React.useState(user.availability);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -49,7 +50,9 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
       user_summary: userSummary,
       experience: experience,
       languages: languages,
-      opsystems: opsystems
+      opsystems: opsystems,
+      week_hours: week_hours,
+      availability: availability
     };
     window.location.reload();
     onSubmit(updatedUser)
@@ -135,7 +138,7 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               fullWidth
               label="Languages"
               variant="outlined"
-              id="exp"
+              id="languages"
               value={languages}
               style={{marginBottom: '10px'}}
               onChange={(e) => setLanguages(e.target.value)}
@@ -146,10 +149,32 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               fullWidth
               label="Operating Systems Experience"
               variant="outlined"
-              id="exp"
+              id="opsystems"
               value={opsystems}
               style={{marginBottom: '10px'}}
               onChange={(e) => setOpSystems(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <TextField
+              fullWidth
+              label="Working Hours"
+              variant="outlined"
+              id="week_hours"
+              value={week_hours}
+              style={{marginBottom: '10px'}}
+              onChange={(e) => setWeekHours(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+            <TextField
+              fullWidth
+              label="Working Hours"
+              variant="outlined"
+              id="availability"
+              value={availability}
+              style={{marginBottom: '10px'}}
+              onChange={(e) => setAvailability(e.target.value)}
             />
           </div>
           <div className="form-group">

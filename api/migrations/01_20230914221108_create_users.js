@@ -18,6 +18,8 @@ exports.up = function(knex) {
     table.string('experience');
     table.string('languages');
     table.string('command');
+    table.string('week_hours');
+    table.boolean('availability');
     table.string('OS');
     table.string('supradoubloons');
   });
