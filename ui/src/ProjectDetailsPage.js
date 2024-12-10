@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar } from '@mui/material';
 import { useCookies } from 'react-cookie';
 
-const ProjectDetailsPage = () => {
+  const ProjectDetailsPage = () => {
   const [bounty, setBounty] = useState(null);
   const { projectId } = useParams();
   const [doubloons, setDoubloons] = useState("")
@@ -16,6 +16,8 @@ const ProjectDetailsPage = () => {
   const [userdata, setUserdata] = useState([])
   const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
   const [coders_needed, setCodersNeeded] =useState({coders_needed: 0});
+ 
+ 
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -131,17 +133,6 @@ const ProjectDetailsPage = () => {
     })
   }
   
-
-  fetch(`http://localhost:8080/users/${userId}/email`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      "email": userdata.email,
-    })
-  })
-
 
 
 
@@ -370,7 +361,7 @@ const ProjectDetailsPage = () => {
           <Typography
           variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            Contact Info: {userdata.email}
+            Contact Info: {userdata.find(user =>user.id ===bounty.submitter_id)?.email || 'No Email available'}
           </Typography>
 
           <Typography
