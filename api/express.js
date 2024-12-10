@@ -41,6 +41,7 @@ app.post('/users', (req, res) => {
         req.body.profile_pic,
         req.body.user_summary,
         req.body.is_supracoder,
+        req.body.availability,
         req.body.supradoubloons,
         `post was successful`
       );
@@ -62,7 +63,12 @@ app.patch('/users/:id', (req, res) => {
       profile_pic: req.body.profile_pic,
       user_summary: req.body.user_summary,
       is_supracoder: req.body.is_supracoder,
-      supradoubloons: req.body.supradoubloons,
+      availability: req.body.availability,
+      operating_systems: req.body.operating_systems,
+      experience: req.body.experience,
+      languages: req.body.languages,
+      time_available: req.body.time_available,
+      supradoubloons: req.body.supradoubloons
     })
     .then((updateRows) => res.status(200).send('user updated'))
 })

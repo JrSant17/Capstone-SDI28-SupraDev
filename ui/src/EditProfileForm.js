@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { TextField, Button, TextareaAutosize, Box, RadioGroup, FormControlLabel } from '@mui/material';
+import { TextField, Button, TextareaAutosize, Box, RadioGroup, Radio, FormControlLabel, FormControl } from '@mui/material';
 
 const EditProfileFormContainer = styled(Box)`
   display: flex;
@@ -35,8 +35,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
   const [userSummary, setUserSummary] = React.useState(user.user_summary);
   const [experience, setExperience] = React.useState(user.experience);
   const [languages, setLanguages] = React.useState(user.languages);
-  const [opsystems, setOpSystems] = React.useState(user.opsystems);
-  const [week_hours, setWeekHours] = React.useState(user.week_hours);
+  const [operating_systems, setOperatingSystem] = React.useState(user.operating_systems);
+  const [time_available, setTimeAvailable] = React.useState(user.time_available);
   const [availability, setAvailability] = React.useState(user.availability);
 
   const handleSubmit = (e) => {
@@ -50,8 +50,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
       user_summary: userSummary,
       experience: experience,
       languages: languages,
-      opsystems: opsystems,
-      week_hours: week_hours,
+      operating_systems: operating_systems,
+      time_available: time_available,
       availability: availability
     };
     window.location.reload();
@@ -147,12 +147,12 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
           <div className="form-group">
             <TextField
               fullWidth
-              label="Operating Systems Experience"
+              label="OS Experience"
               variant="outlined"
-              id="opsystems"
-              value={opsystems}
+              id="operating_system"
+              value={operating_systems}
               style={{marginBottom: '10px'}}
-              onChange={(e) => setOpSystems(e.target.value)}
+              onChange={(e) => setOperatingSystem(e.target.value)}
             />
           </div>
           <div className="form-group">
@@ -161,18 +161,18 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="Working Hours"
               variant="outlined"
               id="week_hours"
-              value={week_hours}
+              value={time_available}
               style={{marginBottom: '10px'}}
-              onChange={(e) => setWeekHours(e.target.value)}
+              onChange={(e) => setTimeAvailable(e.target.value)}
             />
           </div>
           <div className="form-group">
-            <RadioGroup id='radio-group' label='Set Your availability' onChange={(e) => setAvailability(e.target.value)}>
-              <FormControlLabel value={true} control={<Radio />} label='Available!'/>
-              <FormControlLabel value={false} control={<Radio />} label='On leave B)'/>
-              <FormControlLabel value={false} control={<Radio />} label='On Lunch :D'/>
-              <FormControlLabel value={false} control={<Radio />} label='Out Sick :('/>
-            </RadioGroup>
+            
+              <RadioGroup id='radio-group' defaultValue="Available!"  name="radio-buttons-group" onChange={(e) => setAvailability(e.target.value)}>
+                <FormControlLabel value={true} control={<Radio />} label='Available! :)'/>
+                <FormControlLabel value={false} control={<Radio />} label='Not Available! :( (leave, sick call, etc.)'/>
+              </RadioGroup>
+            
           </div>
           <div className="form-group">
             <TextField
@@ -295,9 +295,9 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Operating Systems Experience"
             variant="outlined"
             id="exp"
-            value={opsystems}
+            value={operating_systems}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setOpSystems(e.target.value)}
+            onChange={(e) => setOperatingSystem(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -396,13 +396,13 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
     )
   }
   
-  if(user.job_type == 1){
+  if(user.type == 1){
     return (
       <EditProfileFormContainer>
         <SupraCoder/>
       </EditProfileFormContainer>
     )
-  } else if (user.job_type == 2){
+  } else if (user.type == 2){
     return (
       <EditProfileFormContainer>
         <Leadership/>

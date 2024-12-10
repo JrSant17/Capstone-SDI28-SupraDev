@@ -14,13 +14,13 @@ exports.up = function(knex) {
     table.string('profile_pic');
     table.string('user_summary');
     table.boolean('is_supracoder');
-    table.integer('job_type');
+    table.integer('type');
     table.string('experience');
     table.string('languages');
     table.string('command');
-    table.string('week_hours');
+    table.string('time_available');
     table.boolean('availability');
-    table.string('OS');
+    table.string('operating_systems');
     table.string('supradoubloons');
   });
 };
