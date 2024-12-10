@@ -25,7 +25,6 @@ import EditProfileForm from '../view/EditProfileForm.js';
 import { socialApi } from '../social/index.js';
 import { useMounted } from '../hooks/use-mounted';
 import { usePageView } from '../hooks/use-page-view';
-import { Layout as DashboardLayout } from '../layouts/layout.js';
 import { SocialConnections } from '../social/social-connections';
 import { SocialTimeline } from '../social/social-timeline';
 import UsersProjects from '../view/UsersProjects.js';
@@ -464,8 +463,6 @@ useEffect(() => {
     </>
   );
 };
-
-GenUser.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default GenUser;
 

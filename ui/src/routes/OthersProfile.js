@@ -17,7 +17,6 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { socialApi } from '../social/index.js';
 import { useMounted } from '../hooks/use-mounted';
-import { Layout as DashboardLayout } from '../layouts/layout.js';
 import { paths } from '../paths';
 import { SocialConnections } from '../social/social-connections';
 import { SocialTimeline } from '../social/social-timeline';
@@ -306,6 +305,5 @@ const OtherUser = () => {
   );
 };
 
-OtherUser.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default OtherUser;
