@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar } from '@mui/material';
 import { useCookies } from 'react-cookie';
 
-const BountyDetailsPage = () => {
+const ProjectDetailsPage = () => {
   const [bounty, setBounty] = useState(null);
   const { projectId } = useParams();
   const [doubloons, setDoubloons] = useState("")
@@ -406,5 +406,5 @@ const BountyDetailsPage = () => {
   );
 }
 
-export default BountyDetailsPage;
+export default ProjectDetailsPage;
 

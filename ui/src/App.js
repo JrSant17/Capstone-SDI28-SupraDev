@@ -12,7 +12,7 @@ import Projects from "./Projects";
 import LandingPage from './LandingPage';
 // import ProjectDetails from "./ProjectDetails";
 import ProjectSubmission from "./ProjectSubmission";
-import BountyDetailsPage from "./BountyDetailsPage";
+import ProjectDetailsPage from "./ProjectDetailsPage";
 // import PendingProjects from "./PendingProjects";
 import GenUser from "./MyProfile";
 import OtherUser from "./OthersProfile";
@@ -50,7 +50,7 @@ function Content() {
         {/* <Route path="/projects/:id" element={<ProjectDetails />} /> */}
         <Route path="/requests" element={<ProjectSubmission />} />
         {/* <Route path="/pending_projects/:id" element={<PendingProjects />} /> */}
-        <Route path="/projects/:projectId" element={<BountyDetailsPage />} />
+        <Route path="/projects/:projectId" element={<ProjectDetailsPage />} />
         <Route path="/bounties/:bountyId/chat" element={<ChatPage />} />
         {/* <Route path="/pending_projects/:id" element={<PendingProjects />} /> */}
         <Route path="/users" element={<GenUser />} />
