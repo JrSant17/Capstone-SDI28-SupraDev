@@ -10,6 +10,7 @@ app.use(function (req, res, next) {
   next();
 });
 
+
 app.get('/users', (req, res) => {
   knex('user_table')
     .select('*')
@@ -30,42 +31,50 @@ app.get('/users/:id', (req, res) => {
 })
 
 app.post('/users', (req, res) => {
+  const userFields = { first_name, lname, username,
+    password, profile_pic, user_summary,
+    email, p1_account, p1_auth,
+    type, availability, experience,
+    languages, operating_systems, avatar_url,
+    time_available, is_supracoder, supradoubloons
+  } = req.body;
+
   knex("user_table")
-    .insert(req.body)
-    .then((newUser) => {
-      res.status(201).send(
-        req.body.first_name,
-        req.body.last_name,
-        req.body.username,
-        req.body.password,
-        req.body.profile_pic,
-        req.body.user_summary,
-        req.body.is_supracoder,
-        req.body.supradoubloons,
-        `post was successful`
-      );
-      console.log('post was successful')
+    .insert(userFields)
+    .then(() => {
+      res.status(201).send("User created successfully");
+      console.log("User creation was successful");
     })
-    .catch(err => console.log(err))
-})
+    .catch(err => {
+      console.error("Error creating user:", err);
+      res.status(500).send("Internal Server Error");
+    });
+});
 
 app.patch('/users/:id', (req, res) => {
+  const userFields = { first_name, lname, username,
+    password, profile_pic, user_summary,
+    email, p1_account, p1_auth,
+    type, availability, experience,
+    languages, operating_systems, avatar_url,
+    time_available, is_supracoder, supradoubloons
+  } = req.body;
+
   knex('user_table')
     .where({ id: req.params.id })
-    .update({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      username: req.body.username,
-      password: req.body.password,
-      email: req.body.email,
-      job_title: req.body.job_title,
-      profile_pic: req.body.profile_pic,
-      user_summary: req.body.user_summary,
-      is_supracoder: req.body.is_supracoder,
-      supradoubloons: req.body.supradoubloons,
+    .update(userFields)
+    .then((updateCount) => {
+      if (updateCount === 0) {
+        res.status(404).send("User not found");
+      } else {
+        res.status(200).send("User updated successfully");
+      }
     })
-    .then((updateRows) => res.status(200).send('user updated'))
-})
+    .catch(err => {
+      console.error("Error updating user:", err);
+      res.status(500).send("Internal Server Error");
+    });
+});
 
 app.delete('/users/:id', (req, res) => {
   knex('user_table')
@@ -92,18 +101,6 @@ app.get('/projects/:id', (req, res) => {
     })
     .catch(err => console.log(err))
 })
-
-
-// table.increments('id');
-// table.string('name');
-// table.string('problem_statement');
-// table.integer('submitter_id');
-// table.foreign('submitter_id').references('user_table.id');
-// table.boolean('is_approved');
-// table.boolean('is_accepted');
-// table.integer('accepted_by_id');
-// table.foreign('accepted_by_id').references('user_table.id');
-// table.boolean('is_completed');
 
 
 app.post('/projects', (req, res) => {
