@@ -167,12 +167,10 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             />
           </div>
           <div className="form-group">
-            
-              <RadioGroup id='radio-group' defaultValue="Available!"  name="radio-buttons-group" onChange={(e) => setAvailability(e.target.value)}>
+              <RadioGroup id='radio-group' defaultValue="Available!"  name="radio-buttons-group" onChangeCapture={(e) => setAvailability(e.target.value)}>
                 <FormControlLabel value={true} control={<Radio />} label='Available! :)'/>
                 <FormControlLabel value={false} control={<Radio />} label='Not Available! :( (leave, sick call, etc.)'/>
               </RadioGroup>
-            
           </div>
           <div className="form-group">
             <TextField
@@ -300,6 +298,23 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             onChange={(e) => setOperatingSystem(e.target.value)}
           />
         </div>
+        <div className="form-group">
+            <TextField
+              fullWidth
+              label="Working Hours"
+              variant="outlined"
+              id="week_hours"
+              value={time_available}
+              style={{marginBottom: '10px'}}
+              onChange={(e) => setTimeAvailable(e.target.value)}
+            />
+          </div>
+          <div className="form-group">
+              <RadioGroup id='radio-group' defaultValue="Available!"  name="radio-buttons-group" onChangeCapture={(e) => setAvailability(e.target.value)}>
+                <FormControlLabel value={true} control={<Radio />} label='Available! :)'/>
+                <FormControlLabel value={false} control={<Radio />} label='Not Available! :( (leave, sick call, etc.)'/>
+              </RadioGroup>
+          </div>
         <div className="form-group">
           <TextField
             style={{marginBottom: '10px'}}

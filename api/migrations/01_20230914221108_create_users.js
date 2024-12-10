@@ -14,7 +14,7 @@ exports.up = function(knex) {
     table.string('profile_pic');
     table.string('user_summary');
     table.boolean('is_supracoder');
-    table.integer('type');
+    table.integer('type'); // Type 1 is a Supra coder, Type 2 is leadership, Type 3 is a customer
     table.string('experience');
     table.string('languages');
     table.string('command');
