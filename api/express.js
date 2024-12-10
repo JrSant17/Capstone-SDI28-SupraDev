@@ -10,6 +10,7 @@ app.use(function (req, res, next) {
   next();
 });
 
+
 app.get('/users', (req, res) => {
   knex('user_table')
     .select('*')
@@ -30,40 +31,16 @@ app.get('/users/:id', (req, res) => {
 })
 
 app.post('/users', (req, res) => {
-  const {
-    fname,
-    lname,
-    email,
-    p1_account,
-    p1_auth,
-    type,
-    password,
-    availability,
-    experience,
-    languages,
-    operating_systems,
-    avatar_url,
-    time_available,
-    is_supracoder
+  const userFields = { first_name, lname, username,
+    password, profile_pic, user_summary,
+    email, p1_account, p1_auth,
+    type, availability, experience,
+    languages, operating_systems, avatar_url,
+    time_available, is_supracoder, supradoubloons
   } = req.body;
 
   knex("user_table")
-    .insert({
-      fname,
-      lname,
-      email,
-      p1_account,
-      p1_auth,
-      type,
-      password,
-      availability,
-      experience,
-      languages,
-      operating_systems,
-      avatar_url,
-      time_available,
-      is_supracoder
-    })
+    .insert(userFields)
     .then(() => {
       res.status(201).send("User created successfully");
       console.log("User creation was successful");
@@ -75,41 +52,17 @@ app.post('/users', (req, res) => {
 });
 
 app.patch('/users/:id', (req, res) => {
-  const {
-    fname,
-    lname,
-    email,
-    p1_account,
-    p1_auth,
-    type,
-    password,
-    availability,
-    experience,
-    languages,
-    operating_systems,
-    avatar_url,
-    time_available,
-    is_supracoder
+  const userFields = { first_name, lname, username,
+    password, profile_pic, user_summary,
+    email, p1_account, p1_auth,
+    type, availability, experience,
+    languages, operating_systems, avatar_url,
+    time_available, is_supracoder, supradoubloons
   } = req.body;
 
   knex('user_table')
     .where({ id: req.params.id })
-    .update({
-      fname,
-      lname,
-      email,
-      p1_account,
-      p1_auth,
-      type,
-      password,
-      availability,
-      experience,
-      languages,
-      operating_systems,
-      avatar_url,
-      time_available,
-      is_supracoder
-    })
+    .update(userFields)
     .then((updateCount) => {
       if (updateCount === 0) {
         res.status(404).send("User not found");
@@ -148,18 +101,6 @@ app.get('/projects/:id', (req, res) => {
     })
     .catch(err => console.log(err))
 })
-
-
-// table.increments('id');
-// table.string('name');
-// table.string('problem_statement');
-// table.integer('submitter_id');
-// table.foreign('submitter_id').references('user_table.id');
-// table.boolean('is_approved');
-// table.boolean('is_accepted');
-// table.integer('accepted_by_id');
-// table.foreign('accepted_by_id').references('user_table.id');
-// table.boolean('is_completed');
 
 
 app.post('/projects', (req, res) => {
