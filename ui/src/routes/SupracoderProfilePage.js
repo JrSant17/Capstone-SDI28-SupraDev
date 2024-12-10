@@ -19,12 +19,6 @@ const SupracoderProfilePage = () => {
     const [changePassword, setChangePassword] = useState(false)
     const [newPassword, setNewPassword] = useState('')
     const [editProfile, setEditProfile] = useState(false)
-    // const [firstName, setFirstName] = useState('')
-    // const [lastName, setLastName] = useState('')
-    // const [jobTitle, setJobTitle] = useState('')
-    // const [email, setEmail] = useState('')
-    // const [description, setDescription] = useState('')
-    // const [profilePic, setProfilePic] = useState('')
     const [newFirstName, setNewFirstName] = useState('')
     const [newLastName, setNewLastName] = useState('')
     const [newJobTitle, setNewJobTitle] = useState('')
@@ -48,11 +42,10 @@ const SupracoderProfilePage = () => {
     useEffect(() => {
         userRefetch();
         projectsRefetch();
-    },[])
+    })
 
     const calcBountyStats = () => {
         for (let element in projects) {
-            console.log(projects[element])
             if (projects[element].accepted_by_id === userObj.id) {
                 numAcceptedProjs ++;
                 if (projects[element].is_completed === true) {
@@ -96,7 +89,6 @@ const SupracoderProfilePage = () => {
         .then(() => userRefetch())
         .then(() => {
             setEditProfile(false);
-            // window.location.reload();
         })
 
     }
@@ -180,18 +172,6 @@ const SupracoderProfilePage = () => {
                 <Box display="flex" flexDirection="column" gap="20px" width="250px" pr="20px">
                     <Typography variant="h5" color="primary" mb="20px" sx={{ textAlign: 'center' }}>{`${userObj.first_name}`}'s Profile</Typography>
 
-                    {/* <Card variant="outlined">
-                        <CardContent>
-                            <Typography variant="h6">Projects</Typography>
-                            <Button component={Link} to="/profile/projects/new" variant="contained" color="primary" style={{ width: "90%", margin: '5px 0' }}>
-                                Add New Project
-                            </Button>
-                            <Button component={Link} to="/profile/projects/edit" variant="contained" color="secondary" style={{ width: "90%", margin: '5px 0' }}>
-                                Edit Project
-                            </Button>
-                        </CardContent>
-                    </Card> */}
-
                     <Card variant="outlined">
                         <CardContent>
                             <Typography variant="h6">Bounties</Typography>
@@ -218,7 +198,6 @@ const SupracoderProfilePage = () => {
                             <p>Earned Doubloons:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '27px', marginLeft: '25px', marginRight: '7px'}} alt='supradoubloons' height='30px' width='30px'/><p style={{color: 'blue'}}>{userObj.supradoubloons}</p>
                         </h2>
                         <Box>
-                            {console.log(userObj.username)}
                             <Typography variant="h5" gutterBottom>{userObj.username}</Typography>
                             {personalInfoRender()}
                         </Box>

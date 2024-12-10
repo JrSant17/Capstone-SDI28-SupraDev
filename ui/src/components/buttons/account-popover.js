@@ -4,11 +4,7 @@ import toast from 'react-hot-toast';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import Popover from '@mui/material/Popover';
-import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
 
 import { useAuth } from '../../hooks/use-auth';

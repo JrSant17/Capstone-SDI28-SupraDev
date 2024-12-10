@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import MessageChatSquareIcon from '../assets/svg/message-chat-square.js';
 import DotsHorizontalIcon from '../assets/svg/dots-horizontal.js';
-import Image03Icon from '../assets/svg/image-03.js';
 import UserPlus02Icon from '../assets/svg/user-plus-02.js';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -23,14 +22,10 @@ import { paths } from '../paths';
 import { SocialConnections } from '../social/social-connections';
 import { SocialTimeline } from '../social/social-timeline';
 import Projects from './Projects.js'
-// import Modal from '@mui/material/Modal';
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
 
 const tabs = [
   { label: 'Timeline', value: 'timeline' },
   { label: 'Connections', value: 'connections' }
-  // { label: 'Projects', value:'projects'}
 ];
 
 const useProfile = () => {

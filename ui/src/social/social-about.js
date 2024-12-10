@@ -1,14 +1,10 @@
 import type { FC } from 'react';
 import PropTypes from 'prop-types';
-import BookOpen01 from '../assets/svg/book-open-01';
 import Briefcase01 from '../assets/svg/briefcase-01';
-import HomeSmile from '../assets/svg/home-smile';
 import Mail03 from '../assets/svg/mail-03';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
-import LinearProgress from '@mui/material/LinearProgress';
-import Link from '@mui/material/Link';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
