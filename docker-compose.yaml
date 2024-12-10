@@ -1,0 +1,18 @@
+services:
+  ui:
+    container_name: "supradev-ui"
+    build: ./ui/
+    ports: 
+      - "3000:3000"
+  api:
+    container_name: "supradev-api"
+    build: ./api/
+    ports:
+      - "8080:8080"
+  db:
+    image: postgres
+    container_name: "supradev-db"
+    ports:
+      - "5432:5432"
+    volumes:
+      - $HOME/docker/volumes/postgres:/var/lib/postgresql/data
