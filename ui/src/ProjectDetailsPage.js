@@ -14,7 +14,8 @@ const ProjectDetailsPage = () => {
   const [newComment, setNewComment] = useState('');
   const [chatposts, setChatposts] = useState([]);
   const [userdata, setUserdata] = useState([])
-  const [currentUserDoubloons, setCurrentUserDoubloons] = useState()
+  const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
+  const [codersNeeded, setCodersNeeded] =useState("");
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -126,7 +127,8 @@ const ProjectDetailsPage = () => {
       body: JSON.stringify({
         "is_accepted": true,
         "accepted_by_id": sessionCookies.user_id_token,
-        "github_url": gitlink
+        "github_url": gitlink,
+        "coders_needed": codersNeeded
       })
     })
     navigate('/projects');
@@ -343,6 +345,11 @@ const ProjectDetailsPage = () => {
             Github Link: {bounty.github_url}
           </Typography>
           {/* Git Text render */}
+          <Typography
+          variant="h6"
+            style={{ fontWeight: "500", color: "#616161" }}>
+            SupraCoders Needed: {codersNeeded.coders_needed}
+          </Typography>
 
 
           <Typography
