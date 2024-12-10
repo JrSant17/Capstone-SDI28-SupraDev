@@ -8,7 +8,7 @@ exports.up = function(knex) {
     table.string('first_name').notNullable();
     table.string('last_name').notNullable();
     table.string('username').unique();
-    table.string('email').unique(); //TODO: add to front end form
+    table.string('email').unique().notNullable(); //TODO: add to front end form
     table.string('job_title');
     table.string('p1_account');
     table.string('p1_auth');
@@ -21,7 +21,7 @@ exports.up = function(knex) {
     table.string('avatar_url');
     table.string('profile_pic');
     table.string('user_summary');
-    table.time('time_available');
+    table.integer('time_available');
     table.boolean('is_supracoder').defaultTo(false);
     table.integer('supradoubloons');
   });
