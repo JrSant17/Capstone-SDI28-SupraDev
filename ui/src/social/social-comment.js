@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict } from 'date-fns';
 import Avatar from '@mui/material/Avatar';
@@ -7,14 +7,7 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
-interface SocialCommentProps {
-  authorAvatar: string;
-  authorName: string;
-  createdAt: number;
-  message: string;
-}
-
-export const SocialComment: FC<SocialCommentProps> = (props) => {
+export const SocialComment = (props) => {
   const { authorAvatar, authorName, createdAt, message, ...other } = props;
 
   const ago = formatDistanceToNowStrict(createdAt);
