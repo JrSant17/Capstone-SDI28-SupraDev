@@ -242,9 +242,9 @@ const ProjectDetailsPage = () => {
               <></>
             )}
             <> </>
-            <div style={{display: 'flex'}}>
+            {/* <div style={{display: 'flex'}}>
                 <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '25px', marginLeft: '25px', marginRight: '7px'}} alt='supradoubloons' height='30px' width='30px'/><p style={{color: 'blue'}}>{bounty.bounty_payout}</p>
-            </div>
+            </div> */}
           </Typography>
 
           {sessionCookies.userPriv_Token === true &&
