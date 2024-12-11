@@ -22,6 +22,7 @@ import ChatPage from "./ChatPage";
 import { Helmet } from "react-helmet";
 
 import UserList from "./UserList"
+import CreateAccount from './components/createAccount';
 
 
 
@@ -58,6 +59,7 @@ function Content() {
         <Route path="/users/:id" element={<OtherUser />} />
         {/* <Route path="/supracoders/:id" element={<SupraCoderDetails />} /> */}
         <Route path="/userlist" element={<UserList />} />
+        <Route path="/createAccount" element={<CreateAccount />} />
       </Routes>
     </>
   );

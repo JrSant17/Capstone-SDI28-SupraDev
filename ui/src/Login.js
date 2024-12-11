@@ -263,7 +263,7 @@
 // export default Login;
 // ======
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import {
   Button,
@@ -278,6 +278,7 @@ import {
   Typography,
 } from '@mui/material';
 import { SHA256 } from 'crypto-js';
+import CreateAccount from './components/createAccount';
 
 const Login = () => {
   const [firstName, setFirstName] = useState('');
@@ -461,8 +462,10 @@ const Login = () => {
           }}
           id="createAccountContainer"
         >
-          <h3>Create Account</h3>
-          <div id="createAccountInputName">
+          <h3>Or </h3>
+          <Link to='/createAccount'>Create Account</Link>
+          {/* <CreateAccount /> */}
+          {/* <div id="createAccountInputName">
             <TextField
               fullWidth
               className="inputText"
@@ -550,7 +553,7 @@ const Login = () => {
             onClick={() => CreateAccount()}
           >
             Create Account
-          </Button>
+          </Button> */}
         </Card>
       </Paper>
 

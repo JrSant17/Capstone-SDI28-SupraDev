@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { TextField, Button, TextareaAutosize, Box, RadioGroup, Radio, FormControlLabel, FormControl } from '@mui/material';
+import { TextField, Button, TextareaAutosize, Box, RadioGroup, Radio, FormControlLabel, FormControl, Chip, InputLabel, Select, MenuItem } from '@mui/material';
+
 
 const EditProfileFormContainer = styled(Box)`
   display: flex;
@@ -33,11 +34,18 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
   const [profilePic, setProfilePic] = React.useState(user.profile_pic);
   const [email, setEmail] = React.useState(user.email);
   const [userSummary, setUserSummary] = React.useState(user.user_summary);
+
   const [experience, setExperience] = React.useState(user.experience);
-  const [languages, setLanguages] = React.useState(user.languages);
-  const [operating_systems, setOperatingSystem] = React.useState(user.operating_systems);
+  const [languages, setLanguages] = React.useState(Array.isArray(user.languages) ? user.languages : []);
+  const [operatingSystems, setOperatingSystems] = React.useState(Array.isArray(user.operating_systems) ? user.operating_systems : []);
+
   const [time_available, setTimeAvailable] = React.useState(user.time_available);
   const [availability, setAvailability] = React.useState(user.availability);
+
+  const experienceOptions = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+  const languageOptions = ['JavaScript', 'Python', 'Java', 'C++', 'C', 'Zig', 'Ruby', 'Go', 'Rust', 'PHP', 'C#', 'Swift'];
+  const osOptions = ['Windows', 'macOS', 'Linux', 'iOS', 'Android'];
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,7 +58,7 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
       user_summary: userSummary,
       experience: experience,
       languages: languages,
-      operating_systems: operating_systems,
+      operating_systems: operatingSystems,
       time_available: time_available,
       availability: availability
     };
@@ -63,6 +71,14 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
         console.error(error);
       });
   };
+
+  const handleLanguageChange = (event) => {
+    setLanguages(event.target.value);
+};
+
+const handleOSChange = (event) => {
+  setOperatingSystems(event.target.value);
+};
 
   function SupraCoder(){
       return (
@@ -122,39 +138,67 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="form-group">
-            <TextField
-              fullWidth
-              label="Experience"
-              variant="outlined"
-              id="exp"
-              value={experience}
-              style={{marginBottom: '10px'}}
-              onChange={(e) => setExperience(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <TextField
-              fullWidth
-              label="Languages"
-              variant="outlined"
-              id="languages"
-              value={languages}
-              style={{marginBottom: '10px'}}
-              onChange={(e) => setLanguages(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <TextField
-              fullWidth
-              label="OS Experience"
-              variant="outlined"
-              id="operating_system"
-              value={operating_systems}
-              style={{marginBottom: '10px'}}
-              onChange={(e) => setOperatingSystem(e.target.value)}
-            />
-          </div>
+          
+          <FormControl className='form-group' fullWidth margin="normal" size="small">
+            <InputLabel>Experience Level</InputLabel>
+              <Select
+                value={experience}
+                label="Experience Level"
+                onChange={(e) => setExperience(e.target.value)}
+                required
+                >
+                {experienceOptions.map((option) => (
+                 <MenuItem key={option} value={option}>{option}</MenuItem>
+                ))}
+              </Select>
+          </FormControl>
+
+          <FormControl className='form-group' fullWidth margin="normal" size="small">
+              <InputLabel>Programming Languages</InputLabel>
+              <Select
+                   multiple
+                   value={languages}
+                  onChange={handleLanguageChange}
+                  required
+                  renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                          {Array.isArray(selected) && selected.map((value) => (
+                              <Chip key={value} label={value} />
+                          ))}
+                      </Box>
+                  )}
+              >
+                   {languageOptions.map((lang) => (
+                       <MenuItem key={lang} value={lang}>
+                           {lang}
+                       </MenuItem>
+                   ))}
+              </Select>
+          </FormControl>
+
+          <FormControl className='form-group' fullWidth margin="normal" size="small">
+                            <InputLabel>Operating Systems</InputLabel>
+                            <Select
+                                multiple
+                                value={operatingSystems}
+                                onChange={handleOSChange}
+                                required
+                                renderValue={(selected) => (
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((value) => (
+                                            <Chip key={value} label={value} />
+                                        ))}
+                                    </Box>
+                                )}
+                            >
+                                {osOptions.map((os) => (
+                                    <MenuItem key={os} value={os}>
+                                        {os}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+          </FormControl>
+          
           <div className="form-group">
             <TextField
               fullWidth
@@ -293,9 +337,9 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Operating Systems Experience"
             variant="outlined"
             id="exp"
-            value={operating_systems}
+            value={operatingSystems}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setOperatingSystem(e.target.value)}
+            onChange={(e) => setOperatingSystems(e.target.value)}
           />
         </div>
         <div className="form-group">
