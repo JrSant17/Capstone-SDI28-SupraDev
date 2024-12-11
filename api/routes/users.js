@@ -21,9 +21,15 @@ router.get('/', (req, res) => {
   knex('user_table')
     .select('*')
     .then((user) => {
+      if (!user) {
+        return res.status(404).send("No Users found!");
+      }
       res.status(200).send(user)
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Internal server error");
+    });
 });
 
 /**
@@ -48,10 +54,17 @@ router.get('/:id', (req, res) => {
   knex('user_table')
     .select('*')
     .where({ id: req.params.id })
+    .first()
     .then((user) => {
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
       res.status(200).send(user)
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Internal server error");
+    });
 });
 
 /**
@@ -112,28 +125,30 @@ router.post('/', (req, res) => {
  *         description: Internal Server Error
  */
 router.patch('/:id', (req, res) => {
-    const userFields = { first_name, lname, username,
-        password, profile_pic, user_summary,
-        email, p1_account, p1_auth,
-        type, availability, experience,
-        languages, operating_systems, avatar_url,
-        time_available, is_supracoder, supradoubloons
-      } = req.body;
-    
-      knex('user_table')
+  const userFields = req.body;
+
+  knex('user_table')
+    .where({ id: req.params.id })
+    .update(userFields)
+    .then((updateCount) => {
+      if (updateCount === 0) {
+        res.status(404).send("User not found");
+      }
+      return knex('user_table')
+        .select('*')
         .where({ id: req.params.id })
-        .update(userFields)
-        .then((updateCount) => {
-          if (updateCount === 0) {
-            res.status(404).send("User not found");
-          } else {
-            res.status(200).send("User updated successfully");
-          }
-        })
-        .catch(err => {
-          console.error("Error updating user:", err);
-          res.status(500).send("Internal Server Error");
-        });
+        .first();
+    })
+    .then((updatedUser) => {
+      if (updatedUser) {
+        const { password, ...userWithoutPassword } = updatedUser;
+        return res.status(200).json(userWithoutPassword);
+      }
+    })
+    .catch(err => {
+      console.error("Error updating user:", err);
+      res.status(500).send("Internal Server Error");
+    });
 });
 
 /**
@@ -157,6 +172,7 @@ router.delete('/:id', (req, res) => {
     .where({ id: req.params.id })
     .del()
     .then(res.status(204).send('user deleted'))
+    console.log(`user delete success for ${req.params.id}`)
 });
 
 module.exports = router;

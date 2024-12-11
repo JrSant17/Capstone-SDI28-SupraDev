@@ -64,4 +64,6 @@ app.post('/bounties/:bountyId/messages', (req, res) => {
     });
 });
 
-app.listen(port, () => console.log(`Express server listening in on port ${port}`))
+app.listen(port, () => console.log(`Express server listening in on port ${port} with environment: ${process.env.NODE_ENV}`))
+
+module.exports = app;
