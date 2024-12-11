@@ -1,4 +1,4 @@
-# Capstone-SDI18-SupraDev
+# Capstone-SDI28-SupraDev
 Problem Statement: There is currently no formal site used to request application creation/developmental services from Supra Coders, or other entities within the USSF.
 
 # Project Name
@@ -7,7 +7,7 @@ SupraDev App - Capstone
 
 ## Team Name
 
-Junior Devvies
+OMEGA FALCON EAGLE SQUADRON
 
 ## Description
 

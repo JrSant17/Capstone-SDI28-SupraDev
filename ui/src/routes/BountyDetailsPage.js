@@ -61,11 +61,19 @@ const BountyDetailsPage = () => {
   } 
 
   useEffect(() => {
+    console.log(`hello starting fetch for ${projectId}`)
     fetch(`http://localhost:8080/projects/${projectId}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
-        if (data && data.length) {
-          setBounty(data[0]);
+        console.log(`received data: ${JSON.stringify(data)}`)
+        if (data) {
+          console.log(`data 0 is: ${data}`);
+          setBounty(data);
         }
       })
       .catch((error) => {
