@@ -1,4 +1,4 @@
-# Capstone-SDI18-SupraDev
+# Capstone-SDI28-SupraDev
 Problem Statement: There is currently no formal site used to request application creation/developmental services from Supra Coders, or other entities within the USSF.
 
 # Project Name
@@ -7,7 +7,7 @@ SupraDev App - Capstone
 
 ## Team Name
 
-Junior Devvies
+OMEGA FALCON EAGLE SQUADRON
 
 ## Description
 
@@ -77,3 +77,24 @@ The prerequisites that users need to have installed or set up before they can us
   2023-09-18 20:50:28.026 UTC [1] DETAIL:  The data directory was initialized by PostgreSQL version 15, which is not compatible with this version 16.0 (Debian 16.0-1.pgdg120+1)."
   Run:
   (docker run --rm --name pg-docker -e POSTGRES_PASSWORD=docker -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql@15/data postgres) note the '@15' which specifies the version of postgres in the docker file path.
+
+## Testing
+
+For the backend API it primarily runs tests with a test database:
+```
+supradb_test
+```
+Under /api/test there are two shell scripts that are "in-progresss" to connect to an existing pg-docker container and create and destroy the database before and after the test. TBD.
+Currently, you need to have a running pg-docker container and can run the script yourself for creation and deletion:
+####  Create test DB
+```
+sudo bash ./test/supradb_test_create.sh supradb_test pg-docker
+```
+
+#### Delete test DB
+```
+sudo bash ./test/supradb_test_destroy.sh supradb_test pg-docker
+```
+but it won't execute from the node test itself.
+
+We recommend you run the creation script and then leave it alone. Afterwords the routes.test.js jest file will take care of migrations, seeding between test runs.

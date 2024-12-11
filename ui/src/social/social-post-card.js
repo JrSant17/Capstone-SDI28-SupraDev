@@ -1,10 +1,9 @@
-import type { FC } from 'react';
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNowStrict } from 'date-fns';
-import Clock from '../icons/clock';
-import Heart from '../icons/heart';
-import Share07 from '../icons/share-07';
+import Clock from '../assets/svg/clock';
+import Heart from '../assets/svg/heart';
+import Share07 from '../assets/svg/share-07';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -22,18 +21,7 @@ import Typography from '@mui/material/Typography';
 import { SocialComment } from './social-comment';
 import { SocialCommentAdd } from './social-comment-add';
 
-interface SocialPostCardProps {
-  authorAvatar: string;
-  authorName: string;
-  comments: Comment[];
-  createdAt: number;
-  isLiked: boolean;
-  likes: number;
-  media?: string;
-  message: string;
-}
-
-export const SocialPostCard: FC<SocialPostCardProps> = (props) => {
+export const SocialPostCard = (props) => {
   const {
     authorAvatar,
     authorName,
@@ -48,12 +36,12 @@ export const SocialPostCard: FC<SocialPostCardProps> = (props) => {
   const [isLiked, setIsLiked] = useState(isLikedProp);
   const [likes, setLikes] = useState(likesProp);
 
-  const handleLike = useCallback((): void => {
+  const handleLike = useCallback(() => {
     setIsLiked(true);
     setLikes((prevLikes) => prevLikes + 1);
   }, []);
 
-  const handleUnlike = useCallback((): void => {
+  const handleUnlike = useCallback(() => {
     setIsLiked(false);
     setLikes((prevLikes) => prevLikes - 1);
   }, []);
@@ -61,55 +49,28 @@ export const SocialPostCard: FC<SocialPostCardProps> = (props) => {
   return (
     <Card {...other}>
       <CardHeader
-        avatar={
-          <Avatar
-            component="a"
-            href="#"
-            src={authorAvatar}
-          />
-        }
+        avatar={<Avatar component="a" href="#" src={authorAvatar} />}
         disableTypography
         subheader={
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={1}
-          >
+          <Stack alignItems="center" direction="row" spacing={1}>
             <SvgIcon color="action">
               <Clock />
             </SvgIcon>
-            <Typography
-              color="text.secondary"
-              variant="caption"
-            >
+            <Typography color="text.secondary" variant="caption">
               {formatDistanceToNowStrict(createdAt)} ago
             </Typography>
           </Stack>
         }
         title={
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={0.5}
-            sx={{ mb: 1 }}
-          >
-            <Link
-              color="text.primary"
-              href="#"
-              variant="subtitle2"
-            >
+          <Stack alignItems="center" direction="row" spacing={0.5} sx={{ mb: 1 }}>
+            <Link color="text.primary" href="#" variant="subtitle2">
               {authorName}
             </Link>
             <Typography variant="body2">updated their status</Typography>
           </Stack>
         }
       />
-      <Box
-        sx={{
-          pb: 2,
-          px: 3,
-        }}
-      >
+      <Box sx={{ pb: 2, px: 3 }}>
         <Typography variant="body1">{message}</Typography>
         {media && (
           <Box sx={{ mt: 3 }}>
@@ -132,10 +93,7 @@ export const SocialPostCard: FC<SocialPostCardProps> = (props) => {
           sx={{ mt: 2 }}
         >
           <div>
-            <Stack
-              alignItems="center"
-              direction="row"
-            >
+            <Stack alignItems="center" direction="row">
               {isLiked ? (
                 <Tooltip title="Unlike">
                   <IconButton onClick={handleUnlike}>
@@ -161,10 +119,7 @@ export const SocialPostCard: FC<SocialPostCardProps> = (props) => {
                   </IconButton>
                 </Tooltip>
               )}
-              <Typography
-                color="text.secondary"
-                variant="subtitle2"
-              >
+              <Typography color="text.secondary" variant="subtitle2">
                 {likes}
               </Typography>
             </Stack>
@@ -199,7 +154,17 @@ export const SocialPostCard: FC<SocialPostCardProps> = (props) => {
 SocialPostCard.propTypes = {
   authorAvatar: PropTypes.string.isRequired,
   authorName: PropTypes.string.isRequired,
-  comments: PropTypes.array.isRequired,
+  comments: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      message: PropTypes.string.isRequired,
+      createdAt: PropTypes.number.isRequired,
+      author: PropTypes.shape({
+        avatar: PropTypes.string,
+        name: PropTypes.string.isRequired,
+      }).isRequired,
+    })
+  ).isRequired,
   createdAt: PropTypes.number.isRequired,
   isLiked: PropTypes.bool.isRequired,
   likes: PropTypes.number.isRequired,

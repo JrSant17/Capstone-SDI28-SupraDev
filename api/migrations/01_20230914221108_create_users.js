@@ -4,24 +4,26 @@
  */
 exports.up = function(knex) {
   return knex.schema.createTable('user_table', table => {
-    table.increments('id'); // adds an auto incrementing PK column
-    table.string('first_name').notNullable(); // equivalent of varchar(255)
-    table.string('last_name').notNullable(); // equivalent of varchar(255)
-    table.string('username').unique(); // equivalent of varchar(255)
-    table.string('email').unique();
+    table.increments('id');
+    table.string('first_name').notNullable();
+    table.string('last_name').notNullable();
+    table.string('username').unique();
+    table.string('email').unique().notNullable(); //TODO: add to front end form
     table.string('job_title');
-    table.string('password').notNullable(); // equivalent of varchar(255)
-    table.string('profile_pic');
-    table.string('user_summary');
-    table.boolean('is_supracoder');
-    table.integer('job_type');
+    table.string('p1_account');
+    table.string('p1_auth');
+    table.integer('type');
+    table.string('password').notNullable();
+    table.string('availability');
     table.string('experience');
     table.string('languages');
-    table.string('command');
-    table.string('week_hours');
-    table.boolean('availability');
-    table.string('OS');
-    table.string('supradoubloons');
+    table.string('operating_systems');
+    table.string('avatar_url');
+    table.string('profile_pic');
+    table.string('user_summary');
+    table.integer('time_available');
+    table.boolean('is_supracoder').defaultTo(false);
+    table.integer('supradoubloons');
   });
 };
 
