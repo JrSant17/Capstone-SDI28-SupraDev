@@ -421,6 +421,20 @@ const ProjectDetailsPage = () => {
           ) : (
             <></>
           )}
+
+          {/* Registration Button */}
+          {/* What happens when you request to join a project? */}
+          <Button variant="contained"
+          color = "primary"
+          components="a"
+          href={`/projects/${projectId}/status`}
+
+          style={{ marginBottom: "irem"}}
+          >
+            Register for project
+          </Button>
+
+
           {/* Comments Section */}
           <Box marginTop="2rem">
             <Typography variant="h5">Comments</Typography>
