@@ -363,16 +363,14 @@ const ProjectDetailsPage = () => {
           <Typography
             variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            Project Requester: {bounty.name}
+            Submitter Name: {userdata.find(user => user.id ===bounty.submitter_id)?.first_name} {userdata.find(user => user.id ===bounty.submitter_id)?.last_name}
           </Typography>
           {/* Git Text render */}
 
           <Typography
           variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            Contact Info: {userdata.find(user =>user.id ===bounty.
-              
-            )?.email || 'No Email available'}
+            Contact Info: {userdata.find(user => user.id ===bounty.submitter_id)?.email || 'No Email available'}
           </Typography>
 
           <Typography
