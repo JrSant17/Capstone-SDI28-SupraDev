@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';
-import DotsHorizontalIcon from '../icons/dots-horizontal';
+import DotsHorizontalIcon from '../assets/svg/dots-horizontal';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
