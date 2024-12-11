@@ -11,7 +11,7 @@ import MyBounties from "./routes/MyBounties";
 import Projects from "./routes/Projects";
 import LandingPage from './routes/LandingPage';
 import ProjectSubmission from "./routes/ProjectSubmission";
-import BountyDetailsPage from "./routes/BountyDetailsPage";
+import ProjectDetailsPage from "./routes/ProjectDetailsPage";
 import GenUser from "./routes/MyProfile";
 import OtherUser from "./routes/OthersProfile";
 import UserList from "./routes/UserList";
@@ -50,7 +50,7 @@ function Content() {
         <Route path="/supracoders/:id/bounties" element={<MyBounties />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/requests" element={<ProjectSubmission />} />
-        <Route path="/projects/:projectId" element={<BountyDetailsPage />} />
+        <Route path="/projects/:projectId" element={<ProjectDetailsPage />} />
         <Route path="/users" element={<GenUser />} />
         <Route path="/users/:id" element={<OtherUser />} />
         <Route path="/userlist" element={<UserList />} />

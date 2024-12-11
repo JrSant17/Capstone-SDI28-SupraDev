@@ -16,6 +16,7 @@ exports.up = function(knex) {
     table.boolean('is_completed');
     table.integer('bounty_payout');
     table.string('github_url')
+    table.integer('coders_needed')
   })
 };
 
