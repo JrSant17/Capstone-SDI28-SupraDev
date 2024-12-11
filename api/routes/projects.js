@@ -83,7 +83,7 @@ router.get('/:id', (req, res) => {
  *         description: Internal Server Error
  */
 router.post('/', (req, res) => {
-  const { submitter_id, accepted_by_id, name, problem_statement, is_accepted, is_approved, is_completed, bounty_payout, github_url } = req.body;
+  const { submitter_id, accepted_by_id, name, problem_statement, is_accepted, is_approved, is_completed, bounty_payout, github_url, program_language_type, date_created, end_date, desired_number_coders, project_state } = req.body;
 
   knex("user_table")
     .whereIn('id', [submitter_id, accepted_by_id])
@@ -104,6 +104,11 @@ router.post('/', (req, res) => {
           accepted_by_id,
           bounty_payout,
           github_url,
+          program_language_type,
+          date_created,
+          end_date,
+          desired_number_coders,
+          project_state,
         })
         .returning('*')
         .then((newProject) => {
@@ -150,6 +155,11 @@ router.patch('/:id', (req, res) => {
       is_completed: req.body.is_completed,
       bounty_payout: req.body.bounty_payout,
       github_url: req.body.github_url,
+      program_language_type: req.body.program_language_type,
+      date_created: req.body.date_created,
+      end_date: req.body.end_date,
+      desired_number_coders: req.body.desired_number_coders,
+      project_state: req.body.project_state,
     })
     .then((updateRows) => res.status(200).send('project updated'))
 });
