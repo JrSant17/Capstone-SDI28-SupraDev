@@ -7,7 +7,7 @@ module.exports = {
 
   development: {
     client: 'pg',
-    connection: "postgres://postgres:docker@localhost/supradb"
+    connection: "postgres://postgres:password@localhost/supradb"
   },
 
   staging: {
