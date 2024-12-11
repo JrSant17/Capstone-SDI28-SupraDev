@@ -31,7 +31,7 @@ export const SocialPostAdd = (props) => {
     const userId = id ? id : sessionCookies.user_id_token;
     await fetch(`http://localhost:8080/users/${userId}`)
         .then((res) => res.json())
-        .then((fetchData) => setUserObj(fetchData[0]))
+        .then((fetchData) => setUserObj(fetchData))
   }
 
   useEffect(() => {

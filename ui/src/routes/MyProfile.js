@@ -171,7 +171,6 @@ const GenUser = () => {
     await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`)
         .then((res) => res.json())
       .then((fetchData) => {
-        console.log(`job title is: ${JSON.stringify(fetchData.job_title)}`)
         setUserObj(fetchData)
   })
     setFetchTime(true);
