@@ -68,6 +68,38 @@ router.get('/:id', (req, res) => {
 
 /**
  * @swagger
+ * /{id}/messages:
+ *   get:
+ *     summary: Get all chat messages for a project
+ *     tags: [Messages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the project to fetch messages from.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of chat messages.
+       500:
+*         description : Internal Server Error.
+ */
+router.get('/:id/messages', (req, res) => {
+  knex('chatposts')
+    .select('*')
+    .where({ project_id: req.params.id })
+    .then(messages => {
+      res.status(200).json(messages);
+    })
+    .catch(err => {
+      console.error("Error fetching chat messages:", err);
+      res.status(500).send("Internal Server Error");
+    });
+});
+
+/**
+ * @swagger
  * /projects:
  *   post:
  *     summary: creates a new project
@@ -120,6 +152,41 @@ router.post('/', (req, res) => {
           res.status(500).send("Internal Server Error");
         });
     })
+});
+
+/**
+ * @swagger
+ * /{id}/messages:
+ *   post:
+ *     summary: Create a new chat message for a project
+ *     tags: [Messages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the project to which the message belongs.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *     responses:
+ *       201:
+ *         description: Message created successfully.
+ *       500:
+ *         description: Internal Server Error.
+ */
+router.post('/:id/messages', (req, res) => {
+  knex('chatposts')
+  .insert(req.body)
+  .returning('*')
+  .then(messages => {
+    const createdMessage = messages[0];
+    res.status(201).json(createdMessage);
+  })
+  .catch(err => {
+    console.error("Error saving chat message:", err);
+    res.status(500).send("Internal Server Error");
+  });
 });
 
 /**
