@@ -54,7 +54,7 @@ const ProjectDetailsPage = () => {
   const userImgRender = (userIdFromPost) => {
     let imgToRender = '';
     let idOfMatch;
-    for (let element in userdata) {     
+    for (let element in userdata) {
       if (userdata[element].id == userIdFromPost) {
         imgToRender = userdata[element].profile_pic;
         idOfMatch = userdata[element].id;
@@ -71,7 +71,7 @@ const ProjectDetailsPage = () => {
     await fetch(`http://localhost:8080/bounties/${projectId}/messages`)
         .then((res) => res.json())
         .then((commentData) => setChatposts(commentData))
-  } 
+  }
 
   useEffect(() => {
     console.log(`hello starting fetch for ${projectId}`)
@@ -122,7 +122,7 @@ const ProjectDetailsPage = () => {
     console.log(typeof(parseInt(projectId)))
     console.log(typeof(sessionCookies.user_id_token))
     console.log(typeof(newComment))
-    
+
     fetch(`http://localhost:8080/bounties/${projectId}/messages`, {
       method: "POST",
       headers: {
@@ -363,14 +363,16 @@ const ProjectDetailsPage = () => {
           <Typography
             variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            Submitter ID: {bounty.submitter_id}
+            Project Requester: {bounty.name}
           </Typography>
           {/* Git Text render */}
 
           <Typography
           variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            Contact Info: {userdata.find(user =>user.id ===bounty.submitter_id)?.email || 'No Email available'}
+            Contact Info: {userdata.find(user =>user.id ===bounty.
+              
+            )?.email || 'No Email available'}
           </Typography>
 
           <Typography
