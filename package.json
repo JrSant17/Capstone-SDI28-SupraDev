@@ -1,0 +1,11 @@
+{
+    "name": "supradev",
+    "private": false,
+    "workspaces": [
+      "api",
+      "ui"
+    ],
+    "devDependencies": {
+      "eslint": "^8.x.x"
+    }
+  }
