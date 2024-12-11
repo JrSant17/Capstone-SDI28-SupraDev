@@ -1,4 +1,4 @@
-/* Container for the milestone progress bar */
+
 .milestone-container {
     display: flex;
     justify-content: space-between;
@@ -9,7 +9,7 @@
     /* border: 2px solid #000; */
 }
 
-/* Base styling for each milestone */
+
 .milestone {
     flex: 1;
     display: flex;
@@ -20,32 +20,39 @@
     color: #000000;
     border-right: 1px solid #000;
     transition: all 0.3s ease;
-    height: 50px;
+    height: 70px;
+    width: 100%;
 }
 
-/* Remove right border on the last milestone */
+
 .milestone:last-child {
     border-right: none;
 }
 
-/* Inactive milestone - dimmed state */
+
 .milestone.inactive {
     opacity: 0.4;
 }
 
-/* Current milestone - highlighted */
-.milestone.current {
-    background-color: #4caf50; /* Green for active milestone */
-    opacity: 1;
+.milestone.active {
+    transform: scale(1.2); /* Increase size of the active milestone */
+    z-index: 2; /* Bring active milestone to the front */
+    border-color: #000;
 }
+
+/* Current milestone - highlighted */
+/* .milestone.current { */
+    /* background-color: #4caf50; Green for active milestone */
+    /* opacity: 1; */
+/* } */
 
 /* Completed milestones - slightly dull but visible */
-.milestone.active {
-    background-color: #2196f3; /* Blue for completed milestones */
-    opacity: 1;
-}
+/* .milestone.active { */
+    /* background-color: #2196f3;  */
+    /* opacity: 1; */
+/* } */
 
-/* Individual milestone colors based on progress */
+/* Individual milestone colors */
 .milestone-container .milestone:nth-child(1) {
     background-color: #4caf50;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
@@ -81,21 +88,24 @@
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Buttons styling */
-button {
+
+.milestone-button {
     padding: 10px;
     margin: 10px;
     font-size: 16px;
     cursor: pointer;
     text-align: center;
-    width: 90px;
+    width: 100px;
     background-color: #faf0f0;
     border-radius: 12px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-button:hover {
+.milestone-button:hover {
     background-color: #faf0f02a;
+    border-color: #9f21f3;
+    color: #9f21f3;
+    transition-duration: 5ms;
 }
 
 .milestone-timestamps {
@@ -173,7 +183,7 @@ button:hover {
     font-weight: bold;
 }
 
-.completed-date {
+.completed-stamp {
     color: #4caf50;
 
 }
