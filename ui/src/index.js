@@ -15,6 +15,7 @@ import ProjectDetailsPage from "./routes/ProjectDetailsPage";
 import GenUser from "./routes/MyProfile";
 import OtherUser from "./routes/OthersProfile";
 import UserList from "./routes/UserList";
+import ProjectStatus from './routes/ProjectStatus';
 
 function Content() {
   const location = useLocation();
@@ -55,6 +56,7 @@ function Content() {
         <Route path="/users/:id" element={<OtherUser />} />
         <Route path="/userlist" element={<UserList />} />
         <Route path="/mybounties" element={<MyBounties />} />
+        <Route path="/projects/:projectId/status" element={<ProjectStatus />} />
       </Routes>
     </>
   );

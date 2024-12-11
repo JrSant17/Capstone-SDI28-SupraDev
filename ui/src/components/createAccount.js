@@ -220,6 +220,7 @@ export default function CreateAccount() {
                         placeholder="Job Title"
                         size="small"
                         margin="normal"
+                        required
                     />
                 <FormControl fullWidth margin="normal" size="small">
                     <InputLabel id="user-type-label">User Type</InputLabel>

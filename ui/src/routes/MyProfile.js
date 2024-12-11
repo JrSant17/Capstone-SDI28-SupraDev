@@ -170,7 +170,9 @@ const GenUser = () => {
     setFetchTime(false);
     await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`)
         .then((res) => res.json())
-      .then((fetchData) => setUserObj(fetchData[0]))
+      .then((fetchData) => {
+        setUserObj(fetchData)
+  })
     setFetchTime(true);
     handleTabsChange(currentTab, 'timeline')
   }

@@ -36,7 +36,7 @@ const ProjectDetailsPage = () => {
   const fetchCurrentUserDoubloons = async () => {
     await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`)
         .then((res) => res.json())
-        .then((doubloonies) => {setCurrentUserDoubloons(doubloonies[0].supradoubloons)})
+        .then((doubloonies) => {setCurrentUserDoubloons(doubloonies.supradoubloons)})
   }
 
   const fetchCodersNeeded = async () => {
