@@ -16,11 +16,30 @@ exports.up = function(knex) {
     table.boolean('is_completed').defaultTo(false);
     table.integer('bounty_payout');
     table.string('github_url');
-    table.string('program_language_type').notNullable();
+    table.integer('coders_needed')
+    table.string('program_languages');
+    table.integer('project_owner');
+    table.foreign('project_owner').references('user_table.id');
     table.dateTime('date_created').defaultTo(knex.fn.now());
     table.dateTime('end_date'); 
-    table.integer('desired_number_coders'); 
-    table.string('project_state').notNullable(); 
+    table.string('project_state');
+    table.integer('priority_level');
+    table.dateTime('kickoff_startdate');
+    table.dateTime('kickoff_enddate');
+    table.dateTime('developing_startdate');
+    table.dateTime('developing_enddate');
+    table.dateTime('staging_startdate');
+    table.dateTime('staging_enddate');
+    table.dateTime('funds_startdate');
+    table.dateTime('funds_enddate');
+    table.dateTime('deploy_startdate');
+    table.dateTime('deploy_enddate');
+    table.dateTime('por_startdate');
+    table.dateTime('por_enddate');
+    table.string('funding_source');
+    table.string('funding_poc');
+    table.decimal('estimated_cost', 14, 2);
+    table.string('funding_department');
   });
 };
 
@@ -32,6 +51,7 @@ exports.down = function(knex) {
   return knex.schema.alterTable('project_table', table => {
     table.dropForeign('submitter_id');
     table.dropForeign('accepted_by_id');
+    table.dropForeign('project_owner');
   })
   .then(function() {
     return knex.schema.dropTableIfExists('project_table');

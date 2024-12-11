@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 
 const MyBounties = (props) => {
-  
+
   const { profile, ...other } = props;
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
@@ -192,14 +192,14 @@ const MyBounties = (props) => {
 
 
               <p style={{ marginLeft: "4px", marginTop: 'auto', textAlign: "left" }}>
-                Problem Statement: {truncateText(project.problem_statement, maxLength)}
+                Project Details: {truncateText(project.problem_statement, maxLength)}
               </p>
             </div>
             <div style={{display: 'flex'}}>
               {findSubmitter(project.submitter_id)}
-              <strong style={{position: 'absolute', bottom: '0', right: '0', display: 'flex', marginRight: '8px'}}>
+              {/* <strong style={{position: 'absolute', bottom: '0', right: '0', display: 'flex', marginRight: '8px'}}>
                   <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '18px', marginLeft: '5px', marginRight: '2px'}} alt='supradoubloons' height='20px' width='20px'/><p style={{color: 'blue'}}>{project.bounty_payout}</p>
-              </strong>
+              </strong> */}
             </div>
           </HoverCard>
         ))}

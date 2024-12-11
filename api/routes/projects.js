@@ -83,7 +83,7 @@ router.get('/:id', (req, res) => {
  *         description: Internal Server Error
  */
 router.post('/', (req, res) => {
-  const { submitter_id, accepted_by_id, name, problem_statement, is_accepted, is_approved, is_completed, bounty_payout, github_url, program_language_type, date_created, end_date, desired_number_coders, project_state } = req.body;
+  const { submitter_id, accepted_by_id, name, problem_statement, is_accepted, is_approved, is_completed, bounty_payout, github_url, program_languages, date_created, end_date, project_state, coders_needed } = req.body;
 
   knex("user_table")
     .whereIn('id', [submitter_id, accepted_by_id])
@@ -104,11 +104,11 @@ router.post('/', (req, res) => {
           accepted_by_id,
           bounty_payout,
           github_url,
-          program_language_type,
+          program_languages,
           date_created,
           end_date,
-          desired_number_coders,
           project_state,
+          coders_needed
         })
         .returning('*')
         .then((newProject) => {
