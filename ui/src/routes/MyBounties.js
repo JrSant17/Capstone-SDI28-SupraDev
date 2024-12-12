@@ -143,7 +143,7 @@ const MyBounties = (props) => {
         }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
           {" "}
-          Bounties{" "}
+          Projects{" "}
           {users.username}
         </Typography>
 
