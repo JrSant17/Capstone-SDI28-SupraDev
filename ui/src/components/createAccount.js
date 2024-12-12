@@ -120,7 +120,11 @@ export default function CreateAccount() {
                     usersRefetch();
                   });
             } else if(resp.status == 500){
-                displayDialogMessage('Account creation failure!');
+                displayDialogMessage('Creation Failure','Account creation failure!');
+            } else if(resp.status == 409) {
+                resp.json().then(errorData => {
+                    displayDialogMessage('Account Taken', `${errorData.error}`);
+                });
             }
         })
     };
