@@ -10,7 +10,7 @@ exports.up = function(knex) {
     table.string('username').unique();
     table.string('email').unique().notNullable(); //TODO: add to front end form
     table.string('job_title');
-    table.string('p1_account');
+    table.string('p1_account');q
     table.string('p1_auth');
     table.integer('type');
     table.string('password').notNullable();

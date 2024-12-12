@@ -5,12 +5,12 @@ module.exports = {
 
   development: {
     client: 'pg',
-    connection: "postgres://postgres:docker@localhost/supradb"
+    connection: "postgres://postgres:password@localhost/supradb"
   },
 
   test: {
     client: 'pg',
-    connection: "postgres://postgres:docker@localhost/supradb_test",
+    connection: "postgres://postgres:password@localhost/supradb_test",
     pool: {
       min: 2,
       max: 10

@@ -51,7 +51,7 @@ exports.down = function(knex) {
   return knex.schema.alterTable('project_table', table => {
     table.dropForeign('submitter_id');
     table.dropForeign('accepted_by_id');
-    table.dropForeign('project_owner');
+    //table.dropForeign('project_owner');
   })
   .then(function() {
     return knex.schema.dropTableIfExists('project_table');
