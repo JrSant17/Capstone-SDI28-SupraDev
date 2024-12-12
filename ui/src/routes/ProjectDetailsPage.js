@@ -36,7 +36,7 @@ const ProjectDetailsPage = () => {
   const fetchCurrentUserDoubloons = async () => {
     await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`)
         .then((res) => res.json())
-        .then((doubloonies) => {setCurrentUserDoubloons(doubloonies[0].supradoubloons)})
+        .then((doubloonies) => {setCurrentUserDoubloons(doubloonies.supradoubloons)})
   }
 
   const fetchCodersNeeded = async () => {
@@ -68,13 +68,12 @@ const ProjectDetailsPage = () => {
   }
 
   const fetchPosts = async () => {
-    await fetch(`http://localhost:8080/bounties/${projectId}/messages`)
+    await fetch(`http://localhost:8080/projects/${projectId}/messages`)
         .then((res) => res.json())
         .then((commentData) => setChatposts(commentData))
   }
 
   useEffect(() => {
-    console.log(`hello starting fetch for ${projectId}`)
     fetch(`http://localhost:8080/projects/${projectId}`)
       .then((res) => {
         if (!res.ok) {
@@ -85,7 +84,6 @@ const ProjectDetailsPage = () => {
       .then((data) => {
         console.log(`received data: ${JSON.stringify(data)}`)
         if (data) {
-          console.log(`data 0 is: ${data}`);
           setBounty(data);
         }
       })
@@ -122,8 +120,7 @@ const ProjectDetailsPage = () => {
     console.log(typeof(parseInt(projectId)))
     console.log(typeof(sessionCookies.user_id_token))
     console.log(typeof(newComment))
-
-    fetch(`http://localhost:8080/bounties/${projectId}/messages`, {
+    fetch(`http://localhost:8080/projects/${projectId}/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

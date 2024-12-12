@@ -21,7 +21,9 @@ const Navbar = () => {
         //TODO: handle case where cookie's are set but the backend can't find the userid
         await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`)
             .then((res) => res.json())
-            .then((fetchData) => setUserObj(fetchData[0]))
+            .then((fetchData) => {
+                setUserObj(fetchData)
+            })
     }
 
     useEffect(() => {

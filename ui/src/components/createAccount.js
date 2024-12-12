@@ -7,6 +7,7 @@ import {
     FormControl,InputLabel,Select, MenuItem, 
     Chip, Box
   } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateAccount() {
 
@@ -21,7 +22,7 @@ export default function CreateAccount() {
     const [experience, setExperience] = useState('');
     const [languages, setLanguages] = useState([]);
     const [operatingSystems, setOperatingSystems] = useState([]);
-    const [timeAvailable, setTimeAvailable] = useState('');
+    const [timeAvailable, setTimeAvailable] = useState(2);
 
     const [defProfilePic, setDefProfilePic] = useState(
       'https://as1.ftcdn.net/v2/jpg/02/85/15/18/1000_F_285151855_XaVw4eFq1QufklRbMFDxdAJos1OadAD1.jpg'
@@ -35,6 +36,7 @@ export default function CreateAccount() {
     const experienceOptions = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
     const languageOptions = ['JavaScript', 'Python', 'Java', 'C++', 'C', 'Zig', 'Ruby', 'Go', 'Rust', 'PHP', 'C#', 'Swift'];
     const osOptions = ['Windows', 'macOS', 'Linux', 'iOS', 'Android'];
+    const navigate = useNavigate();
 
     const handleLanguageChange = (event) => {
         setLanguages(event.target.value);
@@ -73,6 +75,8 @@ export default function CreateAccount() {
             submitUserType = 1;
         } else if(userType == 'leadership') {
             submitUserType = 2;
+        } else if(userType == 'admin') {
+            submitUserType = 4;
         }
 
         if (profilePic === '') {
@@ -105,10 +109,20 @@ export default function CreateAccount() {
             user_summary: `Username: ${username} \n email: ${email}`,
             is_supracoder: false,
           }),
-        });
-        window.location.reload();
-        displayDialogMessage('Account Created', 'Account created successfully!');
-        usersRefetch();
+        })
+        .then((resp) => {
+            if(resp.status == 201){
+                new Promise((resolve) => {
+                    displayDialogMessage('Account Created', 'Please login now.');
+                    setTimeout(resolve, 2000);
+                  })
+                  .then(() => {
+                    usersRefetch();
+                  });
+            } else if(resp.status == 500){
+                displayDialogMessage('Account creation failure!');
+            }
+        })
     };
 
     return(
