@@ -43,7 +43,6 @@ const ProjectDetailsPage = () => {
     await fetch (`http://localhost:8080/projects/${projectId}`)
     .then((res) => res.json())
     .then((data) => {
-        console.log(`coders needed is ${data.coders_needed}`);
       setCodersNeeded(data.coders_needed);
     })
     .catch((error) => {
@@ -93,6 +92,7 @@ const ProjectDetailsPage = () => {
       fetchPosts();
       fetchUsers();
       fetchCurrentUserDoubloons()
+      fetchCodersNeeded()
   }, []);
 
   if (!bounty) {
@@ -135,24 +135,37 @@ const ProjectDetailsPage = () => {
 
 
   const handleAccept = () => {
-
-    fetch(`http://localhost:8080/projects/${projectId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        "is_accepted": true,
-        "accepted_by_id": sessionCookies.user_id_token,
-        "github_url": gitlink,
-        "coders_needed": coders_needed
+    if (window.confirm("Are you sure you want to accept this project")) {
+      fetch (`http://localhost:8080/projects/${projectId}`, {
+        method: "PATCH",
+        headers: { "Content-Type" : "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          "is_accepted" : true,
+          "accepted_by_id": sessionCookies.user_id_token,
+          "github_url" : gitlink,
+          "coders_needed": coders_needed
+        })
       })
-    })
-    navigate('/projects');
-    window.location.reload();
+      .then(response => {
+        if(response.ok) {
+          alert("Project accepted successfully!");
+          navigate('/projects');
+          window.location.reload();
+        } else {
+          alert("Error accepting project");
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("Error accepting project");
+      });
+    }
   }
 
   const handleUnaccept = () => {
+
 
     fetch(`http://localhost:8080/projects/${projectId}`, {
       method: "PATCH",
@@ -269,9 +282,6 @@ const ProjectDetailsPage = () => {
               <></>
             )}
             <> </>
-            {/* <div style={{display: 'flex'}}>
-                <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '25px', marginLeft: '25px', marginRight: '7px'}} alt='supradoubloons' height='30px' width='30px'/><p style={{color: 'blue'}}>{bounty.bounty_payout}</p>
-            </div> */}
           </Typography>
 
           {sessionCookies.userPriv_Token === true &&
