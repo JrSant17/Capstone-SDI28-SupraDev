@@ -161,8 +161,16 @@ router.post('/', (req, res) => {
             console.log("User creation was successful");
         })
         .catch(err => {
-            console.error("Error creating user:", err);
+          console.error("Error creating user:", err);
+          if (err.code === '23505') {
+            res.status(409).json({
+              error: `${err.detail}`,
+              username: userFields.username,
+              email: userFields.email
+            });
+          } else{
             res.status(500).send("Internal Server Error");
+          }
         });
 });
 
