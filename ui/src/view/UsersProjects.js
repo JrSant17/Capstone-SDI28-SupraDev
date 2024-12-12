@@ -138,7 +138,7 @@ const UsersProjects = () => {
         }}
       >
         <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
-          Bounties
+          Projects
         </Typography>
 
         <Tabs

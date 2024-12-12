@@ -174,12 +174,12 @@ const SupracoderProfilePage = () => {
 
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="h6">Bounties</Typography>
+                            <Typography variant="h6">Projects</Typography>
                             {/* <Button component={Link} to={`/supracoders/${id}/bounties`} variant="contained" color="primary" style={{ width: "90%", margin: '5px 0' }}>
                                 View Claimed Bounties
                             </Button> */}
                             <Button component={Link} to={`/supracoders/${id}/bounties`} variant="contained" color="secondary" style={{ width: "90%", margin: '5px 0' }}>
-                                View Bounties
+                                View Projects
                             </Button>
                         </CardContent>
                     </Card>
