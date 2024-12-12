@@ -7,6 +7,7 @@ import {
     FormControl,InputLabel,Select, MenuItem, 
     Chip, Box
   } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateAccount() {
 
@@ -106,9 +107,9 @@ export default function CreateAccount() {
             is_supracoder: false,
           }),
         });
-        window.location.reload();
         displayDialogMessage('Account Created', 'Account created successfully!');
         usersRefetch();
+        useNavigate('/login')
     };
 
     return(
@@ -220,7 +221,6 @@ export default function CreateAccount() {
                         placeholder="Job Title"
                         size="small"
                         margin="normal"
-                        required
                     />
                 <FormControl fullWidth margin="normal" size="small">
                     <InputLabel id="user-type-label">User Type</InputLabel>
