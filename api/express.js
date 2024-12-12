@@ -4,7 +4,6 @@ const port = 8080;
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDefinition = require('./docs/swaggerDef');
-const knex = require('knex')(require('./knexfile.js')[process.env.NODE_ENV || 'development']);
 
 /**
  * Define the routes available for the API

@@ -145,33 +145,43 @@ router.get('/:id', (req, res) => {
  *         description: Internal Server Error
  */
 router.post('/', (req, res) => {
-    const userFields = { first_name, lname, username,
-        password, profile_pic, user_summary,
-        email, p1_account, p1_auth,
-        type, availability, experience,
-        languages, operating_systems, avatar_url,
-        time_available, is_supracoder, supradoubloons
-        } = req.body;
-        console.log(`received userFields : ${JSON.stringify(userFields)}`)
+  const {
+    first_name, lname, username,
+    password, profile_pic, user_summary,
+    email, p1_account, p1_auth,
+    type, availability, experience,
+    languages, operating_systems, avatar_url,
+    time_available, is_supracoder, supradoubloons
+  } = req.body;
 
-        knex("user_table")
-        .insert(userFields)
-        .then(() => {
-            res.status(201).send("User created successfully");
-            console.log("User creation was successful");
-        })
-        .catch(err => {
-          console.error("Error creating user:", err);
-          if (err.code === '23505') {
-            res.status(409).json({
-              error: `${err.detail}`,
-              username: userFields.username,
-              email: userFields.email
-            });
-          } else{
-            res.status(500).send("Internal Server Error");
-          }
+  const userFields = {
+    first_name, lname, username,
+    password, profile_pic, user_summary,
+    email, p1_account, p1_auth,
+    type, availability, experience,
+    languages, operating_systems, avatar_url,
+    time_available, is_supracoder, supradoubloons
+  };
+  console.log(`received userFields : ${JSON.stringify(userFields)}`)
+
+  knex("user_table")
+    .insert(userFields)
+    .then(() => {
+      res.status(201).send("User created successfully");
+      console.log("User creation was successful");
+    })
+    .catch(err => {
+      console.error("Error creating user:", err);
+      if (err.code === '23505') {
+        res.status(409).json({
+          error: `${err.detail}`,
+          username: userFields.username,
+          email: userFields.email
         });
+      } else {
+        res.status(500).send("Internal Server Error");
+      }
+    });
 });
 
 /**
@@ -213,7 +223,7 @@ router.patch('/:id', (req, res) => {
     })
     .then((updatedUser) => {
       if (updatedUser) {
-        const { password, ...userWithoutPassword } = updatedUser;
+        const {...userWithoutPassword } = updatedUser;
         return res.status(200).json(userWithoutPassword);
       }
     })
