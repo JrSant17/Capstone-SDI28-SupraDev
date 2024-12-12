@@ -54,7 +54,7 @@ const ProjectDetailsPage = () => {
   const userImgRender = (userIdFromPost) => {
     let imgToRender = '';
     let idOfMatch;
-    for (let element in userdata) {     
+    for (let element in userdata) {
       if (userdata[element].id == userIdFromPost) {
         imgToRender = userdata[element].profile_pic;
         idOfMatch = userdata[element].id;
@@ -71,7 +71,7 @@ const ProjectDetailsPage = () => {
     await fetch(`http://localhost:8080/projects/${projectId}/messages`)
         .then((res) => res.json())
         .then((commentData) => setChatposts(commentData))
-  } 
+  }
 
   useEffect(() => {
     fetch(`http://localhost:8080/projects/${projectId}`)
@@ -120,7 +120,6 @@ const ProjectDetailsPage = () => {
     console.log(typeof(parseInt(projectId)))
     console.log(typeof(sessionCookies.user_id_token))
     console.log(typeof(newComment))
-    
     fetch(`http://localhost:8080/projects/${projectId}/messages`, {
       method: "POST",
       headers: {
@@ -361,14 +360,14 @@ const ProjectDetailsPage = () => {
           <Typography
             variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            Submitter ID: {bounty.submitter_id}
+            Submitter Name: {userdata.find(user => user.id ===bounty.submitter_id)?.first_name} {userdata.find(user => user.id ===bounty.submitter_id)?.last_name}
           </Typography>
           {/* Git Text render */}
 
           <Typography
           variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}>
-            Contact Info: {userdata.find(user =>user.id ===bounty.submitter_id)?.email || 'No Email available'}
+            Contact Info: {userdata.find(user => user.id ===bounty.submitter_id)?.email || 'No Email available'}
           </Typography>
 
           <Typography
@@ -419,6 +418,20 @@ const ProjectDetailsPage = () => {
           ) : (
             <></>
           )}
+
+          {/* Registration Button */}
+          {/* What happens when you request to join a project? */}
+          <Button variant="contained"
+          color = "primary"
+          components="a"
+          href={`/projects/${projectId}/status`}
+
+          style={{ marginBottom: "irem"}}
+          >
+            Register for project
+          </Button>
+
+
           {/* Comments Section */}
           <Box marginTop="2rem">
             <Typography variant="h5">Comments</Typography>
