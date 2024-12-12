@@ -69,10 +69,13 @@ export default function CreateAccount() {
     const CreateAccount = async () => {
         let profPicToSet = '';
         let submitUserType;
+        let isSupraVal = false;
         if(userType == 'normal') {
             submitUserType = 3;
         } else if(userType == 'supracoder') {
             submitUserType = 1;
+            isSupraVal = true;
+            console.log(`is supra: ${isSupraVal}`)
         } else if(userType == 'leadership') {
             submitUserType = 2;
         } else if(userType == 'admin') {
@@ -84,11 +87,13 @@ export default function CreateAccount() {
         } else {
           profPicToSet = profilePic;
         }
+
         await fetch('http://localhost:8080/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+
 
 
           body: JSON.stringify({
@@ -107,7 +112,7 @@ export default function CreateAccount() {
             operating_systems: operatingSystems,
             time_available: timeAvailable,
             user_summary: `Username: ${username} \n email: ${email}`,
-            is_supracoder: false,
+            is_supracoder: isSupraVal,
           }),
         })
         .then((resp) => {
