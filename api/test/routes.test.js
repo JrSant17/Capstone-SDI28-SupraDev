@@ -2,9 +2,9 @@
  * Test the API routes/endpoints
  */
 
-const { exec } = require('child_process');
-const util = require('util');
-const execPromise = util.promisify(exec);
+// const { exec } = require('child_process');
+// const util = require('util');
+// const execPromise = util.promisify(exec);
 
 const knex = require('knex');
 const knexConfig = require('../knexfile');

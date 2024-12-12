@@ -315,7 +315,7 @@ router.patch('/:id', (req, res) => {
       desired_number_coders: req.body.desired_number_coders,
       project_state: req.body.project_state,
     })
-    .then((updateRows) => res.status(200).send('project updated'))
+    .then(() => res.status(200).send('project updated'))
 });
 
 /**
