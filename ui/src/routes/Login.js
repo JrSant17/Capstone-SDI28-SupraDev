@@ -48,6 +48,7 @@ const Login = () => {
   const LogIntoAccount = async () => {
     let accountMatch = false;
     for (var element of usersSummary) {
+      console.log(`element in usersSummary: ${element}`)
       if (element.username === usernameLogin) {
         accountMatch = true;
         if (element.password === SHA256(passwordLogin).toString()) {

@@ -89,6 +89,7 @@ router.post('/', (req, res) => {
         languages, operating_systems, avatar_url,
         time_available, is_supracoder, supradoubloons
         } = req.body;
+        console.log(`received userFields : ${JSON.stringify(userFields)}`)
 
         knex("user_table")
         .insert(userFields)
