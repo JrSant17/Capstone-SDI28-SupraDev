@@ -30,7 +30,7 @@ const SupracoderProfilePage = () => {
     const userRefetch = async () => {
         await fetch(`http://localhost:8080/users/${id}`)
             .then((res) => res.json())
-            .then((fetchData) => setUserObj(fetchData[0]))
+            .then((fetchData) => setUserObj(fetchData))
     }
 
     const projectsRefetch = async () => {
