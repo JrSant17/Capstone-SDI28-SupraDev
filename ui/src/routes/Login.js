@@ -56,6 +56,7 @@ const Login = () => {
           setSessionCookies('user_id_token', element.id, { path: '/' });
           setSessionCookies('username_token', element.username, { path: '/' });
           setSessionCookies('userPriv_Token', element.is_supracoder, { path: '/' });
+          setSessionCookies('user_type', element.type, {path: '/'});
           navigate('/home');
           window.location.reload();
           setUsernameLogin('');

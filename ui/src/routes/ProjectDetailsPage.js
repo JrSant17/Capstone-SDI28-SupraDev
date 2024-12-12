@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar } from '@mui/material';
+import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar, } from '@mui/material';
 import { useCookies } from 'react-cookie';
 
 const ProjectDetailsPage = () => {
   const [bounty, setBounty] = useState(null);
   const { projectId } = useParams();
-  const [doubloons, setDoubloons] = useState("")
-  const [gitlink, setGitlink] = useState("")
-  const [sessionCookies, setSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token'])
+  const [doubloons, setDoubloons] = useState("");
+  const [gitlink, setGitlink] = useState("");
+  const [sessionCookies, setSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token', 'user_type']);
   const navigate = useNavigate();
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
   const [chatposts, setChatposts] = useState([]);
-  const [userdata, setUserdata] = useState([])
-  const [currentUserDoubloons, setCurrentUserDoubloons] = useState()
-  const [coders_needed, setCodersNeeded] =useState({coders_needed: 0});
+  const [userdata, setUserdata] = useState([]);
+  const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
+  const [coders_needed, setCodersNeeded] = useState({coders_needed: 0 });
 
   const handleAddComment = () => {
     if (newComment.trim()) {
-      setComments(prevComments => [...prevComments, newComment]);
-      setNewComment('');
+      setComments((prevComments) => [...prevComments, newComment]);
+      setNewComment("");
     }
   };
   const handleCommentChange = (e) => {
@@ -30,14 +30,14 @@ const ProjectDetailsPage = () => {
   const fetchUsers = async () => {
     await fetch(`http://localhost:8080/users`)
         .then((res) => res.json())
-        .then((fetchedUserData) => setUserdata(fetchedUserData))
-  }
+        .then((fetchedUserData) => setUserdata(fetchedUserData));
+  };
 
   const fetchCurrentUserDoubloons = async () => {
     await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`)
         .then((res) => res.json())
-        .then((doubloonies) => {setCurrentUserDoubloons(doubloonies.supradoubloons)})
-  }
+        .then((doubloonies) => {setCurrentUserDoubloons(doubloonies.supradoubloons)});
+  };
 
   const fetchCodersNeeded = async () => {
     await fetch (`http://localhost:8080/projects/${projectId}`)
@@ -47,11 +47,11 @@ const ProjectDetailsPage = () => {
     })
     .catch((error) => {
       console.error("There was an error fetching coders needed", error);
-    })
-  }
+    });
+  };
 
   const userImgRender = (userIdFromPost) => {
-    let imgToRender = '';
+    let imgToRender ="";
     let idOfMatch;
     for (let element in userdata) {     
       if (userdata[element].id == userIdFromPost) {
@@ -69,8 +69,8 @@ const ProjectDetailsPage = () => {
   const fetchPosts = async () => {
     await fetch(`http://localhost:8080/projects/${projectId}/messages`)
         .then((res) => res.json())
-        .then((commentData) => setChatposts(commentData))
-  } 
+        .then((commentData) => setChatposts(commentData));
+  };
 
   useEffect(() => {
     fetch(`http://localhost:8080/projects/${projectId}`)
@@ -81,7 +81,7 @@ const ProjectDetailsPage = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(`received data: ${JSON.stringify(data)}`)
+        console.log(`received data: ${JSON.stringify(data)}`);
         if (data) {
           setBounty(data);
         }
@@ -91,8 +91,8 @@ const ProjectDetailsPage = () => {
       });
       fetchPosts();
       fetchUsers();
-      fetchCurrentUserDoubloons()
-      fetchCodersNeeded()
+      fetchCurrentUserDoubloons();
+      fetchCodersNeeded();
   }, []);
 
   if (!bounty) {
@@ -107,13 +107,11 @@ const ProjectDetailsPage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "is_approved": true,
-        "bounty_payout": doubloons
+        is_approved: true,
+        bounty_payout: doubloons
       })
     })
     navigate('/projects');
-
-
   }
 
   const postCommentFetch = ()=> {
@@ -134,24 +132,52 @@ const ProjectDetailsPage = () => {
     })
   }
 
+  const handleSponsor = () => {
+    if (window.confirm("Are you sure you want to sponsor this Project")) {
+      fetch (`http://localhost:8080/projects/${projectId}`, {
+        method: "PATCH" , 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          is_approved:true,
+          sponsored_by_id: sessionCookies.user_id_token
+        }),
+      })
+      .then((response) => {
+        if (response.ok) {
+          alert("Project has been successfully sponsored");
+          window.location.reload();
+        }else{
+          alert("error sponsoring project")
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Error Sponsoring Project") 
+      });
+    }
+  };
+  
+
 
   const handleAccept = () => {
-    if (window.confirm("Are you sure you want to accept this project")) {
+    if (window.confirm("Are you sure you want to join this project")) {
       fetch (`http://localhost:8080/projects/${projectId}`, {
         method: "PATCH",
         headers: { "Content-Type" : "application/json",
-          "Accept": "application/json"
+          Accept: "application/json",
         },
         body: JSON.stringify({
-          "is_accepted" : true,
-          "accepted_by_id": sessionCookies.user_id_token,
-          "github_url" : gitlink,
-          "coders_needed": coders_needed
+          is_accepted : true,
+          accepted_by_id: sessionCookies.user_id_token,
+          github_url: gitlink,
+          coders_needed: coders_needed,
         })
       })
       .then(response => {
         if(response.ok) {
-          alert("Project accepted successfully!");
+          alert("Project join successfully!");
           navigate('/projects');
           window.location.reload();
         } else {
@@ -189,8 +215,8 @@ const ProjectDetailsPage = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "is_completed": true,
-        "is_accepted": false
+        is_completed: true,
+        is_accepted: false
       })
     })
   }
@@ -232,27 +258,45 @@ const ProjectDetailsPage = () => {
 
   return (
     <>
-      <Box display="flex" justifyContent="center" minHeight="100vh" bgcolor="rgba(255, 255, 255, 0)">
-        <Paper elevation={5} style={{ borderRadius: '25px', background: 'rgba(255,255,255, 0.85)', padding: '40px', marginTop: '25px', maxWidth: '800px', width: '100%', overflow: 'auto', marginBottom: "50px" }}>
-
+      <Box
+        display="flex"
+        justifyContent="center"
+        minHeight="100vh"
+        bgcolor="rgba(255, 255, 255, 0)"
+      >
+        <Paper
+          elevation={5}
+          style={{
+            borderRadius: "25px",
+            background: "rgba(255,255,255, 0.85)",
+            padding: "40px",
+            marginTop: "25px",
+            maxWidth: "800px",
+            width: "100%",
+            overflow: "auto",
+            marginBottom: "50px",
+          }}
+        >
           <Typography
             variant="h4"
             gutterBottom
-            style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
+            style={{ fontWeight: "bold", marginBottom: "1.5rem" }}
+          >
             {bounty.name}
           </Typography>
-          <Button variant="contained"
-          color = "primary"
-          components="a"
-          href={`/projects/${projectId}/status`}
-          style={{ marginBottom: "irem"}}
+          <Button
+            variant="contained"
+            color="primary"
+            components="a"
+            href={`/projects/${projectId}/status`}
+            style={{ marginBottom: "irem" }}
           >
             View Project Status
           </Button>
 
           {sessionCookies.userPriv_Token === true &&
-            bounty.is_approved === false &&
-            bounty.is_completed === false ? (
+          bounty.is_approved === false &&
+          bounty.is_completed === false ? (
             <TextField
               fullWidth
               className="inputText"
@@ -273,11 +317,11 @@ const ProjectDetailsPage = () => {
             variant="h5"
             gutterBottom
             color="blue"
-            style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
-
+            style={{ fontWeight: "bold", marginBottom: "1.5rem" }}
+          >
             {sessionCookies.userPriv_Token === true &&
-              bounty.is_approved === false &&
-              bounty.is_completed === false ? (
+            bounty.is_approved === false &&
+            bounty.is_completed === false ? (
               <></>
             ) : (
               <></>
@@ -285,29 +329,38 @@ const ProjectDetailsPage = () => {
             <> </>
           </Typography>
 
-          {sessionCookies.userPriv_Token === true &&
-            bounty.is_approved === true &&
-            bounty.is_accepted === false &&
-            bounty.is_completed === false ? (
-
-
-            <Button
-              onClick={() => handleAccept()}
-              variant="contained"
-              color="success"
-              style={{ margin: "5px" }}>
-              Accept this project?
-            </Button>
-          ) : (
-            <></>
-          )}
+          {bounty.is_approved === true &&
+          bounty.is_accepted === false &&
+          bounty.is_completed === false ? (
+            <>
+              {sessionCookies.user_type === 1 ? (
+                <Button
+                  onClick={() => handleAccept()}
+                  variant="contained"
+                  color="success"
+                  style={{ margin: "5px" }}
+                >
+                  Join this Project as a Coder
+                </Button>
+              ) : sessionCookies.user_type === 2 ? (
+                <Button
+                  onClick={() => handleSponsor()}
+                  variant="contained"
+                  color="primary"
+                  style={{ margin: "5px" }}
+                >
+                  Sponsor this Project
+                </Button>
+              ) : null}
+            </>
+          ) : null}
 
           {/* Github REPO Text Input */}
 
-          {sessionCookies.userPriv_Token === true &&
-            bounty.is_approved === true &&
-            bounty.is_accepted === false &&
-            bounty.is_completed === false ? (
+          {sessionCookies.user_type === 1 &&
+          bounty.is_approved === true &&
+          bounty.is_accepted === false &&
+          bounty.is_completed === false ? (
             <TextField
               fullWidth
               className="inputText"
@@ -326,13 +379,14 @@ const ProjectDetailsPage = () => {
           {/* Github REPO Text Input */}
 
           {bounty.accepted_by_id === sessionCookies.user_id_token &&
-            bounty.is_completed === false &&
-            bounty.is_accepted === true ? (
+          bounty.is_completed === false &&
+          bounty.is_accepted === true ? (
             <Button
               onClick={() => handleUnaccept()}
               variant="contained"
               color="error"
-              style={{ margin: "5px" }}>
+              style={{ margin: "5px" }}
+            >
               Drop this project?
             </Button>
           ) : (
@@ -340,13 +394,14 @@ const ProjectDetailsPage = () => {
           )}
 
           {bounty.accepted_by_id === sessionCookies.user_id_token &&
-            bounty.is_completed === false &&
-            bounty.is_accepted === true ? (
+          bounty.is_completed === false &&
+          bounty.is_accepted === true ? (
             <Button
               onClick={() => handleComplete()}
               variant="contained"
               color="success"
-              style={{ margin: "5px" }}>
+              style={{ margin: "5px" }}
+            >
               Complete the project?
             </Button>
           ) : (
@@ -356,7 +411,8 @@ const ProjectDetailsPage = () => {
           <Divider style={{ marginBottom: "1.5rem" }} />
           <Typography
             variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}>
+            style={{ fontWeight: "500", color: "#616161" }}
+          >
             Project Details:
           </Typography>
           <Typography
@@ -365,51 +421,61 @@ const ProjectDetailsPage = () => {
               fontSize: "1rem",
               marginTop: "0.5rem",
               marginBottom: "1.5rem",
-            }}>
+            }}
+          >
             {bounty.problem_statement}
           </Typography>
           <Typography
             variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}>
+            style={{ fontWeight: "500", color: "#616161" }}
+          >
             Submitter ID: {bounty.submitter_id}
           </Typography>
           {/* Git Text render */}
 
           <Typography
-          variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}>
-            Contact Info: {userdata.find(user =>user.id ===bounty.submitter_id)?.email || 'No Email available'}
+            variant="h6"
+            style={{ fontWeight: "500", color: "#616161" }}
+          >
+            Contact Info:{" "}
+            {userdata.find((user) => user.id === bounty.submitter_id)?.email ||
+              "No Email available"}
           </Typography>
 
           <Typography
             variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}>
+            style={{ fontWeight: "500", color: "#616161" }}
+          >
             Github Link: {bounty.github_url}
           </Typography>
           {/* Git Text render */}
           <Typography
-          variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}>
-            SupraCoders Needed: {bounty.coders_needed !== undefined ? bounty.coders_needed : "loading..."}
+            variant="h6"
+            style={{ fontWeight: "500", color: "#616161" }}
+          >
+            SupraCoders Needed:{" "}
+            {bounty.coders_needed !== undefined
+              ? bounty.coders_needed
+              : "loading..."}
           </Typography>
-
 
           <Typography
             color="textSecondary"
             align="right"
-            style={{ marginTop: "1.5rem" }}>
-            Thank you for viewing this Project. Check back often for
-            updates!
+            style={{ marginTop: "1.5rem" }}
+          >
+            Thank you for viewing this Project. Check back often for updates!
           </Typography>
 
           {sessionCookies.userPriv_Token === true &&
-            bounty.is_approved === false &&
-            bounty.is_completed === false ? (
+          bounty.is_approved === false &&
+          bounty.is_completed === false ? (
             <Button
               onClick={() => handleApprove()}
               variant="contained"
               color="success"
-              style={{ margin: "5px" }}>
+              style={{ margin: "5px" }}
+            >
               Approve
             </Button>
           ) : (
@@ -417,13 +483,14 @@ const ProjectDetailsPage = () => {
           )}
 
           {sessionCookies.userPriv_Token === true &&
-            bounty.is_approved === false &&
-            bounty.is_completed === false ? (
+          bounty.is_approved === false &&
+          bounty.is_completed === false ? (
             <Button
               onClick={() => thanosSnap()}
               variant="contained"
               color="error"
-              style={{ margin: "5px" }}>
+              style={{ margin: "5px" }}
+            >
               Deny
             </Button>
           ) : (
@@ -435,17 +502,31 @@ const ProjectDetailsPage = () => {
             <List>
               {chatposts.map((comment, index) => (
                 <div>
-                    <ListItem key={index}>
-                        <div style={{display:'flex'}}>
-                            <div style={{}}>{userImgRender(comment.user_id)}</div>
-                            <Typography>{comment.post_text}</Typography>
-                        </div>
-                    </ListItem>
+                  <ListItem key={index}>
+                    <div style={{ display: "flex" }}>
+                      <div style={{}}>{userImgRender(comment.user_id)}</div>
+                      <Typography>{comment.post_text}</Typography>
+                    </div>
+                  </ListItem>
                 </div>
               ))}
             </List>
-            <TextField fullWidth variant="outlined" placeholder="Add a comment" value={newComment} onChange={handleCommentChange} />
-            <Button onClick={() => {postCommentFetch(); fetchPosts();}} variant="contained" color="primary" style={{ marginTop: '1rem' }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Add a comment"
+              value={newComment}
+              onChange={handleCommentChange}
+            />
+            <Button
+              onClick={() => {
+                postCommentFetch();
+                fetchPosts();
+              }}
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "1rem" }}
+            >
               Add Comment
             </Button>
           </Box>
@@ -453,6 +534,8 @@ const ProjectDetailsPage = () => {
       </Box>
     </>
   );
-}
+
+
+};
 
 export default ProjectDetailsPage;
