@@ -5,6 +5,28 @@
  */
 const express = require('express');
 const router = express.Router();
+const userFields = [
+  'id',
+  'first_name',
+  'last_name',
+  'username',
+  'email',
+  'job_title',
+  'p1_account',
+  'p1_auth',
+  'type',
+  'password',
+  'availability',
+  'experience',
+  'languages',
+  'operating_systems',
+  'avatar_url',
+  'profile_pic',
+  'user_summary',
+  'time_available',
+  'is_supracoder',
+  'supradoubloons'
+];
 const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV || 'development']);
 
 /**
@@ -18,7 +40,13 @@ const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV || '
  *         description: gets a list of users
  */
 router.get('/', (req, res) => {
-  knex('user_table')
+  let params = req.query;
+  console.log(`request for ${req.path} with params: ${JSON.stringify(params)}`);
+
+
+  if (Object.keys(params).length === 0) {
+    //normal request for ALL users with no parameter fields
+    knex('user_table')
     .select('*')
     .then((user) => {
       if (!user) {
@@ -30,7 +58,42 @@ router.get('/', (req, res) => {
       console.error(err);
       res.status(500).send("Internal server error");
     });
+  } else{
+    //request for specific users with specified field parameters.
+    _getUserQueryEntries(res, params);
+  }
 });
+
+/**
+ * Async handles the advanced query for users
+ * @param {*} res the response to send back
+ * @param {*} params the query parameters provided by the user
+ * @returns res
+ */
+async function _getUserQueryEntries(res, params) {
+  //build out the knex query for fields provided by user
+  let query = knex('user_table').select("*");
+  userFields.forEach(field => {
+    console.log(`process field ${field}`)
+    if (params[field]) {
+      if (field == 'type' || field == 'time_available') {
+        query = query.where(field, '=', parseInt(params[field]));
+      } else if (field == 'is_supracoder') {
+        query = query.where(field, '=', Boolean(params[field]));
+      } else {
+        query = query.where(field, 'LIKE', `%${params[field]}%`);
+      }
+    }
+  });
+
+  console.log(`built final query: ${query}`)
+  const result = await query;
+  console.log(`final result ${JSON.stringify(result)}`)
+  if(!result){
+    return res.status(404).send("No Users found!");
+  }
+  return res.status(200).send(result);
+};
 
 /**
  * @swagger
