@@ -46,17 +46,26 @@ const Login = () => {
   };
 
   const LogIntoAccount = async () => {
-    let accountMatch = false;
-    for (var element of usersSummary) {
-      console.log(`element in usersSummary: ${element}`)
-      if (element.username === usernameLogin) {
-        accountMatch = true;
-        if (element.password === SHA256(passwordLogin).toString()) {
+    try {
+      const response = await fetch('http://localhost:8080/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usernameOrEmail: usernameLogin,
+          password: passwordLogin,
+        }),
+      });
+        
+        
+        if (reponse.ok) {
+        const data = await reponse.json();
+        
           removeSessionCookies('user_id_token');
           removeSessionCookies('username_token');
           setSessionCookies('user_id_token', element.id, { path: '/' });
           setSessionCookies('username_token', element.username, { path: '/' });
           setSessionCookies('userPriv_Token', element.is_supracoder, { path: '/' });
+          
           navigate('/home');
           window.location.reload();
           setUsernameLogin('');
