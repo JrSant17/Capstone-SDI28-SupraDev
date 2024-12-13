@@ -5,15 +5,14 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Login from "./routes/Login";
 import Navbar from "./components/Navbar";
-import SupracoderProfilePage from "./routes/SupracoderProfilePage";
+import AdminDashboard from "./routes/AdminDashboard";
 import Home from "./routes/Home";
-import MyBounties from "./routes/MyBounties";
+import MyProjects from "./routes/MyProjects";
 import Projects from "./routes/Projects";
 import LandingPage from './routes/LandingPage';
 import ProjectSubmission from "./routes/ProjectSubmission";
 import ProjectDetailsPage from "./routes/ProjectDetailsPage";
-import GenUser from "./routes/MyProfile";
-import OtherUser from "./routes/OthersProfile";
+import ProfilePage from "./routes/MyProfile";
 import UserList from "./routes/UserList";
 import ProjectStatus from './routes/ProjectStatus';
 
@@ -25,12 +24,12 @@ function Content() {
       "/": "Welcome to Supra Dev",
       "/home": "Home - Supra Dev",
       "/login": "Login - Supra Dev",
-      "/supracoders/:id": "Supracoder Profile - Supra Dev",
-      "/supracoders/:id/bounties": "My Bounties - Supra Dev",
+      "/admin/:id": "Admin Dashboard - Supra Dev",
+      "/profile/:id/projects": "My Projects - Supra Dev",
       "/projects": "Projects - Supra Dev",
       "/requests": "Project Submission - Supra Dev",
       "/projects/:projectId": "Bounty Details - Supra Dev",
-      "/bounties/:bountyId/chat": "Chat - Supra Dev",
+      "/projects/:id/chat": "Project Chat - Supra Dev",
       "/users": "User Profile - Supra Dev",
       "/users/:id": "Other User Profile - Supra Dev",
       "/userlist": "User List - Supra Dev"
@@ -47,16 +46,15 @@ function Content() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/supracoders/:id" element={<SupracoderProfilePage />} />
-        <Route path="/supracoders/:id/bounties" element={<MyBounties />} />
+        <Route path="/admin/:id" element={<AdminDashboard />} />
+        <Route path="/user/:id/projects" element={<MyProjects />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/requests" element={<ProjectSubmission />} />
-        <Route path="/projects/:projectId" element={<ProjectDetailsPage />} />
-        <Route path="/users" element={<GenUser />} />
-        <Route path="/users/:id" element={<OtherUser />} />
+        <Route path="/projects/:id" element={<ProjectDetailsPage />} />
+        <Route path="/users" element={<ProfilePage />} />
         <Route path="/userlist" element={<UserList />} />
-        <Route path="/mybounties" element={<MyBounties />} />
-        <Route path="/projects/:projectId/status" element={<ProjectStatus />} />
+        <Route path="/myprojects" element={<MyProjects />} />
+        <Route path="/projects/:id/status" element={<ProjectStatus />} />
       </Routes>
     </>
   );

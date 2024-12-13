@@ -7,7 +7,7 @@ import './ProjectStatus.css';
 
 const ProjectStatus = () => {
     const [bounty, setBounty] = useState(null);
-    const { projectId } = useParams();
+    const { id } = useParams();
     const [doubloons, setDoubloons] = useState("")
     const [gitlink, setGitlink] = useState("")
     const [sessionCookies, setSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token'])
@@ -162,13 +162,13 @@ const ProjectStatus = () => {
     }
 
     const fetchPosts = async () => {
-        await fetch(`http://localhost:8080/bounties/${projectId}/messages`)
+        await fetch(`http://localhost:8080/projects/${id}/messages`)
             .then((res) => res.json())
             .then((commentData) => setChatposts(commentData))
     }
 
     useEffect(() => {
-        fetch(`http://localhost:8080/projects/${projectId}`)
+        fetch(`http://localhost:8080/projects/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 if (data) {
@@ -189,7 +189,7 @@ const ProjectStatus = () => {
 
     const handleApprove = () => {
 
-        fetch(`http://localhost:8080/projects/${projectId}`, {
+        fetch(`http://localhost:8080/projects/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -205,17 +205,17 @@ const ProjectStatus = () => {
     }
 
     const postCommentFetch = () => {
-        console.log(typeof (parseInt(projectId)))
+        console.log(typeof (parseInt(id)))
         console.log(typeof (sessionCookies.user_id_token))
         console.log(typeof (newComment))
 
-        fetch(`http://localhost:8080/bounties/${projectId}/messages`, {
+        fetch(`http://localhost:8080/projects/${id}/messages`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                "project_id": parseInt(projectId),
+                "project_id": parseInt(id),
                 "user_id": sessionCookies.user_id_token,
                 "post_text": newComment
             })
@@ -225,7 +225,7 @@ const ProjectStatus = () => {
 
     const handleAccept = () => {
 
-        fetch(`http://localhost:8080/projects/${projectId}`, {
+        fetch(`http://localhost:8080/projects/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -242,7 +242,7 @@ const ProjectStatus = () => {
 
     const handleUnaccept = () => {
 
-        fetch(`http://localhost:8080/projects/${projectId}`, {
+        fetch(`http://localhost:8080/projects/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -257,7 +257,7 @@ const ProjectStatus = () => {
     }
 
     const patchToComplete = () => {
-        fetch(`http://localhost:8080/projects/${projectId}`, {
+        fetch(`http://localhost:8080/projects/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -295,7 +295,7 @@ const ProjectStatus = () => {
 
     const thanosSnap = () => {
 
-        fetch(`http://localhost:8080/projects/${projectId}`, {
+        fetch(`http://localhost:8080/projects/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",

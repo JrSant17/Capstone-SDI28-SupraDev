@@ -98,8 +98,9 @@ const Projects = (props) => {
     }
   };
 
-  const handleProjectClick = (projectId) => {
-    navigate(`/projects/${projectId}`);
+  const handleProjectClick = (id) => {
+    console.log(`navigating to project with id: ${id}`)
+    navigate(`/projects/${id}`);
   };
 
   const HoverCard = styled(motion(Card))({
