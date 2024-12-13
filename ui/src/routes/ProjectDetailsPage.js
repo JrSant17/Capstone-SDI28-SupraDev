@@ -141,7 +141,7 @@ const ProjectDetailsPage = () => {
         },
         body: JSON.stringify({
           is_approved:true,
-          sponsored_by_id: sessionCookies.user_id_token
+          sponsored_by_id: sessionCookies.user_id_token, user_type: sessionCookies.user_type
         }),
       })
       .then((response) => {
@@ -163,16 +163,22 @@ const ProjectDetailsPage = () => {
 
   const handleAccept = () => {
     if (window.confirm("Are you sure you want to join this project")) {
+      const updatedCodersNeeded = coders_needed - 1;
+        if (updatedCodersNeeded < 0) {
+          alert ("This project has met its SupraCoder requirment");
+          return;
+        }
+
       fetch (`http://localhost:8080/projects/${projectId}`, {
         method: "PATCH",
         headers: { "Content-Type" : "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
-          is_accepted : true,
+          is_accepted: true,
           accepted_by_id: sessionCookies.user_id_token,
           github_url: gitlink,
-          coders_needed: coders_needed,
+          coders_needed: updatedCodersNeeded
         })
       })
       .then(response => {
@@ -330,7 +336,7 @@ const ProjectDetailsPage = () => {
           </Typography>
 
           {bounty.is_approved === true &&
-          bounty.is_accepted === false &&
+          bounty.coders_needed > 0 &&
           bounty.is_completed === false ? (
             <>
               {sessionCookies.user_type === 1 ? (
@@ -359,7 +365,7 @@ const ProjectDetailsPage = () => {
 
           {sessionCookies.user_type === 1 &&
           bounty.is_approved === true &&
-          bounty.is_accepted === false &&
+          bounty.coders_needed > 0 &&
           bounty.is_completed === false ? (
             <TextField
               fullWidth
@@ -453,10 +459,9 @@ const ProjectDetailsPage = () => {
             variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}
           >
-            SupraCoders Needed:{" "}
-            {bounty.coders_needed !== undefined
-              ? bounty.coders_needed
-              : "loading..."}
+            {bounty.coders_needed > 0 
+              ? `SupraCoders Needed: ${bounty.coders_needed}`
+              : "SupraCoder requirement met"}
           </Typography>
 
           <Typography

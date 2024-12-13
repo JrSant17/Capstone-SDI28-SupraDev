@@ -34,7 +34,7 @@ import Dialog from '@mui/material/Dialog';
 const tabs = [
   { label: 'Timeline', value: 'timeline' },
   { label: 'Connections', value: 'connections' },
-  { label: 'My Projects', value:'projects'}
+  { label: 'My Projects', value:'projects', dynamicLabel:(userType) => userType === 1 ? 'Joined Projects' : 'Sponsored Projects'}
 ];
 
 const useProfile = () => {
@@ -127,9 +127,9 @@ const useProjects = () => {
   const handleProjectsGet = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:8080/projects');
-
+      const data = await response.json();
       if (isMounted()) {
-        setProjects(response);
+        setProjects(data);
       }
     } catch (err) {
       console.error(err);
@@ -425,45 +425,49 @@ useEffect(() => {
             )}
             {currentTab === 'projects' && (
               <UsersProjects
-                projects={projects}
-              />
-            )}
-            {currentTab === 'connections' && (
-              <SocialConnections
-                connections={users}
-                onQueryChange={handleUsersQueryChange}
-                query={usersQuery}
-              />
-            )}
+              projects={projects.filter(project => 
+                project.sponsored_by_id === sessionCookies.user_id_token || 
+                (sessionCookies.user_type === 1 && project.sponsored_by_id === sessionCookies.user_id_token)
+              )}
+              displayType={sessionCookies.user_type === 1 ? "Joined Projects" : "Sponsored Projects"}
+            />
+          )}
+          {currentTab === 'connections' && (
+            <SocialConnections
+              connections={users}
+              onQueryChange={handleUsersQueryChange}
+              query={usersQuery}
+            />
+          )}
 
 
-              </Box>
-
-              </Container>
             </Box>
+
+            </Container>
           </Box>
-      )}
-       <Dialog
-        open={openEditModal}
-        onClose={handleCancelEdit}
-        aria-labelledby="edit-profile-modal-title"
-        PaperProps={{
-          style: {
-            maxWidth: '5000px',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            padding: '16px',
-            borderRadius: '16px',
-          },
-        }}
-      >
-        <EditProfileForm
-          user={userObj}
-          onSubmit={handleUpdateProfile}
-          onCancel={handleCancelEdit}
-        />
-      </Dialog>
-    </>
-  );
+        </Box>
+    )}
+     <Dialog
+      open={openEditModal}
+      onClose={handleCancelEdit}
+      aria-labelledby="edit-profile-modal-title"
+      PaperProps={{
+        style: {
+          maxWidth: '5000px',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          padding: '16px',
+          borderRadius: '16px',
+        },
+      }}
+    >
+      <EditProfileForm
+        user={userObj}
+        onSubmit={handleUpdateProfile}
+        onCancel={handleCancelEdit}
+      />
+    </Dialog>
+  </>
+);
 };
 
 export default GenUser;
