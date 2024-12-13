@@ -7,7 +7,7 @@ import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 
-const MyBounties = (props) => {
+const MyProjects = (props) => {
 
   const { profile, ...other } = props;
   const [projects, setProjects] = useState([]);
@@ -139,7 +139,6 @@ const MyBounties = (props) => {
           marginBottom: "50px",
           backgroundColor: "rgba(255,255,255, 0.85)",
           borderRadius: "25px",
-          //background: "rgba(255,255,255, 0.85)"
         }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
           {" "}
@@ -197,9 +196,6 @@ const MyBounties = (props) => {
             </div>
             <div style={{display: 'flex'}}>
               {findSubmitter(project.submitter_id)}
-              {/* <strong style={{position: 'absolute', bottom: '0', right: '0', display: 'flex', marginRight: '8px'}}>
-                  <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '18px', marginLeft: '5px', marginRight: '2px'}} alt='supradoubloons' height='20px' width='20px'/><p style={{color: 'blue'}}>{project.bounty_payout}</p>
-              </strong> */}
             </div>
           </HoverCard>
         ))}
@@ -208,10 +204,9 @@ const MyBounties = (props) => {
   );
 };
 
-MyBounties.propTypes = {
+MyProjects.propTypes = {
   projects: PropTypes.array,
   outputUsername: PropTypes.array
-  // profile: PropTypes.object.isRequired,
 };
 
-export default MyBounties;
+export default MyProjects;

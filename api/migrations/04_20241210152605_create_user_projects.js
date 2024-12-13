@@ -7,7 +7,7 @@ exports.up = function(knex) {
         table.increments('id');
         table.integer('user_id');
         table.integer('project_id');
-        table.dateTime('datetime_joined').notNullable();
+        table.dateTime('datetime_joined').defaultTo(knex.fn.now());
         table.foreign('user_id').references('user_table.id');
         table.foreign('project_id').references('project_table.id');
       });
