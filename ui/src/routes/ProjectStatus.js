@@ -18,17 +18,19 @@ const ProjectStatus = () => {
     const [userdata, setUserdata] = useState([])
     const [currentUserDoubloons, setCurrentUserDoubloons] = useState()
 
+
     const milestones = [
         "Kickoff",
-        "Developing",
+        "Development",
         "Testing",
-        "Staging",
-        "Seeking Funds",
-        "Deploy",
-        "Sustainment"
+        "User Showcase",
+        "Funding",
+        "Deployment",
+        "Program of Record"
     ];
 
     const [currentMilestoneIndex, setCurrentMilestoneIndex] = useState(-1);
+
     const [milestoneTimestamps, setMilestoneTimestamps] = useState(
         milestones.map(() => ({ started: null, completed: null }))
     );
@@ -36,91 +38,209 @@ const ProjectStatus = () => {
     const [canStartCurrentMilestone, setCanStartCurrentMilestone] = useState(true);
     const [canCompleteCurrentMilestone, setCanCompleteCurrentMilestone] = useState(false);
 
-    const getStatusClass = (index) => {
-        if (index === currentMilestoneIndex) {
-            return 'active'; 
-        } else if (index < currentMilestoneIndex) {
-            return 'completed'; 
+
+    const syncMilestonesWithBackend = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`);
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    await createDefaultMilestones();
+                } else {
+                    throw new Error(`Error fetching milestones: ${response.statusText}`);
+                }
+            }
+
+            const milestoneData = await response.json();
+            console.log('Fetched milestone data:', milestoneData);
+
+            setMilestoneTimestamps(
+                milestones.map((milestone, index) => {
+                    const fetchedMilestone = milestoneData.find(m => m.index === index + 1);
+                    return {
+                        started: fetchedMilestone?.started || null,
+                        completed: fetchedMilestone?.completed || null,
+                        is_active: fetchedMilestone?.is_active || false,
+                    };
+                })
+            );
+
+            const activeMilestone = milestoneData.find(m => m.is_active);
+            if (activeMilestone) {
+                setCurrentMilestoneIndex(activeMilestone.index - 1);
+            }
+
+        } catch (error) {
+            console.error('Error syncing milestones:', error);
         }
-        return 'inactive'; 
     };
 
-    const moveToPreviousMilestone = () => {
+    const createDefaultMilestones = async () => {
+        try {
+            const createResponse = await fetch(`http://localhost:8080/projects/${projectId}/milestones/create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (!createResponse.ok) {
+                throw new Error(`Failed to create default milestones: ${createResponse.statusText}`);
+            }
+
+            const createResponseData = await createResponse.json();
+            console.log('Default milestones created:', createResponseData.milestones);
+
+            await syncMilestonesWithBackend();
+
+        } catch (error) {
+            console.error('Error creating default milestones:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (projectId) {
+            syncMilestonesWithBackend();
+        }
+    }, [projectId]);
+
+    const moveToPreviousMilestone = async () => {
         if (currentMilestoneIndex > 0) {
-            setCurrentMilestoneIndex(currentMilestoneIndex - 1);
-
-            updateCompleteButtonState(currentMilestoneIndex - 1);
+            console.log('Current Milestone Index before move:', currentMilestoneIndex);
+            const newIndex = currentMilestoneIndex - 1;
+            await updateMilestoneState(newIndex);
+            setCanStartCurrentMilestone(milestoneTimestamps[newIndex].started === null);
+            setCanCompleteCurrentMilestone(milestoneTimestamps[newIndex].started !== null && milestoneTimestamps[newIndex].completed === null);
         }
     };
 
-    const moveToNextMilestone = () => {
+    const moveToNextMilestone = async () => {
+        console.log('Current Milestone Index before move:', currentMilestoneIndex);
         if (currentMilestoneIndex < milestones.length - 1) {
-            setCurrentMilestoneIndex(currentMilestoneIndex + 1);
-
-            updateCompleteButtonState(currentMilestoneIndex + 1);
-            setCanStartCurrentMilestone(true);
-            setCanCompleteCurrentMilestone(true);
+            const newIndex = currentMilestoneIndex + 1;
+            await updateMilestoneState(newIndex);
+            setCanStartCurrentMilestone(milestoneTimestamps[newIndex].started === null);
+            setCanCompleteCurrentMilestone(milestoneTimestamps[newIndex].started !== null && milestoneTimestamps[newIndex].completed === null);
         }
     };
 
-    const startCurrentMilestone = () => {
+    const updateMilestoneState = async (newIndex) => {
+        try {
+            const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ index: newIndex + 1, is_active: true }) // 1-based index
+            });
+            if (!response.ok) {
+                throw new Error(`Error updating milestone: ${response.statusText}`);
+            }
+            const updatedMilestones = await response.json();
+            console.log('Updated milestones:', updatedMilestones);
+            setCurrentMilestoneIndex(newIndex);
+        } catch (error) {
+            console.error('Error updating milestone state:', error);
+        }
+    };
+
+    const updateMilestone = async (action, timestamp) => {
+        const updateData = {
+            index: currentMilestoneIndex + 1,
+        };
+
+        if (action === 'start') {
+            updateData.started = timestamp;
+
+            updateData.is_active = true;
+        } else if (action === 'complete') {
+            updateData.completed = timestamp;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update milestone');
+            }
+        } catch (error) {
+            console.error('Error updating milestone:', error);
+        }
+    };
+
+    const startCurrentMilestone = async () => {
         if (canStartCurrentMilestone && currentMilestoneIndex >= 0) {
-            const now = new Date().toLocaleString();
+            const now = new Date().toISOString();
+
             setMilestoneTimestamps(prev => {
                 const updated = [...prev];
                 updated[currentMilestoneIndex].started = now;
                 return updated;
             });
+
             setCanStartCurrentMilestone(false);
             setCanCompleteCurrentMilestone(true);
+
+            await updateMilestone('start', now);
+
+            await syncMilestonesWithBackend();
         }
     };
 
-    const completeCurrentMilestone = () => {
-        if (canCompleteCurrentMilestone && currentMilestoneIndex >= 0 && milestoneTimestamps[currentMilestoneIndex].started) {
-            const now = new Date().toLocaleString();
+    const completeCurrentMilestone = async () => {
+        if (canCompleteCurrentMilestone && currentMilestoneIndex >= 0) {
+            const now = new Date().toISOString();
+
             setMilestoneTimestamps(prev => {
                 const updated = [...prev];
                 updated[currentMilestoneIndex].completed = now;
                 return updated;
             });
-            setCanCompleteCurrentMilestone(false);
+
+            setCanCompleteCurrentMilestone(true);
+
+            await updateMilestone('complete', now);
         }
     };
 
-    const removeTimestamp = () => {
-        if (currentMilestoneIndex >= 0 && milestoneTimestamps[currentMilestoneIndex]) {
-            setMilestoneTimestamps(prev => {
-                const updated = [...prev];
-                const currentMilestone = updated[currentMilestoneIndex];
+    const removeTimestamp = async () => {
+        if (currentMilestoneIndex >= 0) {
+            const currentMilestone = milestoneTimestamps[currentMilestoneIndex];
+            let fieldToRemove = null;
 
+            if (currentMilestone.completed) {
+                fieldToRemove = 'completed';
+                setCanCompleteCurrentMilestone(true);
+            } else if (currentMilestone.started) {
+                fieldToRemove = 'started';
+                setCanStartCurrentMilestone(true);
+            }
 
-                if (currentMilestone.completed) {
-                    currentMilestone.completed = null;
-                    setCanCompleteCurrentMilestone(true);
-                } else if (currentMilestone.started) {
-                    currentMilestone.started = null;
-                    setCanStartCurrentMilestone(true);
+            if (fieldToRemove) {
+                const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        index: currentMilestoneIndex + 1,
+                        [fieldToRemove]: null,
+                    }),
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to update milestone on backend:', response.statusText);
+                    return;
                 }
 
-                return updated;
-            });
+                setMilestoneTimestamps(prev => {
+                    const updated = [...prev];
+                    updated[currentMilestoneIndex][fieldToRemove] = null;
+                    return updated;
+                });
+
+                await syncMilestonesWithBackend();
+            }
         }
     };
-    
-
-
-    const updateCompleteButtonState = (index) => {
-        if (milestoneTimestamps[index]?.started && !milestoneTimestamps[index]?.completed) {
-            setCanCompleteCurrentMilestone(true);
-        } else {
-            setCanCompleteCurrentMilestone(false);
-        }
-    };
-
-
-
-
 
     const handleAddComment = () => {
         if (newComment.trim()) {
@@ -162,7 +282,7 @@ const ProjectStatus = () => {
     }
 
     const fetchPosts = async () => {
-        await fetch(`http://localhost:8080/bounties/${projectId}/messages`)
+        await fetch(`http://localhost:8080/projects/${projectId}/messages`)
             .then((res) => res.json())
             .then((commentData) => setChatposts(commentData))
     }
@@ -209,7 +329,7 @@ const ProjectStatus = () => {
         console.log(typeof (sessionCookies.user_id_token))
         console.log(typeof (newComment))
 
-        fetch(`http://localhost:8080/bounties/${projectId}/messages`, {
+        fetch(`http://localhost:8080/projects/${projectId}/messages`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -441,7 +561,7 @@ const ProjectStatus = () => {
                             <div className="milestone-wrapper">
                                 <div className="milestone-container">
                                     {milestones.map((milestone, index) => (
-                                        <div key={index} className={`milestone ${getStatusClass(index)}`}>
+                                        <div key={index} className={`milestone ${index === currentMilestoneIndex ? 'active' : 'inactive'} `}>
                                             {milestone}
                                         </div>
                                     ))}
@@ -451,7 +571,7 @@ const ProjectStatus = () => {
                                     <button
                                         className="milestone-button"
                                         onClick={moveToPreviousMilestone}
-                                        disabled={currentMilestoneIndex <= 0} // Disable when at the first milestone
+                                        disabled={currentMilestoneIndex <= 0}
                                     >
                                         Previous Milestone
                                     </button>
@@ -459,7 +579,7 @@ const ProjectStatus = () => {
                                     <button
                                         className="milestone-button"
                                         onClick={moveToNextMilestone}
-                                        disabled={currentMilestoneIndex >= milestones.length - 1} // Disable when at the last milestone
+                                        disabled={currentMilestoneIndex >= milestones.length - 1}
                                     >
                                         Next Milestone
                                     </button>
@@ -467,7 +587,8 @@ const ProjectStatus = () => {
                                     <button
                                         className="milestone-button"
                                         onClick={removeTimestamp}
-                                        disabled={milestoneTimestamps[currentMilestoneIndex]?.started === null && milestoneTimestamps[currentMilestoneIndex]?.completed === null}
+                                        disabled={milestoneTimestamps[currentMilestoneIndex]?.started === null &&
+                                            milestoneTimestamps[currentMilestoneIndex]?.completed === null}
                                     >
                                         Remove Timestamp
                                     </button>
@@ -483,34 +604,36 @@ const ProjectStatus = () => {
                                     <button
                                         className="milestone-button"
                                         onClick={completeCurrentMilestone}
-                                        disabled={!(milestoneTimestamps[currentMilestoneIndex]?.started) || currentMilestoneIndex < 0}
+                                        disabled={!canCompleteCurrentMilestone || currentMilestoneIndex < 0}
                                     >
                                         Complete Milestone
                                     </button>
                                 </div>
-
-                                <div className="timestamp-list">
-                                    <h3>Milestone History</h3>
-                                    <ul>
-                                        {milestones.map((milestone, index) => (
-                                            <li key={index}>
-                                                <strong>{milestone}</strong>
-                                                <div>
-                                                    {milestoneTimestamps[index]?.started && (
-                                                        <small>Started on: {milestoneTimestamps[index].started}</small>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    {milestoneTimestamps[index]?.completed && (
-                                                        <small className='completed-stamp'>Completed on: {milestoneTimestamps[index].completed}</small>
-                                                    )}
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
                             </div>
                         </div>
+
+                        <div className="timestamp-list">
+                            <h3>Milestone History</h3>
+
+                            <ul>
+                                {milestones.map((milestone, index) => (
+                                    <li key={index}>
+                                        <strong>{milestone}</strong>
+                                        <div>
+                                            {milestoneTimestamps[index]?.started && (
+                                                <small>Started on: {new Date(milestoneTimestamps[index].started).toLocaleString()}</small>
+                                            )}
+                                        </div>
+                                        <div>
+                                            {milestoneTimestamps[index]?.completed && (
+                                                <small className='completed-stamp'>Completed on: {new Date(milestoneTimestamps[index].completed).toLocaleString()}</small>
+                                            )}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
 
                     </Typography>
                     {/* <Typography
