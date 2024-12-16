@@ -156,21 +156,21 @@ const ProjectDetailsPage = () => {
 
 const handleAccept = () => {
   if (window.confirm("Are you sure you want to join this project")) {
-    fetch(`http://localhost:8080/projects/${projectId}/members/${sessionCookies.user_id_token}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.isMember) {
-          alert("You have already joined this project!");
-          return;
-        }
-        
-        const updatedCodersNeeded = bounty.coders_needed - 1;
-        if (updatedCodersNeeded < 0) {
-          alert("This project has met its SupraCoder requirement");
-          return;
-        }
+    // Check if user is already a member by comparing IDs
+    const isMember = bounty.accepted_by_id === sessionCookies.user_id_token;
+    
+    if (isMember) {
+      alert("You have already joined this project!");
+      return;
+    }
+    
+    const updatedCodersNeeded = bounty.coders_needed - 1;
+    if (updatedCodersNeeded < 0) {
+      alert("This project has met its SupraCoder requirement");
+      return;
+    }
 
-    fetch (`http://localhost:8080/projects/${projectId}`, {
+    fetch(`http://localhost:8080/projects/${projectId}`, {
       method: "PATCH",
       headers: { 
         "Content-Type": "application/json"
@@ -204,7 +204,6 @@ const handleAccept = () => {
     .catch(error => {
       console.error("Error:", error);
       alert(`Error accepting project: ${error.message}`);
-    });
     });
   }
 }
