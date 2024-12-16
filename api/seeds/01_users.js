@@ -30,7 +30,8 @@ exports.seed = async function(knex) {
       user_summary: 'System administrator with extensive experience in security and development.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "SPOC"
     },
     {
       first_name: 'Bodie',
@@ -51,7 +52,8 @@ exports.seed = async function(knex) {
       user_summary: 'IT professional with expertise in troubleshooting and network security.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 250
+      supradoubloons: 250,
+      command: "SPOC"
     },
     {
       first_name: 'Remi',
@@ -72,7 +74,8 @@ exports.seed = async function(knex) {
       user_summary: 'Operations specialist with experience in flight control systems.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 300
+      supradoubloons: 300,
+      command: "SPOC"
     },
     {
       first_name: 'Harley',
@@ -93,7 +96,8 @@ exports.seed = async function(knex) {
       user_summary: 'Eccentric developer with a unique blend of software and psychology expertise.',
       time_available: 10,
       is_supracoder: true,
-      supradoubloons: 450
+      supradoubloons: 450,
+      command: "SPOC"
     },
     {
       first_name: 'Misato',
@@ -114,7 +118,8 @@ exports.seed = async function(knex) {
       user_summary: 'Experienced operations director with strong leadership and strategic planning skills.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 750
+      supradoubloons: 750,
+      command: "SPOC"
     },
     {
       first_name: 'Bruce',
@@ -135,7 +140,8 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: true,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "SPOC"
     },
     {
       first_name: 'test',
@@ -156,7 +162,8 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: true,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "SSC"
     },
     {
       first_name: 'test',
@@ -177,7 +184,8 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "STARCOM"
     },
     {
       first_name: 'test',
@@ -198,7 +206,8 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "SPOC"
     },
     {
       first_name: 'test',
@@ -219,7 +228,8 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "STARCOM"
     },
   ]);
 };
