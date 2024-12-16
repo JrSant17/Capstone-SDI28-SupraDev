@@ -33,6 +33,7 @@ const Login = () => {
     await fetch('http://localhost:8080/users')
       .then((res) => res.json())
       .then((userFetchData) => setUsersSummary(userFetchData));
+    console.log(`users set!`)
   };
 
   const handleDialogClose = () => {
