@@ -31,6 +31,7 @@ export default function CreateAccount() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogTitle, setDialogTitle] = useState('');
     const [dialogMessage, setDialogMessage] = useState('');
+    const [command, setCommand] = useState('');
 
     const experienceOptions = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
     const languageOptions = ['JavaScript', 'Python', 'Java', 'C++', 'C', 'Zig', 'Ruby', 'Go', 'Rust', 'PHP', 'C#', 'Swift'];
@@ -317,25 +318,19 @@ export default function CreateAccount() {
 
                         <FormControl fullWidth margin="normal" size="small">
                             <InputLabel>Operating Systems</InputLabel>
-                            <Select
-                                multiple
-                                value={operatingSystems}
-                                onChange={handleOSChange}
+                            <TextField
+                                fullWidth
+                                className="inputText"
+                                label="Username"
+                                variant="outlined"
+                                type="text"
+                                value={command}
+                                onChange={(e) => setCommand(e.target.value)}
+                                placeholder="Command"
+                                size="small"
+                                margin="normal"
                                 required
-                                renderValue={(selected) => (
-                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                        {selected.map((value) => (
-                                            <Chip key={value} label={value} />
-                                        ))}
-                                    </Box>
-                                )}
-                            >
-                                {osOptions.map((os) => (
-                                    <MenuItem key={os} value={os}>
-                                        {os}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                            />
                         </FormControl>
                         <FormControl fullWidth margin="normal" size="small" required>
                             <InputLabel>Time Available per Week</InputLabel>
@@ -369,6 +364,80 @@ export default function CreateAccount() {
                         />
                     </>
                 )}
+
+                {userType === 'leadership' && (
+                    <>
+                        <TextField
+                            fullWidth
+                            className="inputText"
+                            label="Current Command"
+                            variant="outlined"
+                            type="text"
+                            value={command}
+                            onChange={(e) => setCommand(e.target.value)}
+                            placeholder="Current Command"
+                            size="small"
+                            margin="normal"
+                            required
+                        />
+
+                        <FormControl fullWidth margin="normal" size="small">
+                            <InputLabel>Experience Level</InputLabel>
+                            <Select
+                                value={experience}
+                                label="Experience Level"
+                                onChange={(e) => setExperience(e.target.value)}
+                                required
+                            >
+                                {experienceOptions.map((option) => (
+                                    <MenuItem key={option} value={option}>{option}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal" size="small">
+                            <InputLabel>Programming Languages</InputLabel>
+                            <Select
+                                multiple
+                                value={languages}
+                                onChange={handleLanguageChange}
+                                required
+                                renderValue={(selected) => (
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((value) => (
+                                            <Chip key={value} label={value} />
+                                        ))}
+                                    </Box>
+                                )}
+                            >
+                                {languageOptions.map((lang) => (
+                                    <MenuItem key={lang} value={lang}>
+                                        {lang}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal" size="small" required>
+                            <InputLabel>Time Available per Week</InputLabel>
+                            <Select
+                                value={timeAvailable}
+                                label="Time Available per Week"
+                                onChange={handleTimeAvailableChange}
+                            >
+                                <MenuItem value={1}>1 hour</MenuItem>
+                                <MenuItem value={2}>2 hours</MenuItem>
+                                <MenuItem value={5}>5 hours</MenuItem>
+                                <MenuItem value={10}>10 hours</MenuItem>
+                                <MenuItem value={20}>20 hours</MenuItem>
+                                <MenuItem value={30}>30 hours</MenuItem>
+                                <MenuItem value={40}>40 hours</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                    </>
+                )}
+
                 <Button
                     fullWidth
                     variant="contained"
