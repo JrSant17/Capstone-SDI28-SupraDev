@@ -31,7 +31,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: false,
       supradoubloons: 1000,
-      command: "SPOC"
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Bodie',
@@ -53,7 +54,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: false,
       supradoubloons: 250,
-      command: "SPOC"
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Remi',
@@ -75,7 +77,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: false,
       supradoubloons: 300,
-      command: "SPOC"
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Harley',
@@ -97,7 +100,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: true,
       supradoubloons: 450,
-      command: "SPOC"
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Misato',
@@ -119,7 +123,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: false,
       supradoubloons: 750,
-      command: "SPOC"
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Bruce',
@@ -141,7 +146,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: true,
       supradoubloons: 1000,
-      command: "SPOC"
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'test',
@@ -163,7 +169,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: true,
       supradoubloons: 1000,
-      command: "SSC"
+      command: "SSC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'test',
@@ -185,7 +192,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: false,
       supradoubloons: 1000,
-      command: "STARCOM"
+      command: "STARCOM",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'test',
@@ -207,7 +215,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: false,
       supradoubloons: 1000,
-      command: "SPOC"
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'test',
@@ -229,7 +238,8 @@ exports.seed = async function(knex) {
       time_available: 10,
       is_supracoder: false,
       supradoubloons: 1000,
-      command: "STARCOM"
+      command: "STARCOM",
+      last_updated: new Date().toISOString()
     },
   ]);
 };

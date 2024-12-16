@@ -12,7 +12,7 @@ const styles = {
   padding: '0 30px',
 };
 
-const Notification = ({ project, username, submitter, submitterImg, acceptedImg, submittedUserId, acceptedUserId }) => {
+const Notification = ({ project, username, submitter, submitterImg, acceptedImg, submittedUserId, acceptedUserId, }) => {
 
  const navigate = useNavigate();
 
@@ -36,18 +36,14 @@ const Notification = ({ project, username, submitter, submitterImg, acceptedImg,
             <Avatar src={submitterImg} alt="User Avatar" style={{ float: 'left', outlineWidth: '3px', outlineColor: 'red', width: '40px', height: '40px' }} />
           </a>
         )}
-
         <div>
-          
-          <Typography onClick={navProjects}  style={styles}>
-            {project.is_completed
-              ? `${project.name}`
-              : project.is_accepted
-                ? `${project.name}`
-                : `${project.name}`}
+          <Typography onClick={navProjects} style={styles}>
+            {project.name}
+          </Typography>
+          <Typography variant="caption" color="textSecondary">
+            {project.last_updated}
           </Typography>
         </div>
-
       </Stack>
     </Box>
   );
