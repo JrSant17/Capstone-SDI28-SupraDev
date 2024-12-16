@@ -19,7 +19,7 @@ const Login = () => {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
 
-  const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
+  const [setSessionCookies, removeSessionCookies] = useCookies([
     'username_token',
     'user_id_token',
   ]);
