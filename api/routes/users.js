@@ -146,7 +146,7 @@ router.get('/:id', (req, res) => {
  */
 router.post('/', (req, res) => {
   const {
-    first_name, lname, username,
+    first_name, last_name, username,
     password, profile_pic, user_summary,
     email, p1_account, p1_auth,
     type, availability, experience,
@@ -155,7 +155,7 @@ router.post('/', (req, res) => {
   } = req.body;
 
   const userFields = {
-    first_name, lname, username,
+    first_name, last_name, username,
     password, profile_pic, user_summary,
     email, p1_account, p1_auth,
     type, availability, experience,

@@ -118,6 +118,7 @@ export default function CreateAccount() {
         .then((resp) => {
             if(resp.status == 201){
                 new Promise((resolve) => {
+                    resetForm();
                     displayDialogMessage('Account Created', 'Please login now.');
                     setTimeout(resolve, 2000);
                   })
@@ -133,6 +134,22 @@ export default function CreateAccount() {
             }
         })
     };
+
+    const resetForm = () => {
+        setFirstName('');
+        setLastName('');
+        setUsername('');
+        setEmail('');
+        setJobTitle('');
+        setPassword('');
+        setProfilePic('');
+        setAvailability('');
+        setExperience('');
+        setLanguages([]);
+        setOperatingSystems([]);
+        setTimeAvailable(2);
+        setUserType('normal');
+      };
 
     return(
         <>
