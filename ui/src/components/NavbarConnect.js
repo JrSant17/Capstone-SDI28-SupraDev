@@ -50,6 +50,7 @@ const NavbarConnect = () => {
     removeSessionCookies('username_token');
     removeSessionCookies('user_id_token');
     removeSessionCookies('userPriv_Token');
+    removeSessionCookies('user_type');
     alert('You have been logged out');
     window.location.href = '/login';
   }
