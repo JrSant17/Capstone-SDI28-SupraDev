@@ -100,6 +100,14 @@ router.post('/:projectId/milestones/create', async (req, res) => {
             .orderBy('index', 'asc');
 
         if (milestones.length === 0) {
+            
+            const maxIdResult = await knex('milestones').max('id as max_id').first();
+            const maxId = maxIdResult?.max_id || 0;
+
+            await knex.raw(`
+                SELECT setval('milestones_id_seq', ?, false);
+            `, [maxId + 1]);
+
             const defaultMilestones = [
                 { 
                     project_id: projectIdInt, 
@@ -166,7 +174,9 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 }
             ];
 
+         
             await knex('milestones').insert(defaultMilestones);
+
             milestones = defaultMilestones;
         }
 

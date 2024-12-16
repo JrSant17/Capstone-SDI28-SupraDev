@@ -40,20 +40,22 @@ const ProjectStatus = () => {
 
 
     const syncMilestonesWithBackend = async () => {
-        try {
-            const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`);
+    try {
+        const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`);
 
-            if (!response.ok) {
-                if (response.status === 404) {
-                    await createDefaultMilestones();
-                } else {
-                    throw new Error(`Error fetching milestones: ${response.statusText}`);
-                }
+        if (!response.ok) {
+            if (response.status === 404) {
+                await createDefaultMilestones();
+            } else {
+                throw new Error(`Error fetching milestones: ${response.statusText}`);
             }
+        }
 
-            const milestoneData = await response.json();
-            console.log('Fetched milestone data:', milestoneData);
-
+        const milestoneData = await response.json();
+        console.log('Fetched milestone data:', milestoneData);
+        const milestonesDataArray = milestoneData.milestones || [];
+        
+        if (Array.isArray(milestoneData)) {
             setMilestoneTimestamps(
                 milestones.map((milestone, index) => {
                     const fetchedMilestone = milestoneData.find(m => m.index === index + 1);
@@ -69,11 +71,14 @@ const ProjectStatus = () => {
             if (activeMilestone) {
                 setCurrentMilestoneIndex(activeMilestone.index - 1);
             }
-
-        } catch (error) {
-            console.error('Error syncing milestones:', error);
+        } else {
+            throw new Error('Milestone data is not an array');
         }
-    };
+
+    } catch (error) {
+        console.error('Error syncing milestones:', error);
+    }
+};
 
     const createDefaultMilestones = async () => {
         try {
@@ -127,7 +132,7 @@ const ProjectStatus = () => {
             const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ index: newIndex + 1, is_active: true }) // 1-based index
+                body: JSON.stringify({ index: newIndex + 1, is_active: true }) 
             });
             if (!response.ok) {
                 throw new Error(`Error updating milestone: ${response.statusText}`);
@@ -612,10 +617,10 @@ const ProjectStatus = () => {
                             </div>
                         </div>
 
-                        <div className="timestamp-list">
+                        <div className="timestamp-contianer">
                             <h3>Milestone History</h3>
 
-                            <ul>
+                            <ul className="timestamp-list">
                                 {milestones.map((milestone, index) => (
                                     <li key={index}>
                                         <strong>{milestone}</strong>
