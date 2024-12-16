@@ -160,7 +160,7 @@ const HomePage = () => {
                                     {`There are currently ${projects.length} projects being worked, 5 most recent:`}
                         </Typography>
                         <CardContent>
-                            {projects.map((project) => (
+                            {projects.slice(0, 5).map((project) => (
                                 <div className="notification-section" key={project.id}>
                                     <Notification
                                         key={project.id}

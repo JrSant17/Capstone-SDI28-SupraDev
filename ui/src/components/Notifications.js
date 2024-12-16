@@ -15,11 +15,11 @@ const Notification = ({ project, username, submitterImg, acceptedImg, submittedU
     flexDirection: 'column',
     padding: '8px',
     borderRadius: '4px',
-    transition: 'background-color 0.3s',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-      cursor: 'pointer',
-    },
+    // transition: 'background-color 0.3s',
+    // '&:hover': {
+    //   backgroundColor: 'rgba(0, 0, 0, 0.43)',
+    //   cursor: 'pointer',
+    // },
   };
 
   const avatarStyles = {
@@ -43,13 +43,13 @@ const Notification = ({ project, username, submitterImg, acceptedImg, submittedU
     <Box display="flex" alignItems="center" mb={1}>
       <Stack alignItems="center" direction="row" spacing={2}>
         <Box sx={userBoxStyles}>
-          <a href={`http://localhost:3000/user/${project.is_competed || project.is_accepted ? acceptedUserId : submittedUserId}`}>
+          {/* <a href={`http://localhost:3000/user/${project.is_competed || project.is_accepted ? acceptedUserId : submittedUserId}`}> */}
             <Avatar
               src={project.is_competed || project.is_accepted ? acceptedImg : submitterImg}
               alt="User Avatar"
               sx={avatarStyles}
             />
-          </a>
+          {/* </a> */}
           <Typography>{username}</Typography>
         </Box>
         <Box>
