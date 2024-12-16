@@ -104,7 +104,6 @@ export default function CreateAccount() {
             email: email,
             job_title: jobTitle,
             type: submitUserType,
-            //password: SHA256(password).toString(),
             password: password.toString(),
             user_summary: usersSummary,
             profile_pic: profPicToSet,
@@ -115,6 +114,7 @@ export default function CreateAccount() {
             time_available: timeAvailable,
             user_summary: `Username: ${username} \n email: ${email}`,
             is_supracoder: isSupraVal,
+            command: command
           }),
         })
         .then((resp) => {

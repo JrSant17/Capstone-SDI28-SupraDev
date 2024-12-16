@@ -152,7 +152,8 @@ router.post('/', async (req, res) => {
     email, p1_account, p1_auth,
     type, availability, experience,
     languages, operating_systems, avatar_url,
-    time_available, is_supracoder, supradoubloons
+    time_available, is_supracoder, supradoubloons,
+    command
   } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -163,7 +164,8 @@ router.post('/', async (req, res) => {
     email, p1_account, p1_auth,
     type, availability, experience,
     languages, operating_systems, avatar_url,
-    time_available, is_supracoder, supradoubloons
+    time_available, is_supracoder, supradoubloons,
+    command
   };
   console.log(`received userFields : ${JSON.stringify(userFields)}`)
 
