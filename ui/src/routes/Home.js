@@ -8,6 +8,7 @@ import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Notification from '../components/Notifications'
+import MilestoneBar from '../components/milestoneBar';
 
 const HoverCard = styled(motion(Card))(({ theme }) => ({
     '&:hover': {
@@ -191,9 +192,10 @@ const HomePage = () => {
                 </Grid>
 
 
-                {sessionCookies.userPriv_Token === true ? (
-                    <>
-                    </>
+                {sessionCookies.user_type === 1 || sessionCookies.user_type === 2 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4 ? (
+                    <CardContent sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
+                            <MilestoneBar />
+                    </CardContent>
                 ): (
                         <Grid item xs={10} md={9}>
                             <Card className="card" elevation={3}>

@@ -1,4 +1,5 @@
 import { useCookies } from 'react-cookie';
+import React, { useState, useEffect } from 'react';
 
 const milestones = [
     "Kickoff",
@@ -21,6 +22,9 @@ export default function MilestoneBar() {
         'userPriv_Token',
         'user_type'
     ]);
+    const [canStartCurrentMilestone, setCanStartCurrentMilestone] = useState(true);
+    const [canCompleteCurrentMilestone, setCanCompleteCurrentMilestone] = useState(false);
+
 
     const getStatusClass = (index) => {
         if (index === currentMilestoneIndex) {
@@ -29,6 +33,77 @@ export default function MilestoneBar() {
             return 'completed';
         }
         return 'inactive';
+    };
+
+    const moveToPreviousMilestone = () => {
+        if (currentMilestoneIndex > 0) {
+            setCurrentMilestoneIndex(currentMilestoneIndex - 1);
+
+            updateCompleteButtonState(currentMilestoneIndex - 1);
+        }
+    };
+
+    const moveToNextMilestone = () => {
+        if (currentMilestoneIndex < milestones.length - 1) {
+            setCurrentMilestoneIndex(currentMilestoneIndex + 1);
+
+            updateCompleteButtonState(currentMilestoneIndex + 1);
+            setCanStartCurrentMilestone(true);
+            setCanCompleteCurrentMilestone(true);
+        }
+    };
+
+    const startCurrentMilestone = () => {
+        if (canStartCurrentMilestone && currentMilestoneIndex >= 0) {
+            const now = new Date().toLocaleString();
+            setMilestoneTimestamps(prev => {
+                const updated = [...prev];
+                updated[currentMilestoneIndex].started = now;
+                return updated;
+            });
+            setCanStartCurrentMilestone(false);
+            setCanCompleteCurrentMilestone(true);
+        }
+    };
+
+    const completeCurrentMilestone = () => {
+        if (canCompleteCurrentMilestone && currentMilestoneIndex >= 0 && milestoneTimestamps[currentMilestoneIndex].started) {
+            const now = new Date().toLocaleString();
+            setMilestoneTimestamps(prev => {
+                const updated = [...prev];
+                updated[currentMilestoneIndex].completed = now;
+                return updated;
+            });
+            setCanCompleteCurrentMilestone(false);
+        }
+    };
+
+    const removeTimestamp = () => {
+        if (currentMilestoneIndex >= 0 && milestoneTimestamps[currentMilestoneIndex]) {
+            setMilestoneTimestamps(prev => {
+                const updated = [...prev];
+                const currentMilestone = updated[currentMilestoneIndex];
+
+
+                if (currentMilestone.completed) {
+                    currentMilestone.completed = null;
+                    setCanCompleteCurrentMilestone(true);
+                } else if (currentMilestone.started) {
+                    currentMilestone.started = null;
+                    setCanStartCurrentMilestone(true);
+                }
+
+                return updated;
+            });
+        }
+    };
+
+    const updateCompleteButtonState = (index) => {
+        if (milestoneTimestamps[index]?.started && !milestoneTimestamps[index]?.completed) {
+            setCanCompleteCurrentMilestone(true);
+        } else {
+            setCanCompleteCurrentMilestone(false);
+        }
     };
 
     return (

@@ -99,4 +99,3 @@ We recommend you run the creation script and then leave it alone. Afterwords the
 4. Account creation now allows for multiple users, fro, normal, supra, leader, or admin level users.
 5. User profile pages have more details
 6. Updated project submission page
-7. 
