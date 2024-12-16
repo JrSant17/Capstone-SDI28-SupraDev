@@ -17,9 +17,11 @@ const Login = () => {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
 
-  const [setSessionCookies, removeSessionCookies] = useCookies([
+  const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
     'username_token',
     'user_id_token',
+    'userPriv_Token',
+    'user_type'
   ]);
   const navigate = useNavigate();
 
@@ -46,13 +48,15 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-
+        console.log(`received garbage: ${JSON.stringify(data)}`);
+        console.log(`test: ${data.user.id}`)
         // Set session cookies
         removeSessionCookies('user_id_token');
         removeSessionCookies('username_token');
         setSessionCookies('user_id_token', data.user.id, { path: '/' });
         setSessionCookies('username_token', data.user.username, { path: '/' });
         setSessionCookies('userPriv_Token', data.user.is_supracoder, { path: '/' });
+        setSessionCookies('user_type', data.user.type, { path: '/'});
 
         // Navigate to home and display success message
         navigate('/home');
