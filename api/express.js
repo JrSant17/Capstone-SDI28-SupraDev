@@ -12,6 +12,7 @@ const userRoutes = require('./routes/users');
 const projectRoutes = require('./routes/projects.js');
 const userProjectRoutes = require('./routes/user_projects.js');
 const loginRoute = require('./routes/login.js');
+const milestonesRouter = require('./routes/milestones.js'); 
 
 const options = {
   swaggerDefinition,
@@ -39,6 +40,9 @@ app.use('/projects', projectRoutes);
 app.use('/user_projects', userProjectRoutes);
 
 app.use('/login', loginRoute);
+
+app.use('/projects', milestonesRouter);
+
 
 app.listen(port, () => console.log(`Express server listening in on port ${port} with environment: ${process.env.NODE_ENV}`))
 
