@@ -472,4 +472,3 @@ useEffect(() => {
 
 export default GenUser;
 
-

@@ -15,7 +15,7 @@ const ProjectDetailsPage = () => {
   const [chatposts, setChatposts] = useState([]);
   const [userdata, setUserdata] = useState([]);
   const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
-  const [coders_needed, setCodersNeeded] = useState({coders_needed: 0 });
+  // const [coders_needed, setCodersNeeded] = useState({coders_needed: 0 });
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -39,16 +39,7 @@ const ProjectDetailsPage = () => {
         .then((doubloonies) => {setCurrentUserDoubloons(doubloonies.supradoubloons)});
   };
 
-  const fetchCodersNeeded = async () => {
-    await fetch (`http://localhost:8080/projects/${projectId}`)
-    .then((res) => res.json())
-    .then((data) => {
-      setCodersNeeded(data.coders_needed);
-    })
-    .catch((error) => {
-      console.error("There was an error fetching coders needed", error);
-    });
-  };
+
 
   const userImgRender = (userIdFromPost) => {
     let imgToRender ="";
@@ -70,6 +61,9 @@ const ProjectDetailsPage = () => {
     await fetch(`http://localhost:8080/projects/${projectId}/messages`)
         .then((res) => res.json())
         .then((commentData) => setChatposts(commentData));
+    await fetch(`http://localhost:8080/projects/${projectId}`)
+        .then((res) => res.json())
+        .then((data) => setBounty(data));
   };
 
   useEffect(() => {
@@ -92,7 +86,6 @@ const ProjectDetailsPage = () => {
       fetchPosts();
       fetchUsers();
       fetchCurrentUserDoubloons();
-      fetchCodersNeeded();
   }, []);
 
   if (!bounty) {
@@ -163,7 +156,7 @@ const ProjectDetailsPage = () => {
 
   const handleAccept = () => {
     if (window.confirm("Are you sure you want to join this project")) {
-      const updatedCodersNeeded = coders_needed - 1;
+      const updatedCodersNeeded = bounty.coders_needed - 1;
         if (updatedCodersNeeded < 0) {
           alert ("This project has met its SupraCoder requirment");
           return;
@@ -171,8 +164,8 @@ const ProjectDetailsPage = () => {
 
       fetch (`http://localhost:8080/projects/${projectId}`, {
         method: "PATCH",
-        headers: { "Content-Type" : "application/json",
-          Accept: "application/json",
+        headers: { 
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           is_accepted: true,
@@ -181,18 +174,28 @@ const ProjectDetailsPage = () => {
           coders_needed: updatedCodersNeeded
         })
       })
-      .then(response => {
-        if(response.ok) {
-          alert("Project join successfully!");
-          navigate('/projects');
-          window.location.reload();
-        } else {
-          alert("Error accepting project");
+      .then(async response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        return response.text().then(text => {
+          try {
+            return JSON.parse(text);
+          } catch {
+            return text;
+          }
+        });
+      })
+      .then(() => {
+        setBounty(prevBounty => ({
+          ...prevBounty,
+          coders_needed: updatedCodersNeeded
+        }));
+        alert("Project joined successfully!");
       })
       .catch(error => {
         console.error("Error:", error);
-        alert("Error accepting project");
+        alert(`Error accepting project: ${error.message}`);
       });
     }
   }
