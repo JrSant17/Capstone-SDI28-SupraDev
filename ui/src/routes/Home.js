@@ -56,64 +56,64 @@ const HomePage = () => {
           }
         }
       }
-      const findSubmitterImg = (assocSubId) => {
+    const findSubmitterImg = (assocSubId) => {
         let outputUserImg;
         for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            outputUserImg = allUsers[element].profile_pic;
-            return (
-                outputUserImg
-            )
-          }
+            if (allUsers[element].id === assocSubId) {
+                outputUserImg = allUsers[element].avatar_url;
+                return (
+                    outputUserImg
+                )
+            }
         }
-      }
+    }
 
-      const findAcceptedImg = (assocSubId) => {
+    const findAcceptedImg = (assocSubId) => {
         let outputUserImg;
         for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            outputUserImg = allUsers[element].profile_pic;
-            return (
-                outputUserImg
-            )
-          }
+            if (allUsers[element].id === assocSubId) {
+                outputUserImg = allUsers[element].avatar_url;
+                return (
+                    outputUserImg
+                )
+            }
         }
-      }
-      const findSubmittedUserId= (assocSubId) => {
+    }
+    const findSubmittedUserId = (assocSubId) => {
         let UserId;
         for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            UserId = allUsers[element].id;
-            return (
-                UserId
-            )
-          }
+            if (allUsers[element].id === assocSubId) {
+                UserId = allUsers[element].id;
+                return (
+                    UserId
+                )
+            }
         }
-      }
+    }
 
-      const findAcceptedUserId= (assocSubId) => {
+    const findAcceptedUserId = (assocSubId) => {
         let UserId;
         for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            UserId = allUsers[element].id;
-            return (
-                UserId
-            )
-          }
+            if (allUsers[element].id === assocSubId) {
+                UserId = allUsers[element].id;
+                return (
+                    UserId
+                )
+            }
         }
-      }
+    }
 
-      const findAcceptor = (assocAccId) => {
+    const findAcceptor = (assocAccId) => {
         let outputUsername;
         for (let element in allUsers) {
-          if (allUsers[element].id === assocAccId) {
-            outputUsername = allUsers[element].username;
-            return (
-              outputUsername
-            )
-          }
+            if (allUsers[element].id === assocAccId) {
+                outputUsername = allUsers[element].username;
+                return (
+                    outputUsername
+                )
+            }
         }
-      }
+    }
 
     const spaceSoftware = [
         {

@@ -1,35 +1,56 @@
 import React from 'react';
 import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-const Notification = ({ project, username, submitter, submitterImg, acceptedImg, submittedUserId, acceptedUserId }) => (
-  <Box display="flex" alignItems="center" mb={1}>
-        <Stack
-            alignItems="center"
-            direction="row"
-            spacing={2}
-        >
+const styles = {
+  background: 'linear-gradient(45deg,rgb(119, 45, 169) 30%,rgb(105, 149, 215) 90%)',
+  border: 0,
+  borderRadius: 3,
+  boxShadow: '0 3px 5px 2px rgba(48, 50, 173, 0.3)',
+  color: 'white',
+  height: 'auto',
+  padding: '0 30px',
+};
+
+const Notification = ({ project, username, submitter, submitterImg, acceptedImg, submittedUserId, acceptedUserId }) => {
+
+ const navigate = useNavigate();
+
+ const navProjects = () => {
+  navigate(`/projects/${project.id}`);
+};
+
+  return (
+    <Box display="flex" alignItems="center" mb={1}>
+      <Stack
+        alignItems="center"
+        direction="row"
+        spacing={2}
+      >
         {project.is_competed || project.is_accepted ? (
-          <a href={`http://localhost:3000/supracoders/${acceptedUserId}`}>
+          <a href={`http://localhost:3000/user/${acceptedUserId}`}>
             <Avatar src={acceptedImg} alt="User Avatar" style={{ float: 'left', outlineWidth: '30px', outlineColor: 'red', width: '40px', height: '40px' }} />
           </a>
         ) : (
-          <a href={`http://localhost:3000/users/${submittedUserId}`}>
+          <a href={`http://localhost:3000/user/${submittedUserId}`}>
             <Avatar src={submitterImg} alt="User Avatar" style={{ float: 'left', outlineWidth: '3px', outlineColor: 'red', width: '40px', height: '40px' }} />
           </a>
         )}
 
-      <div>
-        <Typography>
-          {project.is_completed
-            ? `${project.name} project has been completed by ${username}`
-            : project.is_accepted
-            ? `${project.name} project has been accepted by ${username}`
-            : `${project.name} project has been created by ${submitter}`}
-        </Typography>
-            </div>
+        <div>
+          
+          <Typography onClick={navProjects}  style={styles}>
+            {project.is_completed
+              ? `${project.name}`
+              : project.is_accepted
+                ? `${project.name}`
+                : `${project.name}`}
+          </Typography>
+        </div>
 
       </Stack>
-  </Box>
-);
+    </Box>
+  );
+};
 
 export default Notification;
