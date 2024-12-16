@@ -150,71 +150,89 @@ const ProjectDetailsPage = () => {
         alert("Error Sponsoring Project") 
       });
     }
-  };
+};
   
 
 
-  const handleAccept = () => {
-    if (window.confirm("Are you sure you want to join this project")) {
-      const updatedCodersNeeded = bounty.coders_needed - 1;
+const handleAccept = () => {
+  if (window.confirm("Are you sure you want to join this project")) {
+    fetch(`http://localhost:8080/projects/${projectId}/members/${sessionCookies.user_id_token}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.isMember) {
+          alert("You have already joined this project!");
+          return;
+        }
+        
+        const updatedCodersNeeded = bounty.coders_needed - 1;
         if (updatedCodersNeeded < 0) {
-          alert ("This project has met its SupraCoder requirment");
+          alert("This project has met its SupraCoder requirement");
           return;
         }
 
-      fetch (`http://localhost:8080/projects/${projectId}`, {
-        method: "PATCH",
-        headers: { 
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          is_accepted: true,
-          accepted_by_id: sessionCookies.user_id_token,
-          github_url: gitlink,
-          coders_needed: updatedCodersNeeded
-        })
-      })
-      .then(async response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.text().then(text => {
-          try {
-            return JSON.parse(text);
-          } catch {
-            return text;
-          }
-        });
-      })
-      .then(() => {
-        setBounty(prevBounty => ({
-          ...prevBounty,
-          coders_needed: updatedCodersNeeded
-        }));
-        alert("Project joined successfully!");
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        alert(`Error accepting project: ${error.message}`);
-      });
-    }
-  }
-
-  const handleUnaccept = () => {
-
-
-    fetch(`http://localhost:8080/projects/${projectId}`, {
+    fetch (`http://localhost:8080/projects/${projectId}`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
+      headers: { 
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "is_accepted": false,
-        "accepted_by_id": sessionCookies.user_id_token
+        is_accepted: true,
+        accepted_by_id: sessionCookies.user_id_token,
+        github_url: gitlink,
+        coders_needed: updatedCodersNeeded
       })
     })
-    navigate('/projects');
-    window.location.reload();
+    .then(async response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text().then(text => {
+        try {
+          return JSON.parse(text);
+        } catch {
+          return text;
+        }
+      });
+    })
+    .then(() => {
+      setBounty(prevBounty => ({
+        ...prevBounty,
+        coders_needed: updatedCodersNeeded
+      }));
+      alert("Project joined successfully!");
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      alert(`Error accepting project: ${error.message}`);
+    });
+    });
+  }
+}
+  const handleUnaccept = async () => {
+    try {
+      const updatedCodersNeeded = bounty.coders_needed + 1;
+      const response = await fetch(`http://localhost:8080/projects/${projectId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          is_accepted: false,
+          accepted_by_id: null,
+          coders_needed: updatedCodersNeeded
+        })
+      });
+      
+      if (response.ok) {
+        setBounty(prev => ({...prev, coders_needed: updatedCodersNeeded}));
+        navigate('/projects');
+      } else {
+        throw new Error('Failed to update project');
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error dropping project");
+    }
   }
 
   const patchToComplete = () => {
@@ -342,7 +360,7 @@ const ProjectDetailsPage = () => {
           bounty.coders_needed > 0 &&
           bounty.is_completed === false ? (
             <>
-              {sessionCookies.user_type === 1 ? (
+              {sessionCookies.user_type === 1 && bounty.accepted_by_id !== sessionCookies.user_id_token ? (
                 <Button
                   onClick={() => handleAccept()}
                   variant="contained"

@@ -227,8 +227,9 @@ router.patch('/:id', (req, res) => {
       end_date: req.body.end_date,
       desired_number_coders: req.body.desired_number_coders,
       project_state: req.body.project_state,
+      coders_needed: req.body.coders_needed
     })
-    .then((updateRows) => res.status(200).send('project updated'))
+    .then(() => res.status(200).json({ message: 'Project updated successfully' }))
 });
 
 /**
@@ -245,6 +246,22 @@ router.patch('/:id', (req, res) => {
  *       204:
  *         description: Project deleted successfully!
  */
+router.get('/:id/members/:userId', (req, res) => {
+  knex('project_table')
+    .where({ 
+      id: req.params.id,
+      accepted_by_id: req.params.userId
+    })
+    .first()
+    .then(project => {
+      res.json({ isMember: !!project });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: "Internal Server Error" });
+    });
+});
+
 router.delete('/:id', (req, res) => {
     knex('project_table')
     .where({ id: req.params.id })
