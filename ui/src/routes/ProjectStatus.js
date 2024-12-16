@@ -41,7 +41,7 @@ const ProjectStatus = () => {
 
     const syncMilestonesWithBackend = async () => {
     try {
-        const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`);
+        const response = await fetch(`http://localhost:8080/projects/${id}/milestones`);
 
         if (!response.ok) {
             if (response.status === 404) {
@@ -82,7 +82,7 @@ const ProjectStatus = () => {
 
     const createDefaultMilestones = async () => {
         try {
-            const createResponse = await fetch(`http://localhost:8080/projects/${projectId}/milestones/create`, {
+            const createResponse = await fetch(`http://localhost:8080/projects/${id}/milestones/create`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             });
@@ -102,10 +102,10 @@ const ProjectStatus = () => {
     };
 
     useEffect(() => {
-        if (projectId) {
+        if (id) {
             syncMilestonesWithBackend();
         }
-    }, [projectId]);
+    }, [id]);
 
     const moveToPreviousMilestone = async () => {
         if (currentMilestoneIndex > 0) {
@@ -129,7 +129,7 @@ const ProjectStatus = () => {
 
     const updateMilestoneState = async (newIndex) => {
         try {
-            const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`, {
+            const response = await fetch(`http://localhost:8080/projects/${id}/milestones`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ index: newIndex + 1, is_active: true }) 
@@ -159,7 +159,7 @@ const ProjectStatus = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`, {
+            const response = await fetch(`http://localhost:8080/projects/${id}/milestones`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updateData),
@@ -222,7 +222,7 @@ const ProjectStatus = () => {
             }
 
             if (fieldToRemove) {
-                const response = await fetch(`http://localhost:8080/projects/${projectId}/milestones`, {
+                const response = await fetch(`http://localhost:8080/projects/${id}/milestones`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
