@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState } from 'react';
-import { SHA256 } from 'crypto-js';
 import {
     Button,Dialog,DialogTitle,DialogContent,
     DialogContentText,DialogActions,TextField,Card,
@@ -88,12 +87,13 @@ export default function CreateAccount() {
           profPicToSet = profilePic;
         }
 
+        console.log(`submitted password ${password}`);
+
         await fetch('http://localhost:8080/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-
 
 
           body: JSON.stringify({
@@ -103,7 +103,8 @@ export default function CreateAccount() {
             email: email,
             job_title: jobTitle,
             type: submitUserType,
-            password: SHA256(password).toString(),
+            //password: SHA256(password).toString(),
+            password: password.toString(),
             user_summary: usersSummary,
             profile_pic: profPicToSet,
             availability: availability,
