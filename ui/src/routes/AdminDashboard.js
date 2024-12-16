@@ -1,5 +1,3 @@
-import './SupracoderProfilePage.css'
-
 import React, { useEffect, useState } from 'react';
 import { Button, Card, CardContent, Typography, Box, Avatar, Divider, List, ListItem, ListItemText, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -9,7 +7,7 @@ import { SHA256 } from 'crypto-js';
 
 
 const SupracoderProfilePage = () => {
-    const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token'])
+    const [sessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token', 'user_type'])
     const [userObj, setUserObj] = useState([])
     const [projects, setProjects] = useState([])
     var numAcceptedProjs = 0;
@@ -30,7 +28,7 @@ const SupracoderProfilePage = () => {
     const userRefetch = async () => {
         await fetch(`http://localhost:8080/users/${id}`)
             .then((res) => res.json())
-            .then((fetchData) => setUserObj(fetchData[0]))
+            .then((fetchData) => setUserObj(fetchData))
     }
 
     const projectsRefetch = async () => {
@@ -164,7 +162,7 @@ const SupracoderProfilePage = () => {
         }
     }
 
-    if(userObj.is_supracoder === true) {
+    if(sessionCookies.user_type === 4) {
         return (
             <Box display="flex" padding="20px" height="100vh" bgcolor="rgba(255, 255, 255, .85)" sx={{borderRadius: '25px', marginTop: "25px", marginLeft: "50px", marginRight: "50px", marginBottom: "50px"}}>
 
@@ -174,12 +172,9 @@ const SupracoderProfilePage = () => {
 
                     <Card variant="outlined">
                         <CardContent>
-                            <Typography variant="h6">Bounties</Typography>
-                            {/* <Button component={Link} to={`/supracoders/${id}/bounties`} variant="contained" color="primary" style={{ width: "90%", margin: '5px 0' }}>
-                                View Claimed Bounties
-                            </Button> */}
-                            <Button component={Link} to={`/supracoders/${id}/bounties`} variant="contained" color="secondary" style={{ width: "90%", margin: '5px 0' }}>
-                                View Bounties
+                            <Typography variant="h6">Projects</Typography>
+                            <Button component={Link} to={`/user/${id}/projects`} variant="contained" color="secondary" style={{ width: "90%", margin: '5px 0' }}>
+                                View Projects
                             </Button>
                         </CardContent>
                     </Card>
@@ -188,10 +183,7 @@ const SupracoderProfilePage = () => {
 
                 <Divider orientation="vertical" flexItem />
 
-                {/* Main Content Area */}
                 <Box flex={1} pl="20px">
-
-                    {/* User Avatar & Details */}
                     <Box display="flex" alignItems="center" gap="20px" mb="30px" style={{position: 'relative'}}>
                         <Avatar src={userObj.profile_pic} alt="User Avatar" style={{ width: '150px', height: '150px' }} />
                         <h2 style={{position: 'absolute', top: '0', right: '0', display: 'flex', marginLeft: '100px', float: 'right'}}>
@@ -202,8 +194,6 @@ const SupracoderProfilePage = () => {
                             {personalInfoRender()}
                         </Box>
                     </Box>
-
-                    {/* User Statistics */}
                     {calcBountyStats()}
                     {newPasswordDiv}
                     <Box display="flex" gap="20px" mb="30px">

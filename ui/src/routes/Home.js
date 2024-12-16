@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-    Avatar, Box, Card, CardContent, CardHeader, Grid, List, ListItem,
-    ListItemAvatar, ListItemText, Typography, Paper, Button, Container, Divider
+    Box, Card, CardContent, CardHeader, Grid, Typography, Paper, Button, Divider
 } from '@mui/material';
 import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
@@ -31,7 +30,6 @@ const HomePage = () => {
     const [allUsers, setAllUsers] = useState([]);
 
     useEffect(() => {
-        // Fetch the projects
         fetch("http://localhost:8080/projects")
             .then((res) => res.json())
             .then((projectData) => {
@@ -39,7 +37,6 @@ const HomePage = () => {
             })
             .catch((err) => console.log(err));
 
-        // Fetch the users
         fetch("http://localhost:8080/users")
             .then((res) => res.json())
             .then((userData) => {
@@ -146,13 +143,6 @@ const HomePage = () => {
         }
 
     ]
-    // useEffect(() => {
-    //     // Fetch space-related software data from NASA's TechTransfer Software API
-    //     fetch('https://api.nasa.gov/techtransfer/software/?engine&api_key=6WY9lR6IeiiTvLJG4U5V4qnnJzPJlpgMkmV8uKj9')
-    //         .then(response => response.json())
-    //         .then(data => setSpaceSoftware(data.results.slice(0, 10))) // Limit to 10 items
-    //         .catch(error => console.error('Error fetching space software data:', error));
-    // }, []);
 
     return (
         <Box
@@ -172,10 +162,7 @@ const HomePage = () => {
                 textAlign: 'center',
                 padding: '40px 0',
                 mb: 4,
-                // backgroundColor: '#261928',
                 backgroundImage: 'url(https://images.fineartamerica.com/images/artworkimages/mediumlarge/2/9-abstract-smoke-duxx.jpg)',
-                // 'linear-gradient(135deg, #020024 0%, #090979 37%, #00d4ff 100%)',
-                // backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed',
@@ -202,7 +189,7 @@ const HomePage = () => {
                     <Card elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(5px)' }}>
                         <CardHeader title="Recent Activity" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
                         <Typography variant="subtitle2" color="textSecondary">
-                                    {/* {`There are currently ${projects.length} projects being worked`} */}
+                                    {`There are currently ${projects.length} projects being worked`}
                         </Typography>
                         <CardContent>
                                 {[...projects].reverse().map((project) => (
@@ -243,64 +230,11 @@ const HomePage = () => {
                     </Card>
                 </Grid>
             </Grid>
-
-                    {/* Highlights
-                    <Grid item xs={12} md={6}>
-                        <HoverCard elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(5px)' }}>
-                            <CardHeader title="Highlights" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
-                            <CardContent>
-                                <Typography variant="h6" color="primary">
-                                    Success! Project J made major breakthroughs in XYZ
-                                </Typography>
-                                <Typography variant="body1" mt={1}>
-                                    Supra Coder Snuffy figured out how to install DOOM in My...
-                                </Typography>
-                            </CardContent>
-                        </HoverCard>
-                    </Grid> */}
                     <Divider orientation="vertical" flexItem />
-                    {/* Latest Notifications */}
-
-
-                    {/* User Activity
-                    <Grid item xs={12} md={6}>
-                        <HoverCard elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(5px)' }}>
-                            <CardHeader title="Recent Activity" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
-                            <CardContent>
-                                <List>
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <i className="fas fa-plus"></i>
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary="Added a new project: Project XYZ." secondary="1 day ago" />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <i className="fas fa-trophy"></i>
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary="Claimed a bounty from John's project." secondary="2 days ago" />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <i className="fas fa-user-edit"></i>
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary="Updated profile picture." secondary="5 days ago" />
-                                    </ListItem>
-                                </List>
-                            </CardContent>
-                        </HoverCard>
-                    </Grid> */}
-
                         <Box sx={{ width: '100%', textAlign: 'center', mt: 4, color: 'white', backgroundImage: 'linear-gradient(135deg, #020024 0%, #090979 37%, #00d4ff 100%)' }}>
 
                             <Typography variant="body2">
-                                © 2023 Supra Dev. All Rights Reserved.
+                                © 2024 Supra Dev. All Rights Reserved.
                             </Typography>
                         </Box>
             </Box>

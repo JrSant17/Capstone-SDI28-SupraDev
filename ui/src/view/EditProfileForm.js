@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { TextField, Button, TextareaAutosize, Box, RadioGroup, Radio, FormControlLabel, FormControl, Chip, InputLabel, Select, MenuItem } from '@mui/material';
+import { TextField, Button, Box, RadioGroup, Radio, FormControlLabel, FormControl, Chip, InputLabel, Select, MenuItem } from '@mui/material';
 
 
 const EditProfileFormContainer = styled(Box)`
@@ -74,11 +74,11 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
 
   const handleLanguageChange = (event) => {
     setLanguages(event.target.value);
-};
+  };
 
-const handleOSChange = (event) => {
-  setOperatingSystems(event.target.value);
-};
+  const handleOSChange = (event) => {
+    setOperatingSystems(event.target.value);
+  };
 
   function SupraCoder(){
       return (
@@ -454,6 +454,77 @@ const handleOSChange = (event) => {
       </form>
     )
   }
+  function Admin(){
+    return (
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <TextField
+            fullWidth
+            label="First Name"
+            variant="outlined"
+            id="firstName"
+            value={firstName}
+            style={{marginBottom: '10px'}}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <TextField
+            fullWidth
+            label="Last Name"
+            variant="outlined"
+            id="lastName"
+            value={lastName}
+            style={{marginBottom: '10px'}}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <TextField
+            fullWidth
+            label="Profile Picture URL"
+            variant="outlined"
+            id="profilePic"
+            value={profilePic}
+            style={{marginBottom: '10px'}}
+            onChange={(e) => setProfilePic(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <TextField
+            fullWidth
+            label="POC"
+            variant="outlined"
+            id="email"
+            value={email}
+            style={{marginBottom: '10px'}}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <TextField
+            style={{marginBottom: '10px'}}
+            fullWidth="100%"
+            multiline
+            rows={5}
+            label="User Summary"
+            variant="outlined"
+            id="userSummary"
+            value={userSummary}
+            onChange={(e) => setUserSummary(e.target.value)}
+          />
+        </div>
+        <div className="form-actions">
+          <Button type="submit" variant="contained" color="primary">
+            Update Profile
+          </Button>
+          <Button onClick={onCancel} variant="outlined" color="primary">
+            Cancel
+          </Button>
+        </div>
+      </form>
+    )
+  }
   
   if(user.type == 1){
     return (
@@ -467,12 +538,16 @@ const handleOSChange = (event) => {
         <Leadership/>
       </EditProfileFormContainer>
     )
-  } else {
+  } else if (user.type == 3) {
     return (
       <EditProfileFormContainer>
-        <Customer/>
+        <Customer />
       </EditProfileFormContainer>
     )
+  } else if (user.type == 4) {
+    <EditProfileFormContainer>
+      <Admin />
+    </EditProfileFormContainer>
   }
   
 };

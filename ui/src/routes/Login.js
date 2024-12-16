@@ -19,7 +19,7 @@ const Login = () => {
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
 
-  const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
+  const [setSessionCookies, removeSessionCookies] = useCookies([
     'username_token',
     'user_id_token',
   ]);
@@ -48,6 +48,7 @@ const Login = () => {
   const LogIntoAccount = async () => {
     let accountMatch = false;
     for (var element of usersSummary) {
+      console.log(`element in usersSummary: ${element}`)
       if (element.username === usernameLogin) {
         accountMatch = true;
         if (element.password === SHA256(passwordLogin).toString()) {
@@ -56,6 +57,7 @@ const Login = () => {
           setSessionCookies('user_id_token', element.id, { path: '/' });
           setSessionCookies('username_token', element.username, { path: '/' });
           setSessionCookies('userPriv_Token', element.is_supracoder, { path: '/' });
+          setSessionCookies('user_type', element.type, {path: '/'});
           navigate('/home');
           window.location.reload();
           setUsernameLogin('');

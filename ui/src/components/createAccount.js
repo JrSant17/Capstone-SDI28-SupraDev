@@ -22,7 +22,7 @@ export default function CreateAccount() {
     const [experience, setExperience] = useState('');
     const [languages, setLanguages] = useState([]);
     const [operatingSystems, setOperatingSystems] = useState([]);
-    const [timeAvailable, setTimeAvailable] = useState('');
+    const [timeAvailable, setTimeAvailable] = useState(2);
 
     const [defProfilePic, setDefProfilePic] = useState(
       'https://as1.ftcdn.net/v2/jpg/02/85/15/18/1000_F_285151855_XaVw4eFq1QufklRbMFDxdAJos1OadAD1.jpg'
@@ -37,6 +37,7 @@ export default function CreateAccount() {
     const experienceOptions = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
     const languageOptions = ['JavaScript', 'Python', 'Java', 'C++', 'C', 'Zig', 'Ruby', 'Go', 'Rust', 'PHP', 'C#', 'Swift'];
     const osOptions = ['Windows', 'macOS', 'Linux', 'iOS', 'Android'];
+    const navigate = useNavigate();
 
     const handleLanguageChange = (event) => {
         setLanguages(event.target.value);
@@ -69,12 +70,17 @@ export default function CreateAccount() {
     const CreateAccount = async () => {
         let profPicToSet = '';
         let submitUserType;
+        let isSupraVal = false;
         if(userType == 'normal') {
             submitUserType = 3;
         } else if(userType == 'supracoder') {
             submitUserType = 1;
+            isSupraVal = true;
+            console.log(`is supra: ${isSupraVal}`)
         } else if(userType == 'leadership') {
             submitUserType = 2;
+        } else if(userType == 'admin') {
+            submitUserType = 4;
         }
 
         if (profilePic === '') {
@@ -82,11 +88,13 @@ export default function CreateAccount() {
         } else {
           profPicToSet = profilePic;
         }
+
         await fetch('http://localhost:8080/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+
 
 
           body: JSON.stringify({
@@ -105,13 +113,44 @@ export default function CreateAccount() {
             operating_systems: operatingSystems,
             time_available: timeAvailable,
             user_summary: `Username: ${username} \n email: ${email}`,
-            is_supracoder: false,
+            is_supracoder: isSupraVal,
           }),
-        });
-        displayDialogMessage('Account Created', 'Account created successfully!');
-        usersRefetch();
-        useNavigate('/login')
+        })
+        .then((resp) => {
+            if(resp.status == 201){
+                new Promise((resolve) => {
+                    resetForm();
+                    displayDialogMessage('Account Created', 'Please login now.');
+                    setTimeout(resolve, 2000);
+                  })
+                  .then(() => {
+                    usersRefetch();
+                  });
+            } else if(resp.status == 500){
+                displayDialogMessage('Creation Failure','Account creation failure!');
+            } else if(resp.status == 409) {
+                resp.json().then(errorData => {
+                    displayDialogMessage('Account Taken', `${errorData.error}`);
+                });
+            }
+        })
     };
+
+    const resetForm = () => {
+        setFirstName('');
+        setLastName('');
+        setUsername('');
+        setEmail('');
+        setJobTitle('');
+        setPassword('');
+        setProfilePic('');
+        setAvailability('');
+        setExperience('');
+        setLanguages([]);
+        setOperatingSystems([]);
+        setTimeAvailable(2);
+        setUserType('normal');
+      };
 
     return(
         <>
