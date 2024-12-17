@@ -194,7 +194,7 @@ const HomePage = () => {
 
                 {sessionCookies.user_type === 1 || sessionCookies.user_type === 2 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4 ? (
                     <CardContent sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
-                            <MilestoneBar />
+                            <MilestoneBar view={'home'}/>
                     </CardContent>
                 ): (
                         <Grid item xs={10} md={9}>

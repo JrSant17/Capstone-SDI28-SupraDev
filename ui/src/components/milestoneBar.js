@@ -11,7 +11,7 @@ const milestones = [
     "Sustainment"
 ];
 
-export default function MilestoneBar() {
+export default function MilestoneBar({view}) {
     const [currentMilestoneIndex, setCurrentMilestoneIndex] = useState(-1);
     const [milestoneTimestamps, setMilestoneTimestamps] = useState(
         milestones.map(() => ({ started: null, completed: null }))
@@ -161,26 +161,31 @@ export default function MilestoneBar() {
                 <>
                 </>
             )}
-            <div className="timestamp-list">
-                <h3>Milestone History</h3>
-                <ul>
-                    {milestones.map((milestone, index) => (
-                        <li key={index}>
-                            <strong>{milestone}</strong>
-                            <div>
-                                {milestoneTimestamps[index]?.started && (
-                                    <small>Started on: {milestoneTimestamps[index].started}</small>
-                                )}
-                            </div>
-                            <div>
-                                {milestoneTimestamps[index]?.completed && (
-                                    <small className='completed-stamp'>Completed on: {milestoneTimestamps[index].completed}</small>
-                                )}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+            {view === 'status' ? (
+                <div className="timestamp-list">
+                    <h3>Milestone History</h3>
+                    <ul>
+                        {milestones.map((milestone, index) => (
+                            <li key={index}>
+                                <strong>{milestone}</strong>
+                                <div>
+                                    {milestoneTimestamps[index]?.started && (
+                                        <small>Started on: {milestoneTimestamps[index].started}</small>
+                                    )}
+                                </div>
+                                <div>
+                                    {milestoneTimestamps[index]?.completed && (
+                                        <small className='completed-stamp'>Completed on: {milestoneTimestamps[index].completed}</small>
+                                    )}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ): (
+                <>
+                </>
+            )}
         </div>
     );
 }

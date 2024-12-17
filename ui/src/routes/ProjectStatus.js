@@ -335,7 +335,7 @@ const ProjectStatus = () => {
                         style={{ fontWeight: "500", color: "#616161" }}>
                         <p className='product-status'>Application Development Status:</p>
                         <div>
-                            <MilestoneBar />
+                            <MilestoneBar view={'status'}/>
                         </div>
 
                     </Typography>
@@ -351,7 +351,7 @@ const ProjectStatus = () => {
                     <Typography
                         color="textSecondary"
                         align="right"
-                        style={{ marginTop: "1.5rem", "text-align": "center" }}>
+                        style={{ marginTop: "1.5rem", textAlign: "center" }}>
                         Thank you for viewing this bounty detail. Check back often for
                         updates!
                     </Typography>
@@ -388,14 +388,14 @@ const ProjectStatus = () => {
                         <Typography variant="h5">Comments</Typography>
                         <List>
                             {chatposts.map((comment, index) => (
-                                <div>
-                                    <ListItem key={index}>
-                                        <div style={{ display: 'flex' }}>
-                                            <div style={{}}>{userImgRender(comment.user_id)}</div>
-                                            <Typography>{comment.post_text}</Typography>
-                                        </div>
-                                    </ListItem>
-                                </div>
+                                <div key={index}>
+                                <ListItem>
+                                    <div style={{ display: 'flex' }}>
+                                        <div>{userImgRender(comment.user_id)}</div>
+                                        <Typography>{comment.post_text}</Typography>
+                                    </div>
+                                </ListItem>
+                            </div>
                             ))}
                         </List>
                         <TextField fullWidth variant="outlined" placeholder="Add a comment" value={newComment} onChange={handleCommentChange} />

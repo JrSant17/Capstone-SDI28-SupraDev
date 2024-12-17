@@ -465,10 +465,10 @@ const ProjectDetailsPage = () => {
             <Typography variant="h5">Comments</Typography>
             <List>
               {chatposts.map((comment, index) => (
-                <div>
-                  <ListItem key={index}>
+                <div key={index}>
+                  <ListItem>
                     <div style={{ display: "flex" }}>
-                      <div style={{}}>{userImgRender(comment.user_id)}</div>
+                      <div>{userImgRender(comment.user_id)}</div>
                       <Typography>{comment.post_text}</Typography>
                     </div>
                   </ListItem>
