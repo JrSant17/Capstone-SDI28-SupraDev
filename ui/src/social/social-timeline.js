@@ -56,6 +56,8 @@ export const SocialTimeline = (props) => {
             experience={userObj.experience}
             time_available={userObj.time_available}
             availability={userObj.availability}
+            command={userObj.command}
+            type={userObj.type}
           />
         </Grid>
         <Grid lg={8} xs={12}>
