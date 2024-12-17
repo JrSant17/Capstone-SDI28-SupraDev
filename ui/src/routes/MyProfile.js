@@ -289,8 +289,8 @@ useEffect(() => {
                 spacing={2}
               >
                 <Avatar
-                  src={userObj.profile_pic}
-                  alt={profile.avatar}
+                  src={userObj.avatar_url}
+                  alt={userObj.avatar_url}
                   sx={{
                     height: 100,
                     width: 100,
@@ -362,7 +362,7 @@ useEffect(() => {
             {currentTab === 'timeline' && (
               <SocialTimeline
                 posts={posts}
-                profile={profile}
+                profile={userObj.avatar_url}
               />
             )}
             {currentTab === 'projects' && (
