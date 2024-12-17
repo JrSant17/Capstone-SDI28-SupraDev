@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import {
     Box, Card, CardContent, CardHeader, Grid, Typography, Paper, Button, Divider
 } from '@mui/material';
+import { useCookies } from 'react-cookie';
 import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Notification from '../components/Notifications'
+import MilestoneBar from '../components/milestoneBar';
 
 const HoverCard = styled(motion(Card))(({ theme }) => ({
     '&:hover': {
@@ -28,6 +30,12 @@ const HomePage = () => {
     const theme = useTheme();
     const [projects, setProjects] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+      const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
+        'username_token',
+        'user_id_token',
+        'userPriv_Token',
+        'user_type'
+      ]);
 
     useEffect(() => {
         const fetchRecentProjectsWithUserInfo = async () => {
@@ -143,21 +151,26 @@ const HomePage = () => {
                 <Typography variant="subtitle1" mt={2} fontFamily="'Orbitron', sans-serif">
                     Bridging the Gap Between Creativity and Collaboration
                 </Typography>
-                <Link to="/Login" style={{ textDecoration: 'none', marginTop: '20px' }}>
-                    <Box mt={3}>
-                        <Button variant="contained" style={{ backgroundColor: theme?.palette?.primary?.main || 'purple', color: '#fff' }} endIcon={<ArrowForwardIcon />}>
-                            Get Started
-                        </Button>
-                    </Box>
-                </Link>
+                {sessionCookies.user_type === 1 || sessionCookies.user_type === 2 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4 ? (
+                    <>
+                    </>
+                ): (
+                        <Link to="/Login" style={{ textDecoration: 'none', marginTop: '20px' }}>
+                            <Box mt={3}>
+                                <Button variant="contained" style={{ backgroundColor: theme?.palette?.primary?.main || 'purple', color: '#fff' }} endIcon={<ArrowForwardIcon />}>
+                                    Login to see your projects
+                                </Button>
+                            </Box>
+                        </Link>
+                )}
             </Paper>
             <Grid container spacing={2} sx={{ width: '100%' }}>
-                    {/* Notifications */}
+                {/* Notifications */}
                 <Grid item xs={20} md={3}>
                     <Card elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(5px)' }}>
                         <CardHeader title="Recent Activity" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
                         <Typography variant="subtitle2" color="textSecondary">
-                                    {`There are currently ${projects.length} projects being worked, 5 most recent:`}
+                            {`There are currently ${projects.length} projects being worked, 5 most recent:`}
                         </Typography>
                         <CardContent>
                             {projects.slice(0, 5).map((project) => (
@@ -179,33 +192,38 @@ const HomePage = () => {
                 </Grid>
 
 
-                    {/* Space Software */}
-                <Grid item xs={10} md={9}>
-                    <Card className="card" elevation={3}>
-                        <CardHeader title="Space Software News" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
-                            <CardContent>
-                                {spaceSoftware.map((softwareItem, index) => (
-                                <div key={index}>
-                                    <Typography variant="h6" color="primary">
-                                        <a href={softwareItem.link} target="_blank" rel="noopener noreferrer">{softwareItem.title.slice(0, 100)}</a>
-                                    </Typography>
-                                    <Typography variant="body1" mt={1}>
-                                        {softwareItem.description.slice(0, 500)}...
-                                    </Typography>
-                                </div>
-                                ))}
-                            </CardContent>
-                    </Card>
-                </Grid>
+                {sessionCookies.user_type === 1 || sessionCookies.user_type === 2 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4 ? (
+                    <CardContent sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
+                            <MilestoneBar view={'home'}/>
+                    </CardContent>
+                ): (
+                        <Grid item xs={10} md={9}>
+                            <Card className="card" elevation={3}>
+                                <CardHeader title="Space Software News" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
+                                <CardContent>
+                                    {spaceSoftware.map((softwareItem, index) => (
+                                        <div key={index}>
+                                            <Typography variant="h6" color="primary">
+                                                <a href={softwareItem.link} target="_blank" rel="noopener noreferrer">{softwareItem.title.slice(0, 100)}</a>
+                                            </Typography>
+                                            <Typography variant="body1" mt={1}>
+                                                {softwareItem.description.slice(0, 500)}...
+                                            </Typography>
+                                        </div>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                )}
             </Grid>
-                    <Divider orientation="vertical" flexItem />
-                        <Box sx={{ width: '100%', textAlign: 'center', mt: 4, color: 'white', backgroundImage: 'linear-gradient(135deg, #020024 0%, #090979 37%, #00d4ff 100%)' }}>
+            <Divider orientation="vertical" flexItem />
+            <Box sx={{ width: '100%', textAlign: 'center', mt: 4, color: 'white', backgroundImage: 'linear-gradient(135deg, #020024 0%, #090979 37%, #00d4ff 100%)' }}>
 
-                            <Typography variant="body2">
-                                © 2024 Supra Dev. All Rights Reserved.
-                            </Typography>
-                        </Box>
+                <Typography variant="body2">
+                    © 2024 Supra Dev. All Rights Reserved.
+                </Typography>
             </Box>
+        </Box>
     );
 };
 

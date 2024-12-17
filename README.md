@@ -5,13 +5,9 @@ Problem Statement: There is currently no formal site used to request application
 
 SupraDev App - Capstone
 
-## Team Name
-
-OMEGA FALCON EAGLE SQUADRON
-
 ## Description
 
-A database, Backend and Frontend application for Supra Coder project creation and a repository for all previously created applications
+A database, Backend and Frontend application for Supra Coder project creation and a repository for all previously created applications.
 
 ## Prerequisites
 
@@ -25,11 +21,11 @@ The prerequisites that users need to have installed or set up before they can us
 ## Getting Started
 
 - Clone this repository by running:
-  (git clone git@github.com:jsanders36/Capstone-SDI18-SupraDev.git)
+  (git clone git@github.com:JrSant17/Capstone-SDI28-SupraDev.git)
 - Change directories to this git file by running:
-  (cd Capstone-SDI18-SupraDev)
+  (cd Capstone-SDI28-SupraDev)
 - To access this repository in VSCode run:
-  (code .) from the Capstone-SDI18-SupraDev file path
+  (code .) from the Capstone-SDI28-SupraDev file path
 - Open your terminal within VSCode by pressing:
   (control/command+shift+J)
 - Change directories to the backend by running:
@@ -51,10 +47,6 @@ The prerequisites that users need to have installed or set up before they can us
   (npx knex migrate:latest) then (npx knex seed:run)
 - Now you can access the database in a new terminal by running:
   (npm start)
-- You can check your database tables by running one of three operations below:
-  (open browser to: http://localhost:8080/ or http://localhost:8080/users),
-  return to your supradb docker terminal and run: (SELECT * FROM user_table;) or (SELECT * FROM project_table;) or (SELECT * FROM chatposts;),
-  open up POSTMAN and run any GET, POST, PUT, or DELETE operations that you can decipher in the express.js file.
 
 - Now open up another new terminal for the frontend by pressing the + button
 - Change directories to the frontend by running:
@@ -98,3 +90,12 @@ sudo bash ./test/supradb_test_destroy.sh supradb_test pg-docker
 but it won't execute from the node test itself.
 
 We recommend you run the creation script and then leave it alone. Afterwords the routes.test.js jest file will take care of migrations, seeding between test runs.
+
+## Updates from SDI-18
+
+1. Added the ability for multiple supracoder to be associated with a project and work collaboratively
+2. Added project state, in the form of milestones, to projects
+3. Updated the homepage to show an overview of project states, or news if the user isn't logged in
+4. Account creation now allows for multiple users, fro, normal, supra, leader, or admin level users.
+5. User profile pages have more details
+6. Updated project submission page
