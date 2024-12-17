@@ -28,6 +28,7 @@ const userFields = [
   'supradoubloons'
 ];
 const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV || 'development']);
+const bcrypt = require('bcrypt');
 
 /**
  * @swagger
@@ -144,23 +145,27 @@ router.get('/:id', (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const {
     first_name, last_name, username,
     password, profile_pic, user_summary,
     email, p1_account, p1_auth,
     type, availability, experience,
     languages, operating_systems, avatar_url,
-    time_available, is_supracoder, supradoubloons
+    time_available, is_supracoder, supradoubloons,
+    command
   } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const userFields = {
     first_name, last_name, username,
-    password, profile_pic, user_summary,
+    password: hashedPassword, profile_pic, user_summary,
     email, p1_account, p1_auth,
     type, availability, experience,
     languages, operating_systems, avatar_url,
-    time_available, is_supracoder, supradoubloons
+    time_available, is_supracoder, supradoubloons,
+    command
   };
   console.log(`received userFields : ${JSON.stringify(userFields)}`)
 

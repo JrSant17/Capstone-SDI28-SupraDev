@@ -10,6 +10,7 @@ exports.up = function(knex) {
         table.dateTime('datetime_joined').defaultTo(knex.fn.now());
         table.foreign('user_id').references('user_table.id');
         table.foreign('project_id').references('project_table.id');
+        table.dateTime('last_updated').defaultTo(knex.fn.now());
       });
 };
 
