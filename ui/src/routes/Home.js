@@ -8,27 +8,12 @@ import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Notification from '../components/Notifications'
+import { useNavigate } from 'react-router-dom';
 import MilestoneBar from '../components/milestoneBar';
-
-const HoverCard = styled(motion(Card))(({ theme }) => ({
-    '&:hover': {
-        transform: 'scale(1.05)',
-        boxShadow: theme?.shadows?.[8] ?? '0px 4px 20px rgba(0, 0, 0, 0.2)',
-
-    },
-    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-    borderRadius: '15px',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(5px)',
-    padding: theme.spacing(2),
-    [theme.breakpoints.up('md')]: {
-        padding: theme.spacing(3),
-    },
-}));
 
 const HomePage = () => {
     const theme = useTheme();
-    const [projects, setProjects] = useState([]);
+    const [recentProjects, setRecentProjects] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [usersProjects, setUsersProjects] = useState([]);
     const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
@@ -37,13 +22,14 @@ const HomePage = () => {
     'userPriv_Token',
     'user_type'
     ]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRecentProjectsWithUserInfo = async () => {
           setIsLoading(true);
           try {
             const projectsWithUserInfo = await getMostRecentProjectInfo(5);
-            setProjects(projectsWithUserInfo);
+            setRecentProjects(projectsWithUserInfo);
           } catch (error) {
             console.error('Error fetching projects:', error);
           } finally {
@@ -94,15 +80,32 @@ const HomePage = () => {
     }
 
     const getUserProjectInfo = async () => {
-        const userProj = await fetch(`http://localhost:8080/user_projects/${sessionCookies.user_id_token}`)
-        if (!userProj.ok) {
-            throw new Error('non 200 resp code');
+        try {
+            const userProj = await fetch(`http://localhost:8080/user_projects/${sessionCookies.user_id_token}`);
+            if (!userProj.ok) {
+                throw new Error('Failed to fetch user projects');
+            }
+            const userProjects = await userProj.json();
+            const detailedProjects = await Promise.all(userProjects.map(async (userProject) => {
+                const projectResponse = await fetch(`http://localhost:8080/projects/${userProject.project_id}`);
+                if (!projectResponse.ok) {
+                    console.error(`Failed to fetch details for project ${userProject.project_id}`);
+                    return { ...userProject, details: null };
+                }
+                const projectDetails = await projectResponse.json();
+                return { ...userProject, details: projectDetails };
+            }));
+    
+            setUsersProjects(detailedProjects);
+        } catch (error) {
+            console.error('Error fetching user project info:', error);
         }
-
-        const userProjects = await userProj.json();
-        console.log(`user projects are: ${JSON.stringify(userProjects)}`);
-        setUsersProjects(userProjects);
     }
+
+    const handleProjectClick = (projectId) => (e) => {
+        e.preventDefault();
+        navigate(`/projects/${projectId}`);
+    };
 
     const spaceSoftware = [
         {
@@ -183,13 +186,12 @@ const HomePage = () => {
                     <Card elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(5px)' }}>
                         <CardHeader title="Recent Activity" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
                         <Typography variant="subtitle2" color="textSecondary">
-                            {`There are currently ${projects.length} projects being worked, 5 most recent:`}
+                            {`There are currently ${recentProjects.length} projects being worked, 5 most recent:`}
                         </Typography>
                         <CardContent>
-                            {projects.slice(0, 5).map((project) => (
+                            {recentProjects.slice(0, 5).map((project) => (
                                 <div className="notification-section" key={project.id}>
                                     <Notification
-                                        key={project.id}
                                         project={project}
                                         username={project.acceptor.username}
                                         submitter={project.submitter.username}
@@ -206,11 +208,65 @@ const HomePage = () => {
 
 
                 {sessionCookies.user_type === 1 || sessionCookies.user_type === 2 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4 ? (
-                    <CardContent sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
-                        {usersProjects.map((userProject, index) => (
-                            <MilestoneBar id={index} />
-                        ))}
-                    </CardContent>
+                    <Grid item xs={12} md={9}>
+                        <Card elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
+                            <CardHeader
+                                title="Project Status"
+                                titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }}
+                            />
+                            <CardContent>
+                                <div className='project-status-container' style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '20px',
+                                }}>
+                                    {usersProjects.map((userProject) => (
+                                        <div key={userProject.project_id} 
+                                            style={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                backgroundColor: '#f5f5f5',
+                                                padding: '15px',
+                                                borderRadius: '8px',
+                                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                            }}
+                                        >
+                                            <div className='project-info' style={{
+                                                display: 'grid',
+                                                gridTemplateColumns: 'auto 1fr',
+                                                gap: '10px',
+                                                marginBottom: '15px'
+                                            }}>
+                                                <div style={{ gridColumn: '1 / -1', fontWeight: 'bold', fontSize: '1.2em', marginBottom: '10px' }}>
+                                                    {userProject.details?.name || 'Project name unknown'}
+                                                </div>
+                                                <div style={{ fontWeight: 'bold' }}>End Date:</div>
+                                                <div>{userProject.details?.end_date || 'No end date'}</div>
+                                                <div style={{ fontWeight: 'bold' }}>Working Repository:</div>
+                                                <div>
+                                                    {userProject.details?.github_url ?
+                                                        <a href={userProject.details.github_url} target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+                                                        : 'No repo'}
+                                                </div>
+                                                <div style={{ fontWeight: 'bold' }}>Coders needed:</div>
+                                                <div>{userProject.details?.coders_needed || 'No coders needed'}</div>
+                                            </div>
+                                            <div className='status-bars' style={{
+                                                width: '100%',
+                                                height: 'auto',
+                                                display: 'flex',
+                                                justifyContent: 'flex-start',
+                                            }}
+                                            onClick={handleProjectClick(userProject.project_id)}
+                                            >
+                                                <MilestoneBar id={userProject.project_id} />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                 ): (
                         <Grid item xs={10} md={9}>
                             <Card className="card" elevation={3}>
