@@ -30,12 +30,13 @@ const HomePage = () => {
     const theme = useTheme();
     const [projects, setProjects] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-      const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
-        'username_token',
-        'user_id_token',
-        'userPriv_Token',
-        'user_type'
-      ]);
+    const [usersProjects, setUsersProjects] = useState([]);
+    const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
+    'username_token',
+    'user_id_token',
+    'userPriv_Token',
+    'user_type'
+    ]);
 
     useEffect(() => {
         const fetchRecentProjectsWithUserInfo = async () => {
@@ -51,6 +52,7 @@ const HomePage = () => {
         };
       
         fetchRecentProjectsWithUserInfo();
+        getUserProjectInfo();
       }, []);
 
     const getMostRecentProjectInfo = async (numberProjects) => {
@@ -89,6 +91,17 @@ const HomePage = () => {
             console.error('Error fetching recent prokects:', error);
             return [];
           }
+    }
+
+    const getUserProjectInfo = async () => {
+        const userProj = await fetch(`http://localhost:8080/user_projects/${sessionCookies.user_id_token}`)
+        if (!userProj.ok) {
+            throw new Error('non 200 resp code');
+        }
+
+        const userProjects = await userProj.json();
+        console.log(`user projects are: ${JSON.stringify(userProjects)}`);
+        setUsersProjects(userProjects);
     }
 
     const spaceSoftware = [
@@ -194,7 +207,9 @@ const HomePage = () => {
 
                 {sessionCookies.user_type === 1 || sessionCookies.user_type === 2 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4 ? (
                     <CardContent sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
-                            <MilestoneBar view={'home'}/>
+                        {usersProjects.map((userProject, index) => (
+                            <MilestoneBar id={index} />
+                        ))}
                     </CardContent>
                 ): (
                         <Grid item xs={10} md={9}>

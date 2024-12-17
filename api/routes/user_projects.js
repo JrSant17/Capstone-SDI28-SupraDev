@@ -61,7 +61,24 @@ async function _getUserProjectQueryEntries(res, params) {
       return res.status(404).send("No user_projects found!");
     }
     return res.status(200).send(result);
-  };
+};
+
+router.get('/:id', (req, res) => {
+  knex('user_projects')
+    .select('*')
+    .where({ user_id: req.params.id })
+    .then((user_projects) => {
+      if (!user_projects) {
+        return res.status(404).send("user_projects not found");
+      }
+      console.log(`user proejects is ${JSON.stringify(user_projects)}`);
+      res.status(200).send(user_projects)
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Internal server error");
+    });
+})
 
 router.post('/', (req, res) => {
     const { user_id, project_id } = req.body;
