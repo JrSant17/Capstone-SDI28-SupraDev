@@ -148,7 +148,7 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
                 required
                 >
                 {experienceOptions.map((option) => (
-                 <MenuItem key={option} value={option}>{option}</MenuItem>
+                  <MenuItem key={option} value={option}>{option}</MenuItem>
                 ))}
               </Select>
           </FormControl>
@@ -156,8 +156,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
           <FormControl className='form-group' fullWidth margin="normal" size="small">
               <InputLabel>Programming Languages</InputLabel>
               <Select
-                   multiple
-                   value={languages}
+                  multiple
+                  value={languages}
                   onChange={handleLanguageChange}
                   required
                   renderValue={(selected) => (
@@ -168,11 +168,11 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
                       </Box>
                   )}
               >
-                   {languageOptions.map((lang) => (
-                       <MenuItem key={lang} value={lang}>
-                           {lang}
-                       </MenuItem>
-                   ))}
+                  {languageOptions.map((lang) => (
+                      <MenuItem key={lang} value={lang}>
+                        {lang}
+                      </MenuItem>
+                  ))}
               </Select>
           </FormControl>
 
