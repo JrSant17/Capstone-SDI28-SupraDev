@@ -106,86 +106,98 @@ export default function MilestoneBar({view}) {
         }
     };
 
-    return (
-        <div className="milestone-wrapper">
-            <div className="milestone-container">
-                {milestones.map((milestone, index) => (
-                    <div key={index} className={`milestone ${getStatusClass(index)}`}>
-                        {milestone}
-                    </div>
-                ))}
-            </div>
-            {sessionCookies.user_type === 4 ? (
-                <div className="button-container">
-                    <button
-                        className="milestone-button"
-                        onClick={moveToPreviousMilestone}
-                        disabled={currentMilestoneIndex <= 0} // Disable when at the first milestone
-                    >
-                        Previous Milestone
-                    </button>
-
-                    <button
-                        className="milestone-button"
-                        onClick={moveToNextMilestone}
-                        disabled={currentMilestoneIndex >= milestones.length - 1} // Disable when at the last milestone
-                    >
-                        Next Milestone
-                    </button>
-
-                    <button
-                        className="milestone-button"
-                        onClick={removeTimestamp}
-                        disabled={milestoneTimestamps[currentMilestoneIndex]?.started === null && milestoneTimestamps[currentMilestoneIndex]?.completed === null}
-                    >
-                        Remove Timestamp
-                    </button>
-
-                    <button
-                        className="milestone-button"
-                        onClick={startCurrentMilestone}
-                        disabled={!canStartCurrentMilestone || currentMilestoneIndex < 0}
-                    >
-                        Start Milestone
-                    </button>
-
-                    <button
-                        className="milestone-button"
-                        onClick={completeCurrentMilestone}
-                        disabled={!(milestoneTimestamps[currentMilestoneIndex]?.started) || currentMilestoneIndex < 0}
-                    >
-                        Complete Milestone
-                    </button>
-                </div>
-            ): (
-                <>
-                </>
-            )}
-            {view === 'status' ? (
-                <div className="timestamp-list">
-                    <h3>Milestone History</h3>
-                    <ul>
+    switch(view) {
+        case 'status':
+            return (
+                <div className="milestone-wrapper">
+                    <div className="milestone-container">
                         {milestones.map((milestone, index) => (
-                            <li key={index}>
-                                <strong>{milestone}</strong>
-                                <div>
-                                    {milestoneTimestamps[index]?.started && (
-                                        <small>Started on: {milestoneTimestamps[index].started}</small>
-                                    )}
-                                </div>
-                                <div>
-                                    {milestoneTimestamps[index]?.completed && (
-                                        <small className='completed-stamp'>Completed on: {milestoneTimestamps[index].completed}</small>
-                                    )}
-                                </div>
-                            </li>
+                            <div key={index} className={`milestone ${getStatusClass(index)}`}>
+                                {milestone}
+                            </div>
                         ))}
-                    </ul>
+                    </div>
+                    {sessionCookies.user_type === 4 ? (
+                        <div className="button-container">
+                            <button
+                                className="milestone-button"
+                                onClick={moveToPreviousMilestone}
+                                disabled={currentMilestoneIndex <= 0} // Disable when at the first milestone
+                            >
+                                Previous Milestone
+                            </button>
+
+                            <button
+                                className="milestone-button"
+                                onClick={moveToNextMilestone}
+                                disabled={currentMilestoneIndex >= milestones.length - 1} // Disable when at the last milestone
+                            >
+                                Next Milestone
+                            </button>
+
+                            <button
+                                className="milestone-button"
+                                onClick={removeTimestamp}
+                                disabled={milestoneTimestamps[currentMilestoneIndex]?.started === null && milestoneTimestamps[currentMilestoneIndex]?.completed === null}
+                            >
+                                Remove Timestamp
+                            </button>
+
+                            <button
+                                className="milestone-button"
+                                onClick={startCurrentMilestone}
+                                disabled={!canStartCurrentMilestone || currentMilestoneIndex < 0}
+                            >
+                                Start Milestone
+                            </button>
+
+                            <button
+                                className="milestone-button"
+                                onClick={completeCurrentMilestone}
+                                disabled={!(milestoneTimestamps[currentMilestoneIndex]?.started) || currentMilestoneIndex < 0}
+                            >
+                                Complete Milestone
+                            </button>
+                        </div>
+                    ) : (
+                        <>
+                        </>
+                    )}
+                    <div className="timestamp-list">
+                        <h3>Milestone History</h3>
+                        <ul>
+                            {milestones.map((milestone, index) => (
+                                <li key={index}>
+                                    <strong>{milestone}</strong>
+                                    <div>
+                                        {milestoneTimestamps[index]?.started && (
+                                            <small>Started on: {milestoneTimestamps[index].started}</small>
+                                        )}
+                                    </div>
+                                    <div>
+                                        {milestoneTimestamps[index]?.completed && (
+                                            <small className='completed-stamp'>Completed on: {milestoneTimestamps[index].completed}</small>
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
-            ): (
-                <>
-                </>
-            )}
-        </div>
-    );
+            );
+        case 'home':
+            return (
+                <div className="milestone-wrapper">
+                    <div className="milestone-container">
+                        {milestones.map((milestone, index) => (
+                            <div key={index} className={`milestone ${getStatusClass(index)}`}>
+                                {milestone}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        default:
+            return null;
+    }
 }
