@@ -277,51 +277,6 @@ useEffect(() => {
             <Box  display="flex" padding="20px" height="200%" bgcolor="rgba(255, 255, 255, .85)" sx={{backgroundSize: 'cover', borderRadius: '25px', marginTop: "25px", marginLeft: "50px", marginRight: "50px", marginBottom: "50px" }}>
         <Container maxWidth="lg">
           <div>
-            {/* <Box
-              style={{ backgroundImage: `url(${profile.cover})` }}
-              sx={{
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'cover',
-                borderRadius: '25px',
-                height: 348,
-                position: 'relative',
-                '&:hover': {
-                  '& button': {
-                    visibility: 'visible',
-                  },
-                },
-              }}
-            >
-              <Button
-                startIcon={
-                  <SvgIcon>
-                    <Image03Icon />
-                  </SvgIcon>
-                }
-                sx={{
-                  backgroundColor: blueGrey[900],
-                  bottom: {
-                    lg: 24,
-                    xs: 'auto',
-                  },
-                  color: 'common.white',
-                  position: 'absolute',
-                  right: 24,
-                  top: {
-                    lg: 'auto',
-                    xs: 24,
-                  },
-                  visibility: 'hidden',
-                  '&:hover': {
-                    backgroundColor: blueGrey[900],
-                  },
-                }}
-                variant="contained"
-              >
-                Change Cover
-              </Button>
-            </Box> */}
             <Stack
               alignItems="center"
               direction="row"
@@ -334,8 +289,8 @@ useEffect(() => {
                 spacing={2}
               >
                 <Avatar
-                  src={userObj.profile_pic}
-                  alt={profile.avatar}
+                  src={userObj.avatar_url}
+                  alt={userObj.avatar_url}
                   sx={{
                     height: 100,
                     width: 100,
@@ -374,19 +329,6 @@ useEffect(() => {
                       onClick={handleEditProfileClick}>
                       Edit Profile
                     </Button>
-                {/* <Button
-                  component={RouterLink}
-                  href={userObj.id === sessionCookies.user_id_token ? paths.chat : paths.chat.interact}
-                  size="small"
-                  startIcon={
-                    <SvgIcon>
-                      <MessageChatSquareIcon />
-                    </SvgIcon>
-                  }
-                  variant="contained"
-                >
-                  Chat
-                </Button> */}
               </Stack>
               <Tooltip title="More options">
                 <IconButton>
@@ -420,7 +362,7 @@ useEffect(() => {
             {currentTab === 'timeline' && (
               <SocialTimeline
                 posts={posts}
-                profile={profile}
+                profile={userObj.avatar_url}
               />
             )}
             {currentTab === 'projects' && (

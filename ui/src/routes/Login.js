@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import {
@@ -7,11 +7,9 @@ import {
   DialogActions, TextField,
   Paper, Card,
 } from '@mui/material';
-import { SHA256 } from 'crypto-js';
 import CreateAccount from '../components/createAccount';
 
 const Login = () => {
-  const [usersSummary, setUsersSummary] = useState([]);
   const [usernameLogin, setUsernameLogin] = useState('');
   const [passwordLogin, setPasswordLogin] = useState('');
 
@@ -22,18 +20,10 @@ const Login = () => {
   const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
     'username_token',
     'user_id_token',
+    'userPriv_Token',
+    'user_type'
   ]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    usersRefetch();
-  }, []);
-
-  const usersRefetch = async () => {
-    await fetch('http://localhost:8080/users')
-      .then((res) => res.json())
-      .then((userFetchData) => setUsersSummary(userFetchData));
-  };
 
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -46,37 +36,44 @@ const Login = () => {
   };
 
   const LogIntoAccount = async () => {
-    let accountMatch = false;
-    for (var element of usersSummary) {
-      if (element.username === usernameLogin) {
-        accountMatch = true;
-        if (element.password === SHA256(passwordLogin).toString()) {
-          removeSessionCookies('user_id_token');
-          removeSessionCookies('username_token');
-          setSessionCookies('user_id_token', element.id, { path: '/' });
-          setSessionCookies('username_token', element.username, { path: '/' });
-          setSessionCookies('userPriv_Token', element.is_supracoder, { path: '/' });
-          setSessionCookies('user_type', element.type, {path: '/'});
-          navigate('/home');
-          window.location.reload();
-          setUsernameLogin('');
-          setPasswordLogin('');
-          displayDialogMessage(
-            'Login Successful',
-            `Login successful for ${element.first_name} ${element.last_name}.`
-          );
-          break;
-        } else {
-          displayDialogMessage(
-            'Incorrect Password',
-            `Incorrect password for ${element.first_name} ${element.last_name}.`
-          );
-          break;
-        }
+    try {
+      const response = await fetch('http://localhost:8080/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usernameOrEmail: usernameLogin,
+          password: passwordLogin,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`received garbage: ${JSON.stringify(data)}`);
+        console.log(`test: ${data.user.id}`)
+        // Set session cookies
+        removeSessionCookies('user_id_token');
+        removeSessionCookies('username_token');
+        setSessionCookies('user_id_token', data.user.id, { path: '/' });
+        setSessionCookies('username_token', data.user.username, { path: '/' });
+        setSessionCookies('userPriv_Token', data.user.is_supracoder, { path: '/' });
+        setSessionCookies('user_type', data.user.type, { path: '/'});
+
+        // Navigate to home and display success message
+        navigate('/home');
+        window.location.reload();
+        setUsernameLogin('');
+        setPasswordLogin('');
+        displayDialogMessage(
+          'Login Successful',
+          `Welcome back, ${data.user.first_name} ${data.user.last_name}!`
+        );
+      } else {
+        const errorData = await response.json();
+        displayDialogMessage('Login Failed', errorData.message);
       }
-    }
-    if (!accountMatch) {
-      displayDialogMessage('Account Not Found', 'No account found for that username.');
+    } catch (error) {
+      console.error('Error during login:', error);
+      displayDialogMessage('Error', 'An error occurred during login. Please try again.');
     }
   };
 
@@ -110,10 +107,8 @@ const Login = () => {
           <form id="loginCreds">
             <TextField
               fullWidth
-              className="inputText"
               label="Username"
               variant="outlined"
-              type="text"
               value={usernameLogin}
               onChange={(e) => setUsernameLogin(e.target.value)}
               placeholder="Username"
@@ -122,7 +117,6 @@ const Login = () => {
             />
             <TextField
               fullWidth
-              className="inputText"
               label="Password"
               variant="outlined"
               type="password"
@@ -134,11 +128,11 @@ const Login = () => {
             />
             <Button
               fullWidth
-              type="submit"
+              type="button"
               variant="contained"
               color="secondary"
               style={{ marginTop: '15px' }}
-              onClick={() => LogIntoAccount()}
+              onClick={LogIntoAccount}
             >
               Login
             </Button>
@@ -147,7 +141,6 @@ const Login = () => {
         <CreateAccount />
       </Paper>
 
-      {/* Dialog for displaying messages */}
       <Dialog open={dialogOpen} onClose={handleDialogClose}>
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
@@ -164,4 +157,3 @@ const Login = () => {
 };
 
 export default Login;
-

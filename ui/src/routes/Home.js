@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-    Avatar, Box, Card, CardContent, CardHeader, Grid, List, ListItem,
-    ListItemAvatar, ListItemText, Typography, Paper, Button, Container, Divider
+    Box, Card, CardContent, CardHeader, Grid, Typography, Paper, Button, Divider
 } from '@mui/material';
+import { useCookies } from 'react-cookie';
 import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Notification from '../components/Notifications'
+import MilestoneBar from '../components/milestoneBar';
 
 const HoverCard = styled(motion(Card))(({ theme }) => ({
     '&:hover': {
@@ -28,95 +29,80 @@ const HoverCard = styled(motion(Card))(({ theme }) => ({
 const HomePage = () => {
     const theme = useTheme();
     const [projects, setProjects] = useState([]);
-    const [allUsers, setAllUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [usersProjects, setUsersProjects] = useState([]);
+    const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies([
+    'username_token',
+    'user_id_token',
+    'userPriv_Token',
+    'user_type'
+    ]);
 
     useEffect(() => {
-        // Fetch the projects
-        fetch("http://localhost:8080/projects")
-            .then((res) => res.json())
-            .then((projectData) => {
-                setProjects(projectData);
-            })
-            .catch((err) => console.log(err));
+        const fetchRecentProjectsWithUserInfo = async () => {
+          setIsLoading(true);
+          try {
+            const projectsWithUserInfo = await getMostRecentProjectInfo(5);
+            setProjects(projectsWithUserInfo);
+          } catch (error) {
+            console.error('Error fetching projects:', error);
+          } finally {
+            setIsLoading(false);
+          }
+        };
+      
+        fetchRecentProjectsWithUserInfo();
+        getUserProjectInfo();
+      }, []);
 
-        // Fetch the users
-        fetch("http://localhost:8080/users")
-            .then((res) => res.json())
-            .then((userData) => {
-                setAllUsers(userData);
-            })
-            .catch((err) => console.log(err));
-    }, []);
+    const getMostRecentProjectInfo = async (numberProjects) => {
+        try {
+            const projectsResponse = await fetch(`http://localhost:8080/projects?_sort=last_updated&_order=desc&_limit=${numberProjects}&is_accepted=true`);
+            if (!projectsResponse.ok) {
+              throw new Error('non 200 resp code');
+            }
+            const projects = await projectsResponse.json();
+        
+            const projectsWithUserInfo = await Promise.all(projects.map(async (project) => {
+                //TODO: this info should probably be in the user_projects table!
+              const [submitterResponse, acceptorResponse] = await Promise.all([
+                fetch(`http://localhost:8080/users/${project.submitter_id}`),
+                fetch(`http://localhost:8080/users/${project.accepted_by_id}`)
+              ]);
+        
+              const submitterData = await submitterResponse.json();
+              const acceptorData = await acceptorResponse.json();
+        
+              return {
+                ...project,
+                submitter: {
+                  username: submitterData.username,
+                  avatar_url: submitterData.avatar_url
+                },
+                acceptor: {
+                  username: acceptorData.username,
+                  avatar_url: acceptorData.avatar_url
+                }
+              };
+            }));
+        
+            return projectsWithUserInfo;
+          } catch (error) {
+            console.error('Error fetching recent prokects:', error);
+            return [];
+          }
+    }
 
-    const findSubmitter = (assocSubId) => {
-        let outputUsername;
-        for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            outputUsername = allUsers[element].username;
-            return (
-                outputUsername
-            )
-          }
+    const getUserProjectInfo = async () => {
+        const userProj = await fetch(`http://localhost:8080/user_projects/${sessionCookies.user_id_token}`)
+        if (!userProj.ok) {
+            throw new Error('non 200 resp code');
         }
-      }
-      const findSubmitterImg = (assocSubId) => {
-        let outputUserImg;
-        for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            outputUserImg = allUsers[element].profile_pic;
-            return (
-                outputUserImg
-            )
-          }
-        }
-      }
 
-      const findAcceptedImg = (assocSubId) => {
-        let outputUserImg;
-        for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            outputUserImg = allUsers[element].profile_pic;
-            return (
-                outputUserImg
-            )
-          }
-        }
-      }
-      const findSubmittedUserId= (assocSubId) => {
-        let UserId;
-        for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            UserId = allUsers[element].id;
-            return (
-                UserId
-            )
-          }
-        }
-      }
-
-      const findAcceptedUserId= (assocSubId) => {
-        let UserId;
-        for (let element in allUsers) {
-          if (allUsers[element].id === assocSubId) {
-            UserId = allUsers[element].id;
-            return (
-                UserId
-            )
-          }
-        }
-      }
-
-      const findAcceptor = (assocAccId) => {
-        let outputUsername;
-        for (let element in allUsers) {
-          if (allUsers[element].id === assocAccId) {
-            outputUsername = allUsers[element].username;
-            return (
-              outputUsername
-            )
-          }
-        }
-      }
+        const userProjects = await userProj.json();
+        console.log(`user projects are: ${JSON.stringify(userProjects)}`);
+        setUsersProjects(userProjects);
+    }
 
     const spaceSoftware = [
         {
@@ -146,13 +132,6 @@ const HomePage = () => {
         }
 
     ]
-    // useEffect(() => {
-    //     // Fetch space-related software data from NASA's TechTransfer Software API
-    //     fetch('https://api.nasa.gov/techtransfer/software/?engine&api_key=6WY9lR6IeiiTvLJG4U5V4qnnJzPJlpgMkmV8uKj9')
-    //         .then(response => response.json())
-    //         .then(data => setSpaceSoftware(data.results.slice(0, 10))) // Limit to 10 items
-    //         .catch(error => console.error('Error fetching space software data:', error));
-    // }, []);
 
     return (
         <Box
@@ -172,10 +151,7 @@ const HomePage = () => {
                 textAlign: 'center',
                 padding: '40px 0',
                 mb: 4,
-                // backgroundColor: '#261928',
                 backgroundImage: 'url(https://images.fineartamerica.com/images/artworkimages/mediumlarge/2/9-abstract-smoke-duxx.jpg)',
-                // 'linear-gradient(135deg, #020024 0%, #090979 37%, #00d4ff 100%)',
-                // backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed',
@@ -188,122 +164,81 @@ const HomePage = () => {
                 <Typography variant="subtitle1" mt={2} fontFamily="'Orbitron', sans-serif">
                     Bridging the Gap Between Creativity and Collaboration
                 </Typography>
-                <Link to="/Login" style={{ textDecoration: 'none', marginTop: '20px' }}>
-                    <Box mt={3}>
-                        <Button variant="contained" style={{ backgroundColor: theme?.palette?.primary?.main || 'purple', color: '#fff' }} endIcon={<ArrowForwardIcon />}>
-                            Get Started
-                        </Button>
-                    </Box>
-                </Link>
+                {sessionCookies.user_type === 1 || sessionCookies.user_type === 2 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4 ? (
+                    <>
+                    </>
+                ): (
+                        <Link to="/Login" style={{ textDecoration: 'none', marginTop: '20px' }}>
+                            <Box mt={3}>
+                                <Button variant="contained" style={{ backgroundColor: theme?.palette?.primary?.main || 'purple', color: '#fff' }} endIcon={<ArrowForwardIcon />}>
+                                    Login to see your projects
+                                </Button>
+                            </Box>
+                        </Link>
+                )}
             </Paper>
             <Grid container spacing={2} sx={{ width: '100%' }}>
-                    {/* Notifications */}
+                {/* Notifications */}
                 <Grid item xs={20} md={3}>
                     <Card elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(5px)' }}>
                         <CardHeader title="Recent Activity" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
                         <Typography variant="subtitle2" color="textSecondary">
-                                    {/* {`There are currently ${projects.length} projects being worked`} */}
+                            {`There are currently ${projects.length} projects being worked, 5 most recent:`}
                         </Typography>
                         <CardContent>
-                                {[...projects].reverse().map((project) => (
+                            {projects.slice(0, 5).map((project) => (
                                 <div className="notification-section" key={project.id}>
                                     <Notification
                                         key={project.id}
                                         project={project}
-                                        username={findAcceptor(project.accepted_by_id)}
-                                        submitter={findSubmitter(project.submitter_id)}
+                                        username={project.acceptor.username}
+                                        submitter={project.submitter.username}
                                         submittedUserId={project.submitter_id}
                                         acceptedUserId={project.accepted_by_id}
-                                        submitterImg={findSubmitterImg(project.submitter_id)}
-                                        acceptedImg={findAcceptedImg(project.accepted_by_id)}
+                                        submitterImg={project.submitter.avatar_url}
+                                        acceptedImg={project.acceptor.avatar_url}
                                     />
                                 </div>
-                                ))}
-                            </CardContent>
+                            ))}
+                        </CardContent>
                     </Card>
                 </Grid>
 
 
-                    {/* Space Software */}
-                <Grid item xs={10} md={9}>
-                    <Card className="card" elevation={3}>
-                        <CardHeader title="Space Software News" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
-                            <CardContent>
-                                {spaceSoftware.map((softwareItem, index) => (
-                                <div key={index}>
-                                    <Typography variant="h6" color="primary">
-                                        <a href={softwareItem.link} target="_blank" rel="noopener noreferrer">{softwareItem.title.slice(0, 100)}</a>
-                                    </Typography>
-                                    <Typography variant="body1" mt={1}>
-                                        {softwareItem.description.slice(0, 500)}...
-                                    </Typography>
-                                </div>
-                                ))}
-                            </CardContent>
-                    </Card>
-                </Grid>
+                {sessionCookies.user_type === 1 || sessionCookies.user_type === 2 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4 ? (
+                    <CardContent sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
+                        {usersProjects.map((userProject, index) => (
+                            <MilestoneBar id={index} />
+                        ))}
+                    </CardContent>
+                ): (
+                        <Grid item xs={10} md={9}>
+                            <Card className="card" elevation={3}>
+                                <CardHeader title="Space Software News" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
+                                <CardContent>
+                                    {spaceSoftware.map((softwareItem, index) => (
+                                        <div key={index}>
+                                            <Typography variant="h6" color="primary">
+                                                <a href={softwareItem.link} target="_blank" rel="noopener noreferrer">{softwareItem.title.slice(0, 100)}</a>
+                                            </Typography>
+                                            <Typography variant="body1" mt={1}>
+                                                {softwareItem.description.slice(0, 500)}...
+                                            </Typography>
+                                        </div>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                )}
             </Grid>
+            <Divider orientation="vertical" flexItem />
+            <Box sx={{ width: '100%', textAlign: 'center', mt: 4, color: 'white', backgroundImage: 'linear-gradient(135deg, #020024 0%, #090979 37%, #00d4ff 100%)' }}>
 
-                    {/* Highlights
-                    <Grid item xs={12} md={6}>
-                        <HoverCard elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(5px)' }}>
-                            <CardHeader title="Highlights" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
-                            <CardContent>
-                                <Typography variant="h6" color="primary">
-                                    Success! Project J made major breakthroughs in XYZ
-                                </Typography>
-                                <Typography variant="body1" mt={1}>
-                                    Supra Coder Snuffy figured out how to install DOOM in My...
-                                </Typography>
-                            </CardContent>
-                        </HoverCard>
-                    </Grid> */}
-                    <Divider orientation="vertical" flexItem />
-                    {/* Latest Notifications */}
-
-
-                    {/* User Activity
-                    <Grid item xs={12} md={6}>
-                        <HoverCard elevation={3} sx={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(5px)' }}>
-                            <CardHeader title="Recent Activity" titleTypographyProps={{ variant: 'h5', fontWeight: 'bold' }} />
-                            <CardContent>
-                                <List>
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <i className="fas fa-plus"></i>
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary="Added a new project: Project XYZ." secondary="1 day ago" />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <i className="fas fa-trophy"></i>
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary="Claimed a bounty from John's project." secondary="2 days ago" />
-                                    </ListItem>
-                                    <ListItem>
-                                        <ListItemAvatar>
-                                            <Avatar>
-                                                <i className="fas fa-user-edit"></i>
-                                            </Avatar>
-                                        </ListItemAvatar>
-                                        <ListItemText primary="Updated profile picture." secondary="5 days ago" />
-                                    </ListItem>
-                                </List>
-                            </CardContent>
-                        </HoverCard>
-                    </Grid> */}
-
-                        <Box sx={{ width: '100%', textAlign: 'center', mt: 4, color: 'white', backgroundImage: 'linear-gradient(135deg, #020024 0%, #090979 37%, #00d4ff 100%)' }}>
-
-                            <Typography variant="body2">
-                                © 2023 Supra Dev. All Rights Reserved.
-                            </Typography>
-                        </Box>
+                <Typography variant="body2">
+                    © 2024 Supra Dev. All Rights Reserved.
+                </Typography>
             </Box>
+        </Box>
     );
 };
 

@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar, } from '@mui/material';
+import { useCookies } from 'react-cookie';
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -25,6 +29,8 @@ const ProjectDetailsPage = () => {
     "user_type",
   ]);
   const navigate = useNavigate();
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
   // const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [chatposts, setChatposts] = useState([]);
@@ -33,6 +39,12 @@ const ProjectDetailsPage = () => {
   const [isJoining, setIsJoining] = useState(false);
   // const [coders_needed, setCodersNeeded] = useState({coders_needed: 0 });
 
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      setComments((prevComments) => [...prevComments, newComment]);
+      setNewComment("");
+    }
+  };
   // // const handleAddComment = () => {
   // //   if (newComment.trim()) {
   // //     setComments((prevComments) => [...prevComments, newComment]);
@@ -93,7 +105,7 @@ const ProjectDetailsPage = () => {
   };
 
   useEffect(() => {
-    fetch(`http://localhost:8080/projects/${projectId}`)
+    fetch(`http://localhost:8080/projects/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -103,10 +115,11 @@ const ProjectDetailsPage = () => {
       .then((data) => {
         console.log(`received data: ${JSON.stringify(data)}`);
         if (data) {
-          setBounty(data);
+          setproject(data);
         }
       })
       .catch((error) => {
+        console.error("There was an error fetching the project:", error);
         console.error("There was an error fetching the project:", error);
       });
     // fetchPosts();
@@ -114,6 +127,8 @@ const ProjectDetailsPage = () => {
     // fetchCurrentUserDoubloons();
   }, []);
 
+  if (!project) {
+    return <Typography align="center" style={{ marginTop: '2rem' }}>Loading...</Typography>;
   if (!bounty) {
     return (
       <Typography align="center" style={{ marginTop: "2rem" }}>
@@ -131,12 +146,21 @@ const ProjectDetailsPage = () => {
 
     
 
-    fetch(`http://localhost:8080/projects/${projectId}`, {
+    fetch(`http://localhost:8080/projects/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        is_approved: true,
+        project_payout: doubloons
+      })
+    })
+    navigate('/projects');
+  }
+
+  const postCommentFetch = ()=> {
+    fetch(`http://localhost:8080/projects/${id}/messages`, {
         is_approved: true,
         // bounty_payout: doubloons,
       }),
@@ -324,7 +348,7 @@ const ProjectDetailsPage = () => {
   };
 
   const patchToComplete = () => {
-    fetch(`http://localhost:8080/projects/${projectId}`, {
+    fetch(`http://localhost:8080/projects/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -391,6 +415,25 @@ const ProjectDetailsPage = () => {
             marginBottom: "50px",
           }}
         >
+      <Box
+        display="flex"
+        justifyContent="center"
+        minHeight="100vh"
+        bgcolor="rgba(255, 255, 255, 0)"
+      >
+        <Paper
+          elevation={5}
+          style={{
+            borderRadius: "25px",
+            background: "rgba(255,255,255, 0.85)",
+            padding: "40px",
+            marginTop: "25px",
+            maxWidth: "800px",
+            width: "100%",
+            overflow: "auto",
+            marginBottom: "50px",
+          }}
+        >
           <Typography
             variant="h4"
             gutterBottom
@@ -431,6 +474,8 @@ const ProjectDetailsPage = () => {
             variant="h5"
             gutterBottom
             color="blue"
+            style={{ fontWeight: "bold", marginBottom: "1.5rem" }}
+          >
             style={{ fontWeight: "bold", marginBottom: "1.5rem" }}
           >
             {sessionCookies.userPriv_Token === true &&
@@ -496,9 +541,11 @@ const ProjectDetailsPage = () => {
           bounty.is_completed === false &&
           bounty.is_accepted === true ? (
             <Button
-              onClick={() => handleUnaccept()}
+              onClick={() => handleSupraLeaveProject()}
               variant="contained"
               color="error"
+              style={{ margin: "5px" }}
+            >
               style={{ margin: "5px" }}
             >
               Drop this project?
@@ -516,6 +563,8 @@ const ProjectDetailsPage = () => {
               color="success"
               style={{ margin: "5px" }}
             >
+              style={{ margin: "5px" }}
+            >
               Complete the project?
             </Button>
           ) : (
@@ -525,6 +574,8 @@ const ProjectDetailsPage = () => {
           <Divider style={{ marginBottom: "1.5rem" }} />
           <Typography
             variant="h6"
+            style={{ fontWeight: "500", color: "#616161" }}
+          >
             style={{ fontWeight: "500", color: "#616161" }}
           >
             Project Details:
@@ -582,6 +633,9 @@ const ProjectDetailsPage = () => {
             style={{ marginTop: "1.5rem" }}
           >
             Thank you for viewing this Project. Check back often for updates!
+            style={{ marginTop: "1.5rem" }}
+          >
+            Thank you for viewing this Project. Check back often for updates!
           </Typography>
 
           {sessionCookies.userPriv_Token === false && sessionCookies.user_type === 4 &&
@@ -591,6 +645,8 @@ const ProjectDetailsPage = () => {
               onClick={() => handleApprove()}
               variant="contained"
               color="success"
+              style={{ margin: "5px" }}
+            >
               style={{ margin: "5px" }}
             >
               Approve
@@ -608,12 +664,16 @@ const ProjectDetailsPage = () => {
               color="error"
               style={{ margin: "5px" }}
             >
+              style={{ margin: "5px" }}
+            >
               Deny
             </Button>
           ) : (
             <></>
           )}
-          {/* Comments Section */}
+          {/* Comments Section 
+          TODO: REFACTOR THIS INTO COMPONENT
+          */}
           <Box marginTop="2rem">
             <Typography variant="h5">Comments</Typography>
             <List>
@@ -628,6 +688,22 @@ const ProjectDetailsPage = () => {
                 </div>
               ))}
             </List>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Add a comment"
+              value={newComment}
+              onChange={handleCommentChange}
+            />
+            <Button
+              onClick={() => {
+                postCommentFetch();
+                fetchPosts();
+              }}
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "1rem" }}
+            >
             <TextField
               fullWidth
               variant="outlined"

@@ -24,6 +24,8 @@ exports.up = function(knex) {
     table.integer('time_available');
     table.boolean('is_supracoder').defaultTo(false);
     table.integer('supradoubloons');
+    table.string('command');
+    table.dateTime('last_updated').defaultTo(knex.fn.now());
   });
 };
 

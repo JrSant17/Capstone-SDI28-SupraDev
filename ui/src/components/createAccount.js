@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState } from 'react';
-import { SHA256 } from 'crypto-js';
 import {
     Button,Dialog,DialogTitle,DialogContent,
     DialogContentText,DialogActions,TextField,Card,
@@ -22,7 +21,7 @@ export default function CreateAccount() {
     const [experience, setExperience] = useState('');
     const [languages, setLanguages] = useState([]);
     const [operatingSystems, setOperatingSystems] = useState([]);
-    const [timeAvailable, setTimeAvailable] = useState('');
+    const [timeAvailable, setTimeAvailable] = useState(2);
 
     const [defProfilePic, setDefProfilePic] = useState(
       'https://as1.ftcdn.net/v2/jpg/02/85/15/18/1000_F_285151855_XaVw4eFq1QufklRbMFDxdAJos1OadAD1.jpg'
@@ -32,10 +31,12 @@ export default function CreateAccount() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogTitle, setDialogTitle] = useState('');
     const [dialogMessage, setDialogMessage] = useState('');
+    const [command, setCommand] = useState('');
 
     const experienceOptions = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
     const languageOptions = ['JavaScript', 'Python', 'Java', 'C++', 'C', 'Zig', 'Ruby', 'Go', 'Rust', 'PHP', 'C#', 'Swift'];
     const osOptions = ['Windows', 'macOS', 'Linux', 'iOS', 'Android'];
+    const navigate = useNavigate();
 
     const handleLanguageChange = (event) => {
         setLanguages(event.target.value);
@@ -68,12 +69,17 @@ export default function CreateAccount() {
     const CreateAccount = async () => {
         let profPicToSet = '';
         let submitUserType;
+        let isSupraVal = false;
         if(userType == 'normal') {
             submitUserType = 3;
         } else if(userType == 'supracoder') {
             submitUserType = 1;
+            isSupraVal = true;
+            console.log(`is supra: ${isSupraVal}`)
         } else if(userType == 'leadership') {
             submitUserType = 2;
+        } else if(userType == 'admin') {
+            submitUserType = 4;
         }
 
         if (profilePic === '') {
@@ -81,6 +87,9 @@ export default function CreateAccount() {
         } else {
           profPicToSet = profilePic;
         }
+
+        console.log(`submitted password ${password}`);
+
         await fetch('http://localhost:8080/users', {
           method: 'POST',
           headers: {
@@ -95,7 +104,7 @@ export default function CreateAccount() {
             email: email,
             job_title: jobTitle,
             type: submitUserType,
-            password: SHA256(password).toString(),
+            password: password.toString(),
             user_summary: usersSummary,
             profile_pic: profPicToSet,
             availability: availability,
@@ -104,13 +113,45 @@ export default function CreateAccount() {
             operating_systems: operatingSystems,
             time_available: timeAvailable,
             user_summary: `Username: ${username} \n email: ${email}`,
-            is_supracoder: false,
+            is_supracoder: isSupraVal,
+            command: command
           }),
-        });
-        displayDialogMessage('Account Created', 'Account created successfully!');
-        usersRefetch();
-        useNavigate('/login')
+        })
+        .then((resp) => {
+            if(resp.status == 201){
+                new Promise((resolve) => {
+                    resetForm();
+                    displayDialogMessage('Account Created', 'Please login now.');
+                    setTimeout(resolve, 2000);
+                  })
+                  .then(() => {
+                    usersRefetch();
+                  });
+            } else if(resp.status == 500){
+                displayDialogMessage('Creation Failure','Account creation failure!');
+            } else if(resp.status == 409) {
+                resp.json().then(errorData => {
+                    displayDialogMessage('Account Taken', `${errorData.error}`);
+                });
+            }
+        })
     };
+
+    const resetForm = () => {
+        setFirstName('');
+        setLastName('');
+        setUsername('');
+        setEmail('');
+        setJobTitle('');
+        setPassword('');
+        setProfilePic('');
+        setAvailability('');
+        setExperience('');
+        setLanguages([]);
+        setOperatingSystems([]);
+        setTimeAvailable(2);
+        setUserType('normal');
+      };
 
     return(
         <>
@@ -277,25 +318,19 @@ export default function CreateAccount() {
 
                         <FormControl fullWidth margin="normal" size="small">
                             <InputLabel>Operating Systems</InputLabel>
-                            <Select
-                                multiple
-                                value={operatingSystems}
-                                onChange={handleOSChange}
+                            <TextField
+                                fullWidth
+                                className="inputText"
+                                label="Username"
+                                variant="outlined"
+                                type="text"
+                                value={command}
+                                onChange={(e) => setCommand(e.target.value)}
+                                placeholder="Command"
+                                size="small"
+                                margin="normal"
                                 required
-                                renderValue={(selected) => (
-                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                        {selected.map((value) => (
-                                            <Chip key={value} label={value} />
-                                        ))}
-                                    </Box>
-                                )}
-                            >
-                                {osOptions.map((os) => (
-                                    <MenuItem key={os} value={os}>
-                                        {os}
-                                    </MenuItem>
-                                ))}
-                            </Select>
+                            />
                         </FormControl>
                         <FormControl fullWidth margin="normal" size="small" required>
                             <InputLabel>Time Available per Week</InputLabel>
@@ -329,6 +364,80 @@ export default function CreateAccount() {
                         />
                     </>
                 )}
+
+                {userType === 'leadership' && (
+                    <>
+                        <TextField
+                            fullWidth
+                            className="inputText"
+                            label="Current Command"
+                            variant="outlined"
+                            type="text"
+                            value={command}
+                            onChange={(e) => setCommand(e.target.value)}
+                            placeholder="Current Command"
+                            size="small"
+                            margin="normal"
+                            required
+                        />
+
+                        <FormControl fullWidth margin="normal" size="small">
+                            <InputLabel>Experience Level</InputLabel>
+                            <Select
+                                value={experience}
+                                label="Experience Level"
+                                onChange={(e) => setExperience(e.target.value)}
+                                required
+                            >
+                                {experienceOptions.map((option) => (
+                                    <MenuItem key={option} value={option}>{option}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal" size="small">
+                            <InputLabel>Programming Languages</InputLabel>
+                            <Select
+                                multiple
+                                value={languages}
+                                onChange={handleLanguageChange}
+                                required
+                                renderValue={(selected) => (
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((value) => (
+                                            <Chip key={value} label={value} />
+                                        ))}
+                                    </Box>
+                                )}
+                            >
+                                {languageOptions.map((lang) => (
+                                    <MenuItem key={lang} value={lang}>
+                                        {lang}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal" size="small" required>
+                            <InputLabel>Time Available per Week</InputLabel>
+                            <Select
+                                value={timeAvailable}
+                                label="Time Available per Week"
+                                onChange={handleTimeAvailableChange}
+                            >
+                                <MenuItem value={1}>1 hour</MenuItem>
+                                <MenuItem value={2}>2 hours</MenuItem>
+                                <MenuItem value={5}>5 hours</MenuItem>
+                                <MenuItem value={10}>10 hours</MenuItem>
+                                <MenuItem value={20}>20 hours</MenuItem>
+                                <MenuItem value={30}>30 hours</MenuItem>
+                                <MenuItem value={40}>40 hours</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                    </>
+                )}
+
                 <Button
                     fullWidth
                     variant="contained"

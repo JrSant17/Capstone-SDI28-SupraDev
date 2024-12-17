@@ -51,6 +51,11 @@ export const SocialTimeline = (props) => {
             job_title={userObj.job_title}
             email={userObj.email}
             quote={userObj.user_summary}
+            languages={userObj.languages}
+            operating_systems={userObj.operating_systems}
+            experience={userObj.experience}
+            time_available={userObj.time_available}
+            availability={userObj.availability}
           />
         </Grid>
         <Grid lg={8} xs={12}>

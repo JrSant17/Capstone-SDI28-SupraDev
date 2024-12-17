@@ -2,10 +2,12 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-const { SHA256 } = require('crypto-js');
+const bcrypt = require('bcrypt');
 
 exports.seed = async function(knex) {
   // Deletes ALL existing entries
+  const hashedPassword = await bcrypt.hash('password', 10);
+  
   await knex.schema.raw('TRUNCATE user_table CASCADE');
   await knex('user_table').del();
   await knex('user_table').insert([
@@ -18,7 +20,7 @@ exports.seed = async function(knex) {
       p1_account: 'admin_acc',
       p1_auth: 'admin_auth',
       type: 4, // admin
-      password: SHA256('admin').toString(),
+      password: hashedPassword,
       availability: 'Unavailable',
       experience: 'Leadership,Security,Development',
       languages: 'English',
@@ -28,7 +30,9 @@ exports.seed = async function(knex) {
       user_summary: 'System administrator with extensive experience in security and development.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Bodie',
@@ -39,7 +43,7 @@ exports.seed = async function(knex) {
       p1_account: 'bodie_acc',
       p1_auth: 'bodie_auth',
       type: 3, // normal user
-      password: SHA256('P@ssw0rd').toString(),
+      password: hashedPassword,
       availability: 'Weekdays 10AM-6PM',
       experience: 'Troubleshooting,Networking,Security',
       languages: 'English',
@@ -49,7 +53,9 @@ exports.seed = async function(knex) {
       user_summary: 'IT professional with expertise in troubleshooting and network security.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 250
+      supradoubloons: 250,
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Remi',
@@ -60,7 +66,7 @@ exports.seed = async function(knex) {
       p1_account: 'remi_acc',
       p1_auth: 'remi_auth',
       type: 1, 
-      password: SHA256('P@ssw0rd').toString(),
+      password: hashedPassword,
       availability: 'Weekends 8AM-4PM',
       experience: 'Operations,Flight Control',
       languages: 'English,French',
@@ -70,7 +76,9 @@ exports.seed = async function(knex) {
       user_summary: 'Operations specialist with experience in flight control systems.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 300
+      supradoubloons: 300,
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Harley',
@@ -81,7 +89,7 @@ exports.seed = async function(knex) {
       p1_account: 'harls_acc',
       p1_auth: 'harls_auth',
       type: 1,
-      password: SHA256('ives').toString(),
+      password: hashedPassword,
       availability: 'Evenings',
       experience: 'Software Development,Psychology',
       languages: 'English',
@@ -91,7 +99,9 @@ exports.seed = async function(knex) {
       user_summary: 'Eccentric developer with a unique blend of software and psychology expertise.',
       time_available: 10,
       is_supracoder: true,
-      supradoubloons: 450
+      supradoubloons: 450,
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Misato',
@@ -102,7 +112,7 @@ exports.seed = async function(knex) {
       p1_account: 'misato_acc',
       p1_auth: 'misato_auth',
       type: 1, 
-      password: SHA256('eva').toString(),
+      password: hashedPassword,
       availability: 'Anytime',
       experience: 'Leadership,Operations,Strategy',
       languages: 'Japanese,English',
@@ -112,7 +122,9 @@ exports.seed = async function(knex) {
       user_summary: 'Experienced operations director with strong leadership and strategic planning skills.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 750
+      supradoubloons: 750,
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'Bruce',
@@ -123,7 +135,7 @@ exports.seed = async function(knex) {
       p1_account: 'bwayne_acc',
       p1_auth: 'bwayne_auth',
       type: 2, // leader
-      password: SHA256('batman').toString(),
+      password: hashedPassword,
       availability: 'Evenings and Weekends',
       experience: 'Business,Software Development,Security',
       languages: 'English',
@@ -133,7 +145,9 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: true,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'test',
@@ -144,7 +158,7 @@ exports.seed = async function(knex) {
       p1_account: 'bwayne_acc',
       p1_auth: 'bwayne_auth',
       type: 1, // Supra Coder
-      password: SHA256('password').toString(),
+      password: hashedPassword,
       availability: 'Evenings and Weekends',
       experience: 'Business,Software Development,Security',
       languages: 'English',
@@ -154,7 +168,9 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: true,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "SSC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'test',
@@ -165,7 +181,7 @@ exports.seed = async function(knex) {
       p1_account: 'bwayne_acc',
       p1_auth: 'bwayne_auth',
       type: 2, // leader
-      password: SHA256('password').toString(),
+      password: hashedPassword,
       availability: 'Evenings and Weekends',
       experience: 'Business,Software Development,Security',
       languages: 'English',
@@ -175,7 +191,9 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "STARCOM",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'test',
@@ -186,7 +204,7 @@ exports.seed = async function(knex) {
       p1_account: 'bwayne_acc',
       p1_auth: 'bwayne_auth',
       type: 3, // user
-      password: SHA256('password').toString(),
+      password: hashedPassword,
       availability: 'Evenings and Weekends',
       experience: 'Business,Software Development,Security',
       languages: 'English',
@@ -196,7 +214,9 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "SPOC",
+      last_updated: new Date().toISOString()
     },
     {
       first_name: 'test',
@@ -207,7 +227,7 @@ exports.seed = async function(knex) {
       p1_account: 'bwayne_acc',
       p1_auth: 'bwayne_auth',
       type: 4, // leader
-      password: SHA256('password').toString(),
+      password: hashedPassword,
       availability: 'Evenings and Weekends',
       experience: 'Business,Software Development,Security',
       languages: 'English',
@@ -217,7 +237,9 @@ exports.seed = async function(knex) {
       user_summary: 'Multifaceted professional with expertise in business, software development, and security.',
       time_available: 10,
       is_supracoder: false,
-      supradoubloons: 1000
+      supradoubloons: 1000,
+      command: "STARCOM",
+      last_updated: new Date().toISOString()
     },
   ]);
 };

@@ -12,6 +12,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
+import ComputerIcon from '@mui/icons-material/Computer';
+import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 export const SocialAbout = (props) => {
   const {
@@ -19,6 +22,11 @@ export const SocialAbout = (props) => {
     job_title,
     email,
     quote,
+    languages,
+    operating_systems,
+    experience,
+    time_available,
+    availability,
     ...other
   } = props;
 
@@ -75,14 +83,58 @@ export const SocialAbout = (props) => {
                 }
               />
             </ListItem>
-            <ListItem disableGutters>
+
+            <ListItem disableGutters divider>
               <ListItemAvatar>
                 <SvgIcon color="action">
                   <Mail03/>
                 </SvgIcon>
               </ListItemAvatar>
-              <ListItemText primary={<Typography variant="subtitle2">{email}</Typography>} />
+
+              <ListItemText primary={
+                <Typography variant="subtitle2">
+                  {email}
+                </Typography>} 
+              />
             </ListItem>
+
+            <ListItem disableGutters divider>
+              <ListItemAvatar>
+                <SvgIcon color="action">
+                  <ComputerIcon/>
+                </SvgIcon>
+              </ListItemAvatar>
+              <ListItemText 
+                  primary={
+                    <Typography variant='subtitle2'>
+                      Fluent languages: {languages}
+                    </Typography>} />
+            </ListItem>
+
+            <ListItem disableGutters divider>
+              <ListItemAvatar>
+                <SvgIcon color='action'>
+                  <DeveloperBoardIcon />
+                </SvgIcon>
+              </ListItemAvatar>
+              <ListItemText primary={
+                <Typography variant='subtitle2'>
+                  Experience level: {experience}
+                </Typography>} />
+            </ListItem>
+
+            <ListItem disableGutters>
+              <ListItemAvatar>
+                <SvgIcon color='action'>
+                  <AccessTimeIcon />
+                </SvgIcon>
+              </ListItemAvatar>
+              <ListItemText primary={
+                <Typography variant='subtitle2'>
+                  Hours available each week: {time_available} hours, {availability}
+                </Typography>} />
+            </ListItem>
+                
           </List>
         </CardContent>
       </Card>

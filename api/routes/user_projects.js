@@ -1,3 +1,8 @@
+/**
+ * This file contains all the http methods for the endpoint user_projects
+ * Thus, the starting paths for all these router handlers of '/',
+ * corresponds to /user_projects
+ */
 const express = require('express');
 const router = express.Router();
 const userProjectsFields = ['user_id', 'project_id', 'datetime_joined'];
@@ -56,7 +61,24 @@ async function _getUserProjectQueryEntries(res, params) {
       return res.status(404).send("No user_projects found!");
     }
     return res.status(200).send(result);
-  };
+};
+
+router.get('/:id', (req, res) => {
+  knex('user_projects')
+    .select('*')
+    .where({ user_id: req.params.id })
+    .then((user_projects) => {
+      if (!user_projects) {
+        return res.status(404).send("user_projects not found");
+      }
+      console.log(`user proejects is ${JSON.stringify(user_projects)}`);
+      res.status(200).send(user_projects)
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send("Internal server error");
+    });
+})
 
 router.post('/', (req, res) => {
     const { user_id, project_id } = req.body;

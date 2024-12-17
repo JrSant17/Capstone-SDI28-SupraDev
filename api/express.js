@@ -12,7 +12,7 @@ const userRoutes = require('./routes/users');
 const projectRoutes = require('./routes/projects.js');
 const userProjectRoutes = require('./routes/user_projects.js');
 const loginRoute = require('./routes/login.js');
-// const milestonesRouter = require('./routes/milestones.js'); 
+const milestonesRouter = require('./routes/milestones.js'); 
 
 const options = {
   swaggerDefinition,

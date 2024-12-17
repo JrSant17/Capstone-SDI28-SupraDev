@@ -10,6 +10,7 @@ exports.up = function(knex) {
     table.integer('user_id');
     table.foreign('user_id').references('user_table.id');
     table.string('post_text');
+    table.dateTime('last_updated').defaultTo(knex.fn.now());
   })
 };
 
