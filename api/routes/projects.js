@@ -207,23 +207,21 @@ router.get('/:id/messages', (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const {
-      submitter_name,   // Submitter's name
-      submitter_email,  // Submitter's email
-      submitter_unit,   // Submitter's unit (optional)
-      project_title,    // Project title
-      project_description, // Project description
-      requirements,     // Requirements (mapped to program_languages)
-      due_date          // Due date
+      submitter_name, 
+      submitter_email, 
+      submitter_unit,  
+      project_title, 
+      project_description,
+      requirements,  
+      due_date        
     } = req.body;
 
-    // Validate required fields
     if (!submitter_name || !submitter_email || !project_title || !project_description) {
       return res.status(400).json({ 
         message: "submitter_name, submitter_email, project_title, and project_description are required." 
       });
     }
 
-    // Find or create a submitter_id (example assumes submitter exists in user_table)
     const [submitter] = await knex("user_table").where('email', submitter_email);
 
     if (!submitter) {

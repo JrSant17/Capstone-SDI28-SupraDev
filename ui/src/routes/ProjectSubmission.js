@@ -14,9 +14,9 @@ const ProjectSubmission = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [unit, setUnit] = useState(""); // New field
+  const [unit, setUnit] = useState("");
   const [projectTitle, setProjectTitle] = useState("");
-  const [projectDescription, setProjectDescription] = useState(""); // Project Description
+  const [projectDescription, setProjectDescription] = useState("");
   const [requirements, setRequirements] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
