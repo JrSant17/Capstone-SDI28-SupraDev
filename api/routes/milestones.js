@@ -112,7 +112,7 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 { 
                     project_id: projectIdInt, 
                     milestone: 'Kickoff', 
-                    description: 'Project initialization and planning phase.',
+                    description: 'Project initialization, requirements gathering, and planning phase.',
                     index: 1, 
                     is_active: false, 
                     started: null, 
@@ -121,7 +121,7 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 { 
                     project_id: projectIdInt, 
                     milestone: 'Development', 
-                    description: 'Development phase of the project.',
+                    description: 'Coding and integration of software features and functionality.',
                     index: 2, 
                     is_active: false, 
                     started: null, 
@@ -130,7 +130,7 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 { 
                     project_id: projectIdInt, 
                     milestone: 'Testing', 
-                    description: 'Quality assurance and testing phase.',
+                    description: 'Verification of functionality, performance, and reliability through quality assurance processes.',
                     index: 3, 
                     is_active: false, 
                     started: null, 
@@ -139,7 +139,7 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 { 
                     project_id: projectIdInt, 
                     milestone: 'User Showcase', 
-                    description: 'Showcasing the product to end-users.',
+                    description: 'Demonstrating the product’s features and capabilities to key users and stakeholders for their evaluation and feedback.',
                     index: 4, 
                     is_active: false, 
                     started: null, 
@@ -148,7 +148,7 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 { 
                     project_id: projectIdInt, 
                     milestone: 'Funding', 
-                    description: 'Securing funding for the project.',
+                    description: 'Securing funding to enable deployment, scaling, and sustainment of the application.',
                     index: 5, 
                     is_active: false, 
                     started: null, 
@@ -157,7 +157,7 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 { 
                     project_id: projectIdInt, 
                     milestone: 'Deployment', 
-                    description: 'Deployment and launch of the product.',
+                    description: 'Launching the application in a live production environment for end-users.',
                     index: 6, 
                     is_active: false, 
                     started: null, 
@@ -166,7 +166,7 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 { 
                     project_id: projectIdInt, 
                     milestone: 'Program of Record', 
-                    description: 'Finalizing the product for full-scale use.',
+                    description: 'Application deployed and available for use!.',
                     index: 7, 
                     is_active: false, 
                     started: null, 
@@ -174,7 +174,6 @@ router.post('/:projectId/milestones/create', async (req, res) => {
                 }
             ];
 
-         
             await knex('milestones').insert(defaultMilestones);
 
             milestones = defaultMilestones;

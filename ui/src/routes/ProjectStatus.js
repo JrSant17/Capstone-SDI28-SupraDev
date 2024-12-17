@@ -8,8 +8,8 @@ import './ProjectStatus.css';
 const ProjectStatus = () => {
     const [bounty, setBounty] = useState(null);
     const { id } = useParams();
-    const [doubloons, setDoubloons] = useState("")
-    const [gitlink, setGitlink] = useState("")
+    // const [doubloons, setDoubloons] = useState("")
+    // const [gitlink, setGitlink] = useState("")
     const [sessionCookies, setSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token'])
     const navigate = useNavigate();
     const [comments, setComments] = useState([]);
@@ -17,6 +17,7 @@ const ProjectStatus = () => {
     const [chatposts, setChatposts] = useState([]);
     const [userdata, setUserdata] = useState([])
     const [currentUserDoubloons, setCurrentUserDoubloons] = useState()
+    const [milestoneData, setMilestoneData] = useState([]);
 
 
     const milestones = [
@@ -51,14 +52,16 @@ const ProjectStatus = () => {
             }
         }
 
-        const milestoneData = await response.json();
-        console.log('Fetched milestone data:', milestoneData);
-        const milestonesDataArray = milestoneData.milestones || [];
+        const fetchedMilestoneData = await response.json();
+        console.log('Fetched milestone data:', fetchedMilestoneData);
+        // const milestonesDataArray = milestoneData.milestones || [];
+
+        setMilestoneData(fetchedMilestoneData);
         
-        if (Array.isArray(milestoneData)) {
+        if (Array.isArray(fetchedMilestoneData)) {
             setMilestoneTimestamps(
                 milestones.map((milestone, index) => {
-                    const fetchedMilestone = milestoneData.find(m => m.index === index + 1);
+                    const fetchedMilestone = fetchedMilestoneData.find(m => m.index === index + 1);
                     return {
                         started: fetchedMilestone?.started || null,
                         completed: fetchedMilestone?.completed || null,
@@ -67,7 +70,7 @@ const ProjectStatus = () => {
                 })
             );
 
-            const activeMilestone = milestoneData.find(m => m.is_active);
+            const activeMilestone = fetchedMilestoneData.find(m => m.is_active);
             if (activeMilestone) {
                 setCurrentMilestoneIndex(activeMilestone.index - 1);
             }
@@ -107,6 +110,12 @@ const ProjectStatus = () => {
         }
     }, [id]);
 
+    useEffect(() => {
+        if (currentMilestoneIndex !== -1) {
+            syncMilestonesWithBackend(); 
+        }
+    }, [currentMilestoneIndex]);
+
     const moveToPreviousMilestone = async () => {
         if (currentMilestoneIndex > 0) {
             console.log('Current Milestone Index before move:', currentMilestoneIndex);
@@ -114,6 +123,7 @@ const ProjectStatus = () => {
             await updateMilestoneState(newIndex);
             setCanStartCurrentMilestone(milestoneTimestamps[newIndex].started === null);
             setCanCompleteCurrentMilestone(milestoneTimestamps[newIndex].started !== null && milestoneTimestamps[newIndex].completed === null);
+            setCurrentMilestoneIndex(newIndex); 
         }
     };
 
@@ -124,6 +134,7 @@ const ProjectStatus = () => {
             await updateMilestoneState(newIndex);
             setCanStartCurrentMilestone(milestoneTimestamps[newIndex].started === null);
             setCanCompleteCurrentMilestone(milestoneTimestamps[newIndex].started !== null && milestoneTimestamps[newIndex].completed === null);
+            setCurrentMilestoneIndex(newIndex); 
         }
     };
 
@@ -312,23 +323,6 @@ const ProjectStatus = () => {
         return <Typography align="center" style={{ marginTop: '2rem' }}>Loading...</Typography>;
     }
 
-    const handleApprove = () => {
-
-        fetch(`http://localhost:8080/projects/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "is_approved": true,
-                "bounty_payout": doubloons
-            })
-        })
-        navigate('/projects');
-
-
-    }
-
     const postCommentFetch = () => {
         console.log(typeof (parseInt(id)))
         console.log(typeof (sessionCookies.user_id_token))
@@ -347,91 +341,6 @@ const ProjectStatus = () => {
         })
     }
 
-
-    const handleAccept = () => {
-
-        fetch(`http://localhost:8080/projects/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "is_accepted": true,
-                "accepted_by_id": sessionCookies.user_id_token,
-                "github_url": gitlink
-            })
-        })
-        navigate('/projects');
-        window.location.reload();
-    }
-
-    const handleUnaccept = () => {
-
-        fetch(`http://localhost:8080/projects/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "is_accepted": false,
-                "accepted_by_id": sessionCookies.user_id_token
-            })
-        })
-        navigate('/projects');
-        window.location.reload();
-    }
-
-    const patchToComplete = () => {
-        fetch(`http://localhost:8080/projects/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "is_completed": true,
-                "is_accepted": false
-            })
-        })
-    }
-
-    const updateUserDoubloonCount = async () => {
-        await fetchCurrentUserDoubloons();
-        console.log(currentUserDoubloons)
-        console.log(bounty.bounty_payout)
-        let newDoubloonCount = currentUserDoubloons + bounty.bounty_payout;
-        console.log(newDoubloonCount);
-
-        await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "supradoubloons": newDoubloonCount,
-            })
-        })
-    }
-
-    const handleComplete = () => {
-        updateUserDoubloonCount();
-        patchToComplete();
-        navigate('/projects');
-    }
-
-    const thanosSnap = () => {
-
-        fetch(`http://localhost:8080/projects/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        navigate('/projects');
-    }
-
-
-
-
     return (
         <>
             <Box display="flex" justifyContent="center" minHeight="100vh" bgcolor="rgba(255, 255, 255, 0)">
@@ -444,118 +353,19 @@ const ProjectStatus = () => {
                         style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
                         {bounty.name}
                         <div>
-                            <small className='details-container'>Application Acceptance Date:</small><br></br>
-                            <small className='details-container'>Need By Date:</small><br></br>
-                            <small className='details-container'>Product Owner:</small>
+                            <small className='details-container'>Application Acceptance Date: </small><br></br>
+                            <small className='details-container'>Product Owner: </small><br></br>
+                            {milestoneData[currentMilestoneIndex]?.milestone ? (
+                            <small className='details-container'>Application Status:  <span className={`app-status milestone-${currentMilestoneIndex + 1}`}>{milestoneData[currentMilestoneIndex].milestone} </span></small>
+                            ) : null }
+                            <br></br>
+                            {milestoneData[currentMilestoneIndex]?.description ? (
+                            <small className='details-container'>Status Description: <br></br> <span className={`app-description ${milestoneData[currentMilestoneIndex] ? 'visible' : ''}`}><li>{milestoneData[currentMilestoneIndex].description?.replace(/[.]/g, "")}</li></span></small>
+                            ) : null}
                         </div>
 
                     </Typography>
 
-                    {sessionCookies.userPriv_Token === true &&
-                        bounty.is_approved === false &&
-                        bounty.is_completed === false ? (
-                        <TextField
-                            fullWidth
-                            className="inputText"
-                            label="Doubloons"
-                            variant="outlined"
-                            type="text"
-                            value={doubloons}
-                            onChange={(e) => setDoubloons(e.target.value)}
-                            placeholder="Doubloons"
-                            size="small"
-                            margin="normal"
-                        />
-                    ) : (
-                        <></>
-                    )}
-
-                    <Typography
-                        variant="h5"
-                        gutterBottom
-                        color="blue"
-                        style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
-
-                        {sessionCookies.userPriv_Token === true &&
-                            bounty.is_approved === false &&
-                            bounty.is_completed === false ? (
-                            <></>
-                        ) : (
-                            <></>
-                        )}
-                        <> </>
-                        {/* <div style={{ display: 'flex' }}>
-                            <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{ marginTop: '25px', marginLeft: '25px', marginRight: '7px' }} alt='supradoubloons' height='30px' width='30px' /><p style={{ color: 'blue' }}>{bounty.bounty_payout}</p>
-                        </div> */}
-                    </Typography>
-
-                    {sessionCookies.userPriv_Token === true &&
-                        bounty.is_approved === true &&
-                        bounty.is_accepted === false &&
-                        bounty.is_completed === false ? (
-
-
-                        <Button
-                            onClick={() => handleAccept()}
-                            variant="contained"
-                            color="success"
-                            style={{ margin: "5px" }}>
-                            Accept this project?
-                        </Button>
-                    ) : (
-                        <></>
-                    )}
-
-                    {/* Github REPO Text Input */}
-
-                    {sessionCookies.userPriv_Token === true &&
-                        bounty.is_approved === true &&
-                        bounty.is_accepted === false &&
-                        bounty.is_completed === false ? (
-                        <TextField
-                            fullWidth
-                            className="inputText"
-                            label="Github Link"
-                            variant="outlined"
-                            type="text"
-                            value={gitlink}
-                            onChange={(e) => setGitlink(e.target.value)}
-                            placeholder="Github Link"
-                            size="small"
-                            margin="normal"
-                        />
-                    ) : (
-                        <></>
-                    )}
-                    {/* Github REPO Text Input */}
-
-                    {bounty.accepted_by_id === sessionCookies.user_id_token &&
-                        bounty.is_completed === false &&
-                        bounty.is_accepted === true ? (
-                        <Button
-                            onClick={() => handleUnaccept()}
-                            variant="contained"
-                            color="error"
-                            style={{ margin: "5px" }}>
-                            Drop this project?
-                        </Button>
-                    ) : (
-                        <></>
-                    )}
-
-                    {bounty.accepted_by_id === sessionCookies.user_id_token &&
-                        bounty.is_completed === false &&
-                        bounty.is_accepted === true ? (
-                        <Button
-                            onClick={() => handleComplete()}
-                            variant="contained"
-                            color="success"
-                            style={{ margin: "5px" }}>
-                            Complete the project?
-                        </Button>
-                    ) : (
-                        <></>
-                    )}
 
                     <Divider style={{ marginBottom: "1.5rem" }} />
                     <Typography
@@ -638,24 +448,7 @@ const ProjectStatus = () => {
                                 ))}
                             </ul>
                         </div>
-
-
                     </Typography>
-                    {/* <Typography
-                        paragraph
-                        style={{
-                            fontSize: "1rem",
-                            marginTop: "0.5rem",
-                            marginBottom: "1.5rem",
-                        }}>
-                        {bounty.problem_statement}
-                    </Typography>
-                    <Typography
-                        variant="h6"
-                        style={{ fontWeight: "500", color: "#616161" }}>
-                        Submitter ID: {bounty.submitter_id}
-                    </Typography> */}
-                    {/* Git Text render */}
 
                     <Typography
                         variant="h6"
@@ -669,11 +462,11 @@ const ProjectStatus = () => {
                         color="textSecondary"
                         align="right"
                         style={{ marginTop: "1.5rem", "text-align": "center" }}>
-                        Thank you for viewing this bounty detail. Check back often for
+                        Thank you for viewing Project Details. Check back often for
                         updates!
                     </Typography>
 
-                    {sessionCookies.userPriv_Token === true &&
+                    {/* {sessionCookies.userPriv_Token === true &&
                         bounty.is_approved === false &&
                         bounty.is_completed === false ? (
                         <Button
@@ -699,7 +492,7 @@ const ProjectStatus = () => {
                         </Button>
                     ) : (
                         <></>
-                    )}
+                    )} */}
                     {/* Comments Section */}
                     <Box marginTop="2rem">
                         <Typography variant="h5">Comments</Typography>
