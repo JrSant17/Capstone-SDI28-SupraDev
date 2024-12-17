@@ -337,6 +337,28 @@ const ProjectStatus = () => {
                         <div>
                             <MilestoneBar view={'status'}/>
                         </div>
+                        <div className="timestamp-contianer">
+                            <h3>Milestone History</h3>
+
+                            <ul className="timestamp-list">
+                                {milestones.map((milestone, index) => (
+                                    <li key={index}>
+                                        <strong>{milestone}</strong>
+                                        <div>
+                                            {milestoneTimestamps[index]?.started && (
+                                                <small>Started on: {new Date(milestoneTimestamps[index].started).toLocaleString()}</small>
+                                            )}
+                                        </div>
+                                        <div>
+                                            {milestoneTimestamps[index]?.completed && (
+                                                <small className='completed-stamp'>Completed on: {new Date(milestoneTimestamps[index].completed).toLocaleString()}</small>
+                                            )}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
 
                     </Typography>
 
