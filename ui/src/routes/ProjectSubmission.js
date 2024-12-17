@@ -45,11 +45,16 @@ const ProjectSubmission = () => {
       },
       body: JSON.stringify(projectData)
     })
-      .then(res => res.json())
       .then(res => {
-        setDialogOpen(true);
-        setDialogContent("Project Submitted!");
-        console.log(res);
+        if(res.status == 201){
+          res.json()
+          setDialogOpen(true);
+          setDialogContent("Project Submitted!");
+          console.log(res.json);
+        } else if(res.status == 400){
+          setDialogOpen(true);
+          setDialogContent(`You must be registered with the system. Email: ${email} is not registered`);
+        }
       })
       .catch(err => {
         console.error(err);
