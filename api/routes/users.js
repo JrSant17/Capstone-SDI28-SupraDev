@@ -149,7 +149,7 @@ router.post('/', async (req, res) => {
   const {
     first_name, last_name, username,
     password, profile_pic, user_summary,
-    email, p1_account, p1_auth,
+    job_title, email, p1_account, p1_auth,
     type, availability, experience,
     languages, operating_systems, avatar_url,
     time_available, is_supracoder, supradoubloons,
@@ -160,7 +160,7 @@ router.post('/', async (req, res) => {
 
   const userFields = {
     first_name, last_name, username,
-    password: hashedPassword, profile_pic, user_summary,
+    password: hashedPassword, job_title, profile_pic, user_summary,
     email, p1_account, p1_auth,
     type, availability, experience,
     languages, operating_systems, avatar_url,

@@ -15,9 +15,11 @@ import Typography from '@mui/material/Typography';
 import ComputerIcon from '@mui/icons-material/Computer';
 import DeveloperBoardIcon from '@mui/icons-material/DeveloperBoard';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import Diversity2Icon from '@mui/icons-material/Diversity2';
 
 export const SocialAbout = (props) => {
   const {
+    type,
     currentCity,
     job_title,
     email,
@@ -27,6 +29,8 @@ export const SocialAbout = (props) => {
     experience,
     time_available,
     availability,
+    command,
+
     ...other
   } = props;
 
@@ -52,6 +56,7 @@ export const SocialAbout = (props) => {
           </Stack>
         </CardContent>
       </Card> */}
+      
       <Card>
         <CardHeader title="About" />
         <CardContent>
@@ -64,78 +69,188 @@ export const SocialAbout = (props) => {
             {quote}
             &quot;
           </Typography>
-          <List disablePadding>
-            <ListItem
-              disableGutters
-              divider
-            >
-              <ListItemAvatar>
-                <SvgIcon color="action">
-                  <Briefcase01 />
-                </SvgIcon>
-              </ListItemAvatar>
-              <ListItemText
-                disableTypography
-                primary={
+        {type === 1  && (
+          <>
+            <List disablePadding>
+              <ListItem
+                disableGutters
+                divider
+              >
+                <ListItemAvatar>
+                  <SvgIcon color="action">
+                    <Briefcase01 />
+                  </SvgIcon>
+                </ListItemAvatar>
+                <ListItemText
+                  disableTypography
+                  primary={
+                    <Typography variant="subtitle2">
+                      {job_title}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+
+              <ListItem disableGutters divider>
+                <ListItemAvatar>
+                  <SvgIcon color="action">
+                    <Mail03 />
+                  </SvgIcon>
+                </ListItemAvatar>
+
+                <ListItemText primary={
                   <Typography variant="subtitle2">
-                    {job_title}
-                  </Typography>
-                }
-              />
-            </ListItem>
+                    {email}
+                  </Typography>}
+                />
+              </ListItem>
 
-            <ListItem disableGutters divider>
-              <ListItemAvatar>
-                <SvgIcon color="action">
-                  <Mail03/>
-                </SvgIcon>
-              </ListItemAvatar>
+              {/* <ListItem disableGutters divider>
+                <ListItemAvatar>
+                  <SvgIcon color="action">
+                    <Diversity2Icon />
+                  </SvgIcon>
+                </ListItemAvatar>
 
-              <ListItemText primary={
-                <Typography variant="subtitle2">
-                  {email}
-                </Typography>} 
-              />
-            </ListItem>
+                <ListItemText primary={
+                  <Typography variant="subtitle2">
+                    Command: {command}
+                  </Typography>}
+                />
+              </ListItem> */}
 
-            <ListItem disableGutters divider>
-              <ListItemAvatar>
-                <SvgIcon color="action">
-                  <ComputerIcon/>
-                </SvgIcon>
-              </ListItemAvatar>
-              <ListItemText 
+              <ListItem disableGutters divider>
+                <ListItemAvatar>
+                  <SvgIcon color="action">
+                    <ComputerIcon />
+                  </SvgIcon>
+                </ListItemAvatar>
+                <ListItemText
                   primary={
                     <Typography variant='subtitle2'>
                       Fluent languages: {languages}
                     </Typography>} />
-            </ListItem>
+              </ListItem>
 
-            <ListItem disableGutters divider>
-              <ListItemAvatar>
-                <SvgIcon color='action'>
-                  <DeveloperBoardIcon />
-                </SvgIcon>
-              </ListItemAvatar>
-              <ListItemText primary={
-                <Typography variant='subtitle2'>
-                  Experience level: {experience}
-                </Typography>} />
-            </ListItem>
+              <ListItem disableGutters divider>
+                <ListItemAvatar>
+                  <SvgIcon color='action'>
+                    <DeveloperBoardIcon />
+                  </SvgIcon>
+                </ListItemAvatar>
+                <ListItemText primary={
+                  <Typography variant='subtitle2'>
+                    Experience level: {experience}
+                  </Typography>} />
+              </ListItem>
 
-            <ListItem disableGutters>
-              <ListItemAvatar>
-                <SvgIcon color='action'>
-                  <AccessTimeIcon />
-                </SvgIcon>
-              </ListItemAvatar>
-              <ListItemText primary={
-                <Typography variant='subtitle2'>
-                  Hours available each week: {time_available} hours, {availability}
-                </Typography>} />
-            </ListItem>
-                
-          </List>
+              <ListItem disableGutters>
+                <ListItemAvatar>
+                  <SvgIcon color='action'>
+                    <AccessTimeIcon />
+                  </SvgIcon>
+                </ListItemAvatar>
+                <ListItemText primary={
+                  <Typography variant='subtitle2'>
+                    Hours available each week: {time_available} hours, {availability}
+                  </Typography>} />
+
+              </ListItem>
+
+            </List>
+          </>
+          )}
+          {type === 2 && (
+            <>
+            <List disablePadding>
+              <ListItem
+                disableGutters
+                divider
+              >
+                <ListItemAvatar>
+                  <SvgIcon color="action">
+                    <Briefcase01 />
+                  </SvgIcon>
+                </ListItemAvatar>
+                <ListItemText
+                  disableTypography
+                  primary={
+                    <Typography variant="subtitle2">
+                      {job_title}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+
+              <ListItem disableGutters divider>
+                <ListItemAvatar>
+                  <SvgIcon color="action">
+                    <Mail03 />
+                  </SvgIcon>
+                </ListItemAvatar>
+
+                <ListItemText primary={
+                  <Typography variant="subtitle2">
+                    {email}
+                  </Typography>}
+                />
+              </ListItem>
+
+              <ListItem disableGutters divider>
+                <ListItemAvatar>
+                  <SvgIcon color="action">
+                    <Diversity2Icon />
+                  </SvgIcon>
+                </ListItemAvatar>
+
+                <ListItemText primary={
+                  <Typography variant="subtitle2">
+                    Command: {command}
+                  </Typography>}
+                />
+              </ListItem>
+
+              <ListItem disableGutters divider>
+                <ListItemAvatar>
+                  <SvgIcon color="action">
+                    <ComputerIcon />
+                  </SvgIcon>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography variant='subtitle2'>
+                      Fluent languages: {languages}
+                    </Typography>} />
+              </ListItem>
+
+              <ListItem disableGutters divider>
+                <ListItemAvatar>
+                  <SvgIcon color='action'>
+                    <DeveloperBoardIcon />
+                  </SvgIcon>
+                </ListItemAvatar>
+                <ListItemText primary={
+                  <Typography variant='subtitle2'>
+                    Experience level: {experience}
+                  </Typography>} />
+              </ListItem>
+
+              <ListItem disableGutters>
+                <ListItemAvatar>
+                  <SvgIcon color='action'>
+                    <AccessTimeIcon />
+                  </SvgIcon>
+                </ListItemAvatar>
+                <ListItemText primary={
+                  <Typography variant='subtitle2'>
+                    Hours available each week: {time_available} hours, {availability}
+                  </Typography>} />
+
+              </ListItem>
+
+            </List>
+          </>
+          )}
         </CardContent>
       </Card>
     </Stack>

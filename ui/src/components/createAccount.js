@@ -67,6 +67,7 @@ export default function CreateAccount() {
       };
 
     const CreateAccount = async () => {
+        console.log(jobTitle)
         let profPicToSet = '';
         let submitUserType;
         let isSupraVal = false;
@@ -251,7 +252,8 @@ export default function CreateAccount() {
                         margin="normal"
                     />
                 </div>
-                <TextField
+                <div>
+                    <TextField
                         fullWidth
                         className="inputText"
                         label="Job Title"
@@ -263,6 +265,7 @@ export default function CreateAccount() {
                         size="small"
                         margin="normal"
                     />
+                </div>
                 <FormControl fullWidth margin="normal" size="small">
                     <InputLabel id="user-type-label">User Type</InputLabel>
                     <Select
@@ -316,22 +319,20 @@ export default function CreateAccount() {
                             </Select>
                         </FormControl>
 
-                        <FormControl fullWidth margin="normal" size="small">
-                            <InputLabel>Operating Systems</InputLabel>
-                            <TextField
-                                fullWidth
-                                className="inputText"
-                                label="Username"
-                                variant="outlined"
-                                type="text"
-                                value={command}
-                                onChange={(e) => setCommand(e.target.value)}
-                                placeholder="Command"
-                                size="small"
-                                margin="normal"
-                                required
-                            />
-                        </FormControl>
+                        <TextField
+                            fullWidth
+                            className="inputText"
+                            label="Operating System(s)"
+                            variant="outlined"
+                            type="text"
+                            value={operatingSystems}
+                            onChange={(e) => setOperatingSystems(e.target.value)}
+                            // placeholder="Availability (times of day + timezone)"
+                            size="small"
+                            margin="normal"
+                            required
+                        />
+
                         <FormControl fullWidth margin="normal" size="small" required>
                             <InputLabel>Time Available per Week</InputLabel>
                             <Select
@@ -417,6 +418,20 @@ export default function CreateAccount() {
                                 ))}
                             </Select>
                         </FormControl>
+
+                        <TextField
+                            fullWidth
+                            className="inputText"
+                            label="Operating System(s)"
+                            variant="outlined"
+                            type="text"
+                            value={availability}
+                            onChange={(e) => setAvailability(e.target.value)}
+                            // placeholder="Availability (times of day + timezone)"
+                            size="small"
+                            margin="normal"
+                            required
+                        />
 
                         <FormControl fullWidth margin="normal" size="small" required>
                             <InputLabel>Time Available per Week</InputLabel>

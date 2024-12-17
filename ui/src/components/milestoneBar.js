@@ -17,38 +17,35 @@ export default function MilestoneBar({ id }) {
     const syncMilestonesWithBackend = async () => {
         try {
             const response = await fetch(`http://localhost:8080/projects/${id}/milestones`);
-
             if (!response.ok) {
                 if (response.status === 404) {
-                    //TODO: handle this
-                    console.log(`no milestone found`);
-                } else {
-                    throw new Error(`Error fetching milestones: ${response.statusText}`);
+                    setMilestoneData([]);
+                    return;
                 }
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
             const fetchedMilestoneData = await response.json();
-
-            setMilestoneData(fetchedMilestoneData);
-
-            if (Array.isArray(fetchedMilestoneData)) {
-
-                const activeMilestone = fetchedMilestoneData.find(m => m.is_active);
-                if (activeMilestone) {
-                    setCurrentMilestoneIndex(activeMilestone.index - 1);
-                }
-            } else {
+    
+            if (!Array.isArray(fetchedMilestoneData)) {
                 throw new Error('Milestone data is not an array');
             }
-
+            setMilestoneData(fetchedMilestoneData);
+            const activeMilestone = fetchedMilestoneData.find(m => m.is_active);
+            if (activeMilestone) {
+                setCurrentMilestoneIndex(activeMilestone.index - 1);
+            }
+    
         } catch (error) {
-            console.error('Error syncing milestones:', error);
+            if (error.message !== 'HTTP error! status: 404') {
+                console.error('Error syncing milestones:', error);
+            }
+            setMilestoneData([]);
         }
     };
 
     useEffect(() => {
         syncMilestonesWithBackend();
-    }, [])
+    }, [id])
 
     return (
         <div className="milestone-container">
