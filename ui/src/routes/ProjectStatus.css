@@ -213,6 +213,15 @@
     padding-left: 10px ;
 }
 
+.start-date {
+    font-size: medium;
+    font-weight: lighter;
+    padding-left: 20px; 
+    margin-left: 0;
+    text-indent: -20px;  
+    display: inline-block;
+}
+
 .details-container {
     font-size: medium;
     font-weight: bold;
@@ -225,6 +234,14 @@
     margin-left: 0;
     text-indent: -20px;  
     display: inline-block;
+}
+
+.no-start-date {
+    font-size: medium;
+    font-weight: bold;
+    color: red;
+    align-items: center;
+
 }
 
 
