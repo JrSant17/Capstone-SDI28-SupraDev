@@ -8,23 +8,8 @@ import { styled, useTheme } from '@mui/system';
 import { motion } from 'framer-motion';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Notification from '../components/Notifications'
+import { useNavigate } from 'react-router-dom';
 import MilestoneBar from '../components/milestoneBar';
-
-const HoverCard = styled(motion(Card))(({ theme }) => ({
-    '&:hover': {
-        transform: 'scale(1.05)',
-        boxShadow: theme?.shadows?.[8] ?? '0px 4px 20px rgba(0, 0, 0, 0.2)',
-
-    },
-    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-    borderRadius: '15px',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(5px)',
-    padding: theme.spacing(2),
-    [theme.breakpoints.up('md')]: {
-        padding: theme.spacing(3),
-    },
-}));
 
 const HomePage = () => {
     const theme = useTheme();
@@ -37,6 +22,7 @@ const HomePage = () => {
     'userPriv_Token',
     'user_type'
     ]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRecentProjectsWithUserInfo = async () => {
@@ -115,6 +101,11 @@ const HomePage = () => {
             console.error('Error fetching user project info:', error);
         }
     }
+
+    const handleProjectClick = (projectId) => (e) => {
+        e.preventDefault();
+        navigate(`/projects/${projectId}`);
+    };
 
     const spaceSoftware = [
         {
@@ -230,14 +221,16 @@ const HomePage = () => {
                                     gap: '20px',
                                 }}>
                                     {usersProjects.map((userProject) => (
-                                        <div key={userProject.project_id} style={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            backgroundColor: '#f5f5f5',
-                                            padding: '15px',
-                                            borderRadius: '8px',
-                                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                                        }}>
+                                        <div key={userProject.project_id} 
+                                            style={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                backgroundColor: '#f5f5f5',
+                                                padding: '15px',
+                                                borderRadius: '8px',
+                                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                            }}
+                                        >
                                             <div className='project-info' style={{
                                                 display: 'grid',
                                                 gridTemplateColumns: 'auto 1fr',
@@ -260,18 +253,13 @@ const HomePage = () => {
                                             </div>
                                             <div className='status-bars' style={{
                                                 width: '100%',
-                                                height: '50px', // Set a fixed height
+                                                height: 'auto',
                                                 display: 'flex',
                                                 justifyContent: 'flex-start',
-                                                overflow: 'hidden' // Prevent overflow
-                                            }}>
-                                                <MilestoneBar
-                                                    id={userProject.project_id}
-                                                    style={{
-                                                        width: '100%',
-                                                        height: '100%'
-                                                    }}
-                                                />
+                                            }}
+                                            onClick={handleProjectClick(userProject.project_id)}
+                                            >
+                                                <MilestoneBar id={userProject.project_id} />
                                             </div>
                                         </div>
                                     ))}
