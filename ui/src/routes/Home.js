@@ -55,7 +55,7 @@ const HomePage = () => {
 
     const getMostRecentProjectInfo = async (numberProjects) => {
         try {
-            const projectsResponse = await fetch(`http://localhost:8080/projects?_sort=last_updated&_order=desc&_limit=${numberProjects}`);
+            const projectsResponse = await fetch(`http://localhost:8080/projects?_sort=last_updated&_order=desc&_limit=${numberProjects}&is_accepted=true`);
             if (!projectsResponse.ok) {
               throw new Error('non 200 resp code');
             }
