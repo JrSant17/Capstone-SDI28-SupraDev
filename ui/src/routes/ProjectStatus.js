@@ -10,7 +10,12 @@ const ProjectStatus = () => {
     const { id } = useParams();
     // const [doubloons, setDoubloons] = useState("")
     // const [gitlink, setGitlink] = useState("")
-    const [sessionCookies, setSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token'])
+    const [sessionCookies, setSessionCookies] = useCookies([
+        'username_token', 
+        'user_id_token', 
+        'userPriv_Token',
+        'user_type'
+    ])
     const navigate = useNavigate();
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -390,7 +395,7 @@ const ProjectStatus = () => {
                                         </div>
                                     ))}
                                 </div>
-
+                            {sessionCookies.user_type === 4 ? (
                                 <div className="button-container">
                                     <button
                                         className="milestone-button"
@@ -428,11 +433,17 @@ const ProjectStatus = () => {
                                     <button
                                         className="milestone-button"
                                         onClick={completeCurrentMilestone}
-                                        disabled={!canCompleteCurrentMilestone || currentMilestoneIndex < 0}
+                                        disabled={ !canCompleteCurrentMilestone || 
+                                            currentMilestoneIndex < 0 || 
+                                            milestoneTimestamps[currentMilestoneIndex]?.completed}
                                     >
                                         Complete Milestone
                                     </button>
                                 </div>
+                                ) : (
+                                    <>
+                                    </>
+                                )}
                             </div>
                         </div>
 
