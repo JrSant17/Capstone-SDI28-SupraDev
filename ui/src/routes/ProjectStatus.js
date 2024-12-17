@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar } from '@mui/material';
 import { useCookies } from 'react-cookie';
+import MilestoneBar from '../components/milestoneBar';
 import './ProjectStatus.css';
 
 
 const ProjectStatus = () => {
     const [bounty, setBounty] = useState(null);
     const { id } = useParams();
-    // const [doubloons, setDoubloons] = useState("")
-    // const [gitlink, setGitlink] = useState("")
     const [sessionCookies, setSessionCookies] = useCookies([
         'username_token', 
         'user_id_token', 
@@ -23,8 +22,6 @@ const ProjectStatus = () => {
     const [userdata, setUserdata] = useState([])
     const [currentUserDoubloons, setCurrentUserDoubloons] = useState()
     const [milestoneData, setMilestoneData] = useState([]);
-
-
     const milestones = [
         "Kickoff",
         "Development",
@@ -264,7 +261,6 @@ const ProjectStatus = () => {
     };
 
     const kickoffStartDate = milestoneTimestamps[0]?.started;
-
     const handleAddComment = () => {
         if (newComment.trim()) {
             setComments(prevComments => [...prevComments, newComment]);
@@ -518,14 +514,14 @@ const ProjectStatus = () => {
                         <Typography variant="h5">Comments</Typography>
                         <List>
                             {chatposts.map((comment, index) => (
-                                <div>
-                                    <ListItem key={index}>
-                                        <div style={{ display: 'flex' }}>
-                                            <div style={{}}>{userImgRender(comment.user_id)}</div>
-                                            <Typography>{comment.post_text}</Typography>
-                                        </div>
-                                    </ListItem>
-                                </div>
+                                <div key={index}>
+                                <ListItem>
+                                    <div style={{ display: 'flex' }}>
+                                        <div>{userImgRender(comment.user_id)}</div>
+                                        <Typography>{comment.post_text}</Typography>
+                                    </div>
+                                </ListItem>
+                            </div>
                             ))}
                         </List>
                         <TextField fullWidth variant="outlined" placeholder="Add a comment" value={newComment} onChange={handleCommentChange} />
