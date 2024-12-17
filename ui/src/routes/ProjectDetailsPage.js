@@ -1,69 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar, } from '@mui/material';
-import { useCookies } from 'react-cookie';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  Button,
+  Paper,
+  Typography,
+  Box,
+  Divider,
+  TextField,
+  List,
+  ListItem,
+  Avatar,
+} from "@mui/material";
+import { useCookies } from "react-cookie";
 
 const ProjectDetailsPage = () => {
   const [bounty, setBounty] = useState(null);
   const { projectId } = useParams();
   const [doubloons, setDoubloons] = useState("");
   const [gitlink, setGitlink] = useState("");
-  const [sessionCookies, setSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token', 'user_type']);
+  const [sessionCookies, setSessionCookies] = useCookies([
+    "username_token",
+    "user_id_token",
+    "userPriv_Token",
+    "user_type",
+  ]);
   const navigate = useNavigate();
-  const [comments, setComments] = useState([]);
+  // const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [chatposts, setChatposts] = useState([]);
   const [userdata, setUserdata] = useState([]);
   const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
+  const [isJoining, setIsJoining] = useState(false);
   // const [coders_needed, setCodersNeeded] = useState({coders_needed: 0 });
 
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      setComments((prevComments) => [...prevComments, newComment]);
-      setNewComment("");
-    }
-  };
+  // // const handleAddComment = () => {
+  // //   if (newComment.trim()) {
+  // //     setComments((prevComments) => [...prevComments, newComment]);
+  // //     setNewComment("");
+  //   }
+  // };
   const handleCommentChange = (e) => {
     setNewComment(e.target.value);
   };
 
   const fetchUsers = async () => {
     await fetch(`http://localhost:8080/users`)
-        .then((res) => res.json())
-        .then((fetchedUserData) => setUserdata(fetchedUserData));
+      .then((res) => res.json())
+      .then((fetchedUserData) => setUserdata(fetchedUserData));
   };
 
   const fetchCurrentUserDoubloons = async () => {
     await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`)
-        .then((res) => res.json())
-        .then((doubloonies) => {setCurrentUserDoubloons(doubloonies.supradoubloons)});
+      .then((res) => res.json())
+      .then((doubloonies) => {
+        setCurrentUserDoubloons(doubloonies.supradoubloons);
+      });
   };
 
-
-
   const userImgRender = (userIdFromPost) => {
-    let imgToRender ="";
+    let imgToRender = "";
     let idOfMatch;
-    for (let element in userdata) {     
-      if (userdata[element].id == userIdFromPost) {
+    for (let element in userdata) {
+      if (userdata[element].id === userIdFromPost) {
         imgToRender = userdata[element].profile_pic;
         idOfMatch = userdata[element].id;
       }
     }
     return (
-        <div>
-            <Avatar src={imgToRender} alt="User Avatar" style={{ float: 'left', outlineWidth: '1px', outlineColor: 'red', width: '40px', height: '40px' }}/>
-        </div>
-    )
-  }
+      <div>
+        <Avatar
+          src={imgToRender}
+          alt="User Avatar"
+          style={{
+            float: "left",
+            outlineWidth: "1px",
+            outlineColor: "red",
+            width: "40px",
+            height: "40px",
+          }}
+        />
+      </div>
+    );
+  };
 
   const fetchPosts = async () => {
     await fetch(`http://localhost:8080/projects/${projectId}/messages`)
-        .then((res) => res.json())
-        .then((commentData) => setChatposts(commentData));
+      .then((res) => res.json())
+      .then((commentData) => setChatposts(commentData));
     await fetch(`http://localhost:8080/projects/${projectId}`)
-        .then((res) => res.json())
-        .then((data) => setBounty(data));
+      .then((res) => res.json())
+      .then((data) => setBounty(data));
   };
 
   useEffect(() => {
@@ -81,18 +107,29 @@ const ProjectDetailsPage = () => {
         }
       })
       .catch((error) => {
-        console.error("There was an error fetching the bounty:", error);
+        console.error("There was an error fetching the project:", error);
       });
-      fetchPosts();
-      fetchUsers();
-      fetchCurrentUserDoubloons();
+    // fetchPosts();
+    fetchUsers();
+    // fetchCurrentUserDoubloons();
   }, []);
 
   if (!bounty) {
-    return <Typography align="center" style={{ marginTop: '2rem' }}>Loading...</Typography>;
+    return (
+      <Typography align="center" style={{ marginTop: "2rem" }}>
+        Loading...
+      </Typography>
+    );
   }
 
   const handleApprove = () => {
+    // Only allow type 4 users (Admins) to approve projects
+    if (sessionCookies.user_type !== 4) {
+      alert("Only administrators can approve projects");
+      return;
+    }
+
+    
 
     fetch(`http://localhost:8080/projects/${projectId}`, {
       method: "PATCH",
@@ -101,138 +138,190 @@ const ProjectDetailsPage = () => {
       },
       body: JSON.stringify({
         is_approved: true,
-        bounty_payout: doubloons
-      })
+        // bounty_payout: doubloons,
+      }),
     })
-    navigate('/projects');
-  }
+      .then((response) => {
+        if (response.ok) {
+          alert("Project approved successfully");
+          navigate("/projects");
+        } else {
+          alert("Error approving project");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Error approving project");
+      });
+  };
 
-  const postCommentFetch = ()=> {
-    console.log(typeof(parseInt(projectId)))
-    console.log(typeof(sessionCookies.user_id_token))
-    console.log(typeof(newComment))
-    
+  const postCommentFetch = () => {
+    console.log(typeof parseInt(projectId));
+    console.log(typeof sessionCookies.user_id_token);
+    console.log(typeof newComment);
+
     fetch(`http://localhost:8080/projects/${projectId}/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "project_id": parseInt(projectId),
-        "user_id": sessionCookies.user_id_token,
-        "post_text": newComment
-      })
-    })
-  }
+        project_id: parseInt(projectId),
+        user_id: sessionCookies.user_id_token,
+        post_text: newComment,
+      }),
+    });
+  };
 
   const handleSponsor = () => {
+    // Only allow type 2 users (Sponsors) to sponsor projects
+    if (sessionCookies.user_type === 1 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4) {
+      alert("Only sponsors can fund projects");
+      return;
+    }
+
+    // Check if project is approved
+    if (!bounty.is_approved) {
+      alert("This project is pending approval and cannot be sponsored yet");
+      return;
+    }
+
+    // Check if project has met SupraCoder requirement
+    if (bounty.coders_needed > 0) {
+      alert("This project needs more SupraCoders before it can be sponsored");
+      return;
+    }
+
     if (window.confirm("Are you sure you want to sponsor this Project")) {
-      fetch (`http://localhost:8080/projects/${projectId}`, {
-        method: "PATCH" , 
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          is_approved:true,
-          sponsored_by_id: sessionCookies.user_id_token, user_type: sessionCookies.user_type
-        }),
-      })
-      .then((response) => {
-        if (response.ok) {
-          alert("Project has been successfully sponsored");
-          window.location.reload();
-        }else{
-          alert("error sponsoring project")
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Error Sponsoring Project") 
-      });
-    }
-};
-  
-
-
-const handleAccept = () => {
-  if (window.confirm("Are you sure you want to join this project")) {
-    // Check if user is already a member by comparing IDs
-    const isMember = bounty.accepted_by_id === sessionCookies.user_id_token;
-    
-    if (isMember) {
-      alert("You have already joined this project!");
-      return;
-    }
-    
-    const updatedCodersNeeded = bounty.coders_needed - 1;
-    if (updatedCodersNeeded < 0) {
-      alert("This project has met its SupraCoder requirement");
-      return;
-    }
-
-    fetch(`http://localhost:8080/projects/${projectId}`, {
-      method: "PATCH",
-      headers: { 
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        is_accepted: true,
-        accepted_by_id: sessionCookies.user_id_token,
-        github_url: gitlink,
-        coders_needed: updatedCodersNeeded
-      })
-    })
-    .then(async response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.text().then(text => {
-        try {
-          return JSON.parse(text);
-        } catch {
-          return text;
-        }
-      });
-    })
-    .then(() => {
-      setBounty(prevBounty => ({
-        ...prevBounty,
-        coders_needed: updatedCodersNeeded
-      }));
-      alert("Project joined successfully!");
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      alert(`Error accepting project: ${error.message}`);
-    });
-  }
-}
-  const handleUnaccept = async () => {
-    try {
-      const updatedCodersNeeded = bounty.coders_needed + 1;
-      const response = await fetch(`http://localhost:8080/projects/${projectId}`, {
+      fetch(`http://localhost:8080/projects/${projectId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          is_accepted: false,
-          accepted_by_id: null,
-          coders_needed: updatedCodersNeeded
+          is_approved: true,
+          sponsored_by_id: sessionCookies.user_id_token,
+          user_type: sessionCookies.user_type,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert("Project has been successfully sponsored");
+            window.location.reload();
+          } else {
+            alert("error sponsoring project");
+          }
         })
-      });
-      
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Error Sponsoring Project");
+        });
+    }
+  };
+
+  const handleAccept = () => {
+    if (isJoining) {
+      return; // Prevent multiple clicks while processing
+    }
+
+    // Only allow type 1 users (SupraCoders) to join projects
+    if (sessionCookies.user_type !== 1) {
+      alert("Only SupraCoders can join projects");
+      return;
+    }
+
+    // Check if project is approved
+    if (!bounty.is_approved) {
+      alert("This project is pending approval and cannot be joined yet");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to join this project")) {
+      setIsJoining(true);
+      // Check if user is already a member
+      const isMember = bounty.accepted_by_id === sessionCookies.user_id_token;
+
+      if (isMember) {
+        alert("You have already joined this project!");
+        return;
+      }
+
+      const updatedCodersNeeded = bounty.coders_needed - 1;
+      if (updatedCodersNeeded < 0) {
+        alert("This project has met its SupraCoder requirement");
+        return;
+      }
+
+      fetch(`http://localhost:8080/projects/${projectId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          is_accepted: true,
+          accepted_by_id: sessionCookies.user_id_token,
+          github_url: gitlink,
+          coders_needed: updatedCodersNeeded,
+        }),
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.text().then((text) => {
+            try {
+              return JSON.parse(text);
+            } catch {
+              return text;
+            }
+          });
+        })
+        .then(() => {
+          setBounty((prevBounty) => ({
+            ...prevBounty,
+            coders_needed: updatedCodersNeeded,
+          }));
+          alert("Project joined successfully!");
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert(`Error accepting project: ${error.message}`);
+        })
+        .finally(() => {
+          setIsJoining(false);
+        });
+    }
+  };
+  const handleUnaccept = async () => {
+    try {
+      const updatedCodersNeeded = bounty.coders_needed + 1;
+      const response = await fetch(
+        `http://localhost:8080/projects/${projectId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            is_accepted: false,
+            accepted_by_id: null,
+            coders_needed: updatedCodersNeeded,
+          }),
+        },
+      );
+
       if (response.ok) {
-        setBounty(prev => ({...prev, coders_needed: updatedCodersNeeded}));
-        navigate('/projects');
+        setBounty((prev) => ({ ...prev, coders_needed: updatedCodersNeeded }));
+        navigate("/projects");
       } else {
-        throw new Error('Failed to update project');
+        throw new Error("Failed to update project");
       }
     } catch (error) {
       console.error("Error:", error);
       alert("Error dropping project");
     }
-  }
+  };
 
   const patchToComplete = () => {
     fetch(`http://localhost:8080/projects/${projectId}`, {
@@ -242,15 +331,15 @@ const handleAccept = () => {
       },
       body: JSON.stringify({
         is_completed: true,
-        is_accepted: false
-      })
-    })
-  }
+        is_accepted: false,
+      }),
+    });
+  };
 
   const updateUserDoubloonCount = async () => {
     await fetchCurrentUserDoubloons();
-    console.log(currentUserDoubloons)
-    console.log(bounty.bounty_payout)
+    console.log(currentUserDoubloons);
+    console.log(bounty.bounty_payout);
     let newDoubloonCount = currentUserDoubloons + bounty.bounty_payout;
     console.log(newDoubloonCount);
 
@@ -260,27 +349,26 @@ const handleAccept = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "supradoubloons": newDoubloonCount,
-      })
-    })
-  }
+        supradoubloons: newDoubloonCount,
+      }),
+    });
+  };
 
   const handleComplete = () => {
     updateUserDoubloonCount();
     patchToComplete();
-    navigate('/projects');
-  }
+    navigate("/projects");
+  };
 
   const thanosSnap = () => {
-
     fetch(`http://localhost:8080/projects/${projectId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-      }
-    })
-    navigate('/projects');
-  }
+      },
+    });
+    navigate("/projects");
+  };
 
   return (
     <>
@@ -355,11 +443,10 @@ const handleAccept = () => {
             <> </>
           </Typography>
 
-          {bounty.is_approved === true &&
-          bounty.coders_needed > 0 &&
-          bounty.is_completed === false ? (
+          {bounty.is_approved === true && bounty.is_completed === false && (
             <>
-              {sessionCookies.user_type === 1 && bounty.accepted_by_id !== sessionCookies.user_id_token ? (
+              {bounty.coders_needed > 0 && sessionCookies.user_type === 1 &&
+              bounty.accepted_by_id !== sessionCookies.user_id_token ? (
                 <Button
                   onClick={() => handleAccept()}
                   variant="contained"
@@ -368,7 +455,8 @@ const handleAccept = () => {
                 >
                   Join this Project as a Coder
                 </Button>
-              ) : sessionCookies.user_type === 2 ? (
+             ) : null}
+              {sessionCookies.user_type === 2 && bounty.coders_needed === 0 && (
                 <Button
                   onClick={() => handleSponsor()}
                   variant="contained"
@@ -377,9 +465,9 @@ const handleAccept = () => {
                 >
                   Sponsor this Project
                 </Button>
-              ) : null}
+              )}
             </>
-          ) : null}
+          )}
 
           {/* Github REPO Text Input */}
 
@@ -455,7 +543,11 @@ const handleAccept = () => {
             variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}
           >
-            Submitter ID: {bounty.submitter_id}
+            Submitter:{" "}
+            {(() => {
+              const user = userdata.find((user) => user.id === bounty.submitter_id);
+              return user ? `${user.first_name} ${user.last_name}` : "Name not available";
+            })()}
           </Typography>
           {/* Git Text render */}
 
@@ -479,7 +571,7 @@ const handleAccept = () => {
             variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}
           >
-            {bounty.coders_needed > 0 
+            {bounty.coders_needed > 0
               ? `SupraCoders Needed: ${bounty.coders_needed}`
               : "SupraCoder requirement met"}
           </Typography>
@@ -492,7 +584,7 @@ const handleAccept = () => {
             Thank you for viewing this Project. Check back often for updates!
           </Typography>
 
-          {sessionCookies.userPriv_Token === true &&
+          {sessionCookies.userPriv_Token === false && sessionCookies.user_type === 4 &&
           bounty.is_approved === false &&
           bounty.is_completed === false ? (
             <Button
@@ -507,7 +599,7 @@ const handleAccept = () => {
             <></>
           )}
 
-          {sessionCookies.userPriv_Token === true &&
+          {sessionCookies.userPriv_Token === false && sessionCookies.user_type === 4 &&
           bounty.is_approved === false &&
           bounty.is_completed === false ? (
             <Button
@@ -559,8 +651,6 @@ const handleAccept = () => {
       </Box>
     </>
   );
-
-
 };
 
 export default ProjectDetailsPage;

@@ -6,6 +6,43 @@
 const express = require('express');
 const router = express.Router();
 const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV || 'development']);
+const projectFields = [
+  'id',
+  'name',
+  'problem_statement',
+  'submitter_id',
+  'is_approved',
+  'is_accepted',
+  'accepted_by_id',
+  'is_completed',
+  'bounty_payout',
+  'github_url',
+  'coders_needed',
+  'program_languages',
+  'project_owner',
+  'date_created',
+  'end_date',
+  'project_state',
+  'priority_level',
+  'kickoff_startdate',
+  'kickoff_enddate',
+  'development_startdate',
+  'development_enddate',
+  'testing_startdate',
+  'testing_enddate',
+  'showcase_startdate',
+  'showcase_enddate',
+  'funding_startdate',
+  'funding_enddate',
+  'deployment_startdate',
+  'deployment_enddate',
+  'por_startdate',
+  'por_enddate',
+  'funding_source',
+  'funding_poc',
+  'estimated_cost',
+  'funding_department'
+];
 
 /**
  * @swagger
@@ -20,7 +57,12 @@ const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV || '
  *         description: Internal Server Error
  */
 router.get('/', (req, res) => {
-  knex('project_table')
+  let params = req.query;
+  console.log(`request for ${req.path} with params: ${JSON.stringify(params)}`);
+
+  if (Object.keys(params).length === 0) {
+    //normal request for ALL projects with no parameter fields
+    knex('project_table')
     .select('*')
     .then((project) => {
       res.status(200).send(project)
@@ -29,7 +71,54 @@ router.get('/', (req, res) => {
       console.log(err);
       res.status(500).send("Internal Server Error");
     })
+  } else{
+    //request for specific projects with specified field parameters.
+    _getProjectQueryEntries(res, params);
+  }
 });
+
+/**
+ * Async handles the advanced query for projects
+ * @param {*} res the response to send back
+ * @param {*} params the query arameters provided by the user
+ * @returns res
+ */
+async function _getProjectQueryEntries(res, params) {
+  let query = knex('project_table').select("*");
+
+  projectFields.forEach(field => {
+      console.log(`process field ${field}`)
+      if (params[field]) {
+        if (field == 'submitter_id' || field == 'accepted_by_id' || field == 'bounty_payout' ||
+           field == 'coders_needed' || field == 'project_owner' || field == 'priority_level') {
+          query = query.where(field, '=', parseInt(params[field]));
+        } else if (field == 'is_accepted' || field == 'is_approved' || field == 'is_completed') {
+          query = query.where(field, '=', params[field] === 'true' || params[field] === '1');
+        } else if (field == 'date_created' || field == 'end_date' || 
+          field.endsWith('_startdate') || field.endsWith('_enddate')) {
+            const dateValue = new Date(params[field]);
+            if (!isNaN(dateValue.getTime())) {
+              query = query.whereRaw(`DATE(${field}) = ?`, [dateValue.toISOString().split('T')[0]]);
+            }
+        } else if(field == 'estimated_cost') {
+          query = query.where(field, '=', parseFloat(params[field]));
+        }
+        else {
+          query = query.where(field, 'LIKE', `%${params[field]}%`);
+        }
+      }
+    });
+
+    console.log(`built final query: ${query}`)
+    const result = await query;
+    console.log(`final result ${JSON.stringify(result)}`)
+    if(!result){
+      return res.status(404).send("No projects found!");
+    }
+    return res.status(200).send(result);
+}
+
+
 
 /**
  * @swagger
@@ -114,45 +203,65 @@ router.get('/:id/messages', (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-router.post('/', (req, res) => {
-  const { submitter_id, accepted_by_id, name, problem_statement, is_accepted, is_approved, is_completed, bounty_payout, github_url, program_languages, date_created, end_date, project_state, coders_needed } = req.body;
 
-  knex("user_table")
-    .whereIn('id', [submitter_id, accepted_by_id])
-    .then((userRows) => {
-      if (userRows.length === 0) {
-        res.status(400).send("Invalid submitter or accepted_by_id");
-        return;
+router.post('/', async (req, res) => {
+  try {
+    const {
+      submitter_name, 
+      submitter_email, 
+      submitter_unit,  
+      project_title, 
+      project_description,
+      requirements,  
+      due_date        
+    } = req.body;
+
+    if (!submitter_name || !submitter_email || !project_title || !project_description) {
+      return res.status(400).json({ 
+        message: "submitter_name, submitter_email, project_title, and project_description are required." 
+      });
+    }
+
+    const [submitter] = await knex("user_table").where('email', submitter_email);
+
+    if (!submitter) {
+      return res.status(400).json({ message: "Submitter email is not registered in the system." });
+    }
+
+    const [newProject] = await knex("project_table")
+      .insert({
+        name: project_title, 
+        problem_statement: project_description, 
+        submitter_id: submitter.id, 
+        accepted_by_id: null, 
+        is_approved: false, 
+        is_accepted: false,
+        is_completed: false,
+        bounty_payout: 0, 
+        github_url: null, 
+        program_languages: requirements || null, 
+        date_created: knex.fn.now(), 
+        end_date: due_date || null, 
+        coders_needed: 0 
+      })
+      .returning('*');
+
+    return res.status(201).json({
+      message: "Project successfully created.",
+      project: newProject,
+      submitter: {
+        name: submitter_name,
+        email: submitter_email,
+        unit: submitter_unit || "N/A"
       }
+    });
 
-      knex("project_table")
-        .insert({
-          name,
-          problem_statement,
-          is_approved,
-          is_accepted,
-          is_completed,
-          submitter_id,
-          accepted_by_id,
-          bounty_payout,
-          github_url,
-          program_languages,
-          date_created,
-          end_date,
-          project_state,
-          coders_needed
-        })
-        .returning('*')
-        .then((newProject) => {
-          res.status(201).json(newProject[0]);
-          console.log('Project creation was successful');
-        })
-        .catch((err) => {
-          console.error(err);
-          res.status(500).send("Internal Server Error");
-        });
-    })
+  } catch (err) {
+    console.error("Error inserting project:", err.message);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 });
+
 
 /**
  * @swagger
@@ -227,9 +336,8 @@ router.patch('/:id', (req, res) => {
       end_date: req.body.end_date,
       desired_number_coders: req.body.desired_number_coders,
       project_state: req.body.project_state,
-      coders_needed: req.body.coders_needed
     })
-    .then(() => res.status(200).json({ message: 'Project updated successfully' }))
+    .then(() => res.status(200).send('project updated'))
 });
 
 /**
@@ -246,22 +354,6 @@ router.patch('/:id', (req, res) => {
  *       204:
  *         description: Project deleted successfully!
  */
-router.get('/:id/members/:userId', (req, res) => {
-  knex('project_table')
-    .where({ 
-      id: req.params.id,
-      accepted_by_id: req.params.userId
-    })
-    .first()
-    .then(project => {
-      res.json({ isMember: !!project });
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ error: "Internal Server Error" });
-    });
-});
-
 router.delete('/:id', (req, res) => {
     knex('project_table')
     .where({ id: req.params.id })

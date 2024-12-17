@@ -17,6 +17,7 @@ const Projects = (props) => {
   const navigate = useNavigate();
   const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token']);
   const [allUsers, setAllUsers] = useState([]);
+  const [projectUsers, setProjectUsers] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:8080/projects")
@@ -70,6 +71,33 @@ const Projects = (props) => {
         return outputUsername;
       }
     }
+  };
+
+  const findProjectUsers = (projectId) => {
+    console.log("Finding users for project:", projectId);
+    
+    fetch(`http://localhost:8080/user_projects?project_id=${projectId}`)
+      .then(res => res.json())
+      .then(userProjects => {
+        console.log("User Projects:", userProjects);
+        
+        // Get user IDs from user_projects
+        const userIds = userProjects.map(up => up.user_id);
+        console.log("User IDs:", userIds);
+        
+        // Find matching users from allUsers
+        const matchedUsers = allUsers.filter(user => userIds.includes(user.id));
+        console.log("Matched Users:", matchedUsers);
+        
+        // Create username string
+        const usernames = matchedUsers.map(user => user.username).join(", ");
+        console.log("Username String:", usernames);
+        return usernames;
+      })
+      .catch(err => {
+        console.error("Error fetching project users:", err);
+        return "";
+      });
   };
 
   const handleChange = (event, newValue) => {
@@ -156,11 +184,11 @@ const Projects = (props) => {
           indicatorColor="primary"
           textColor="primary"
           bgcolor="primary">
-          <Tab label="All" />
-          <Tab label="Unaccepted" />
-          <Tab label="Accepted" />
-          <Tab label="Complete" />
-          {sessionCookies.userPriv_Token === true && <Tab label="Pending" />}
+          <Tab label="All Projects" />
+          <Tab label="Unjoined Projects" />
+          <Tab label="Joined Projects" />
+          <Tab label="Completed Projects" />
+         <Tab label="Pending" />
         </Tabs>
 
       </Box>
@@ -188,10 +216,10 @@ const Projects = (props) => {
                       : "red",
                 }}>
                 {project.is_completed
-                  ? `Completed by ${findAcceptor(project.accepted_by_id)}`
+                  ? `Completed by ${findProjectUsers(project.id)}`
                   : project.is_accepted
-                    ? `Accepted by ${findAcceptor(project.accepted_by_id)}`
-                    : "Not Accepted"}
+                    ? `Joined by ${findProjectUsers(project.id)}`
+                    : "No one has joined"}
               </h3>
 
               <p style={{ marginLeft: "4px", marginTop: 'auto', textAlign: "left" }}>
