@@ -134,7 +134,7 @@ export const SocialAbout = (props) => {
                   Hours available each week: {time_available} hours, {availability}
                 </Typography>} />
             </ListItem>
-                
+            
           </List>
         </CardContent>
       </Card>
