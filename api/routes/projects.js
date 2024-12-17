@@ -203,45 +203,65 @@ router.get('/:id/messages', (req, res) => {
  *       500:
  *         description: Internal Server Error
  */
-router.post('/', (req, res) => {
-  const { submitter_id, accepted_by_id, name, problem_statement, is_accepted, is_approved, is_completed, bounty_payout, github_url, program_languages, date_created, end_date, project_state, coders_needed } = req.body;
 
-  knex("user_table")
-    .whereIn('id', [submitter_id, accepted_by_id])
-    .then((userRows) => {
-      if (userRows.length === 0) {
-        res.status(400).send("Invalid submitter or accepted_by_id");
-        return;
+router.post('/', async (req, res) => {
+  try {
+    const {
+      submitter_name, 
+      submitter_email, 
+      submitter_unit,  
+      project_title, 
+      project_description,
+      requirements,  
+      due_date        
+    } = req.body;
+
+    if (!submitter_name || !submitter_email || !project_title || !project_description) {
+      return res.status(400).json({ 
+        message: "submitter_name, submitter_email, project_title, and project_description are required." 
+      });
+    }
+
+    const [submitter] = await knex("user_table").where('email', submitter_email);
+
+    if (!submitter) {
+      return res.status(400).json({ message: "Submitter email is not registered in the system." });
+    }
+
+    const [newProject] = await knex("project_table")
+      .insert({
+        name: project_title, 
+        problem_statement: project_description, 
+        submitter_id: submitter.id, 
+        accepted_by_id: null, 
+        is_approved: false, 
+        is_accepted: false,
+        is_completed: false,
+        bounty_payout: 0, 
+        github_url: null, 
+        program_languages: requirements || null, 
+        date_created: knex.fn.now(), 
+        end_date: due_date || null, 
+        coders_needed: 0 
+      })
+      .returning('*');
+
+    return res.status(201).json({
+      message: "Project successfully created.",
+      project: newProject,
+      submitter: {
+        name: submitter_name,
+        email: submitter_email,
+        unit: submitter_unit || "N/A"
       }
+    });
 
-      knex("project_table")
-        .insert({
-          name,
-          problem_statement,
-          is_approved,
-          is_accepted,
-          is_completed,
-          submitter_id,
-          accepted_by_id,
-          bounty_payout,
-          github_url,
-          program_languages,
-          date_created,
-          end_date,
-          project_state,
-          coders_needed
-        })
-        .returning('*')
-        .then((newProject) => {
-          res.status(201).json(newProject[0]);
-          console.log('Project creation was successful');
-        })
-        .catch((err) => {
-          console.error(err);
-          res.status(500).send("Internal Server Error");
-        });
-    })
+  } catch (err) {
+    console.error("Error inserting project:", err.message);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 });
+
 
 /**
  * @swagger
