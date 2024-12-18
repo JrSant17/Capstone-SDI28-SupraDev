@@ -22,22 +22,19 @@ const ProjectDetailsPage = () => {
   const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
   const [isJoining, setIsJoining] = useState(false);
   const [isUserJoined, setIsUserJoined] = useState(false);
-  // const [coders_needed, setCodersNeeded] = useState({coders_needed: 0 });
 
-  // // const handleAddComment = () => {
-  // //   if (newComment.trim()) {
-  // //     setComments((prevComments) => [...prevComments, newComment]);
-  // //     setNewComment("");
-  //   }
-  // };
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      setComments((prevComments) => [...prevComments, newComment]);
+      setNewComment("");
+    }
+  };
 
   const checkUserProjectStatus = async () => {
     try {
-      console.log('Checking status for user:', sessionCookies.user_id_token, 'project:', id);
       const response = await fetch(`http://localhost:8080/user_projects?user_id=${sessionCookies.user_id_token}&project_id=${id}`);
       const data = await response.json();
-      console.log('User project status data:', data);
-      console.log('Is user joined:', data.length > 0);
       setIsUserJoined(data.length > 0);
     } catch (error) {
       console.error("Error checking user project status:", error);
@@ -106,7 +103,6 @@ const ProjectDetailsPage = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(`received data: ${JSON.stringify(data)}`);
         if (data) {
           setproject(data);
         }
@@ -117,7 +113,6 @@ const ProjectDetailsPage = () => {
     fetchPosts();
     fetchUsers();
     checkUserProjectStatus();
-    // fetchCurrentUserDoubloons();
   }, []);
 
   if (!project) {
@@ -135,8 +130,6 @@ const ProjectDetailsPage = () => {
       return;
     }
 
-    
-
     fetch(`http://localhost:8080/projects/${id}`, {
       method: "PATCH",
       headers: {
@@ -144,7 +137,6 @@ const ProjectDetailsPage = () => {
       },
       body: JSON.stringify({
         is_approved: true,
-        // project_payout: doubloons,
       }),
     })
       .then((response) => {
@@ -314,24 +306,7 @@ const ProjectDetailsPage = () => {
         });
     }
   };
-
-
-  const handleSupraLeaveProject = () => {
-    fetch(`http://localhost:8080/projects/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        "is_accepted": false,
-        "accepted_by_id": sessionCookies.user_id_token
-      })
-    })
-    navigate('/projects');
-    window.location.reload();
-  }
-
-
+  
   const handleUnjoining = async () => {
     try {
       // First update the project
@@ -402,7 +377,6 @@ const ProjectDetailsPage = () => {
 
   const handleComplete = () => {
     updateUserDoubloonCount();
-    // patchToComplete();
     navigate("/projects");
   };
 
@@ -623,6 +597,20 @@ const ProjectDetailsPage = () => {
             {project.coders_needed > 0
               ? `SupraCoders Needed: ${project.coders_needed}`
               : "SupraCoder requirement met"}
+          </Typography>
+
+          <Typography
+          variant="h6"
+          style={{ fontWeight: "500", color: "#616161" }}
+          >
+          Languages Requested: {project.program_languages}
+          </Typography>
+
+          <Typography
+          variant="h6"
+          style={{ fontWeight: "500", color: "#616161" }}
+          >
+          Project End Date: {project.end_date}
           </Typography>
 
           <Typography

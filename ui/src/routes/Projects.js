@@ -77,8 +77,9 @@ const Projects = (props) => {
   };
 
   const findProjectUsers = useCallback(async (projectId) => {
-    if (isLoading[projectId]) return;
-    
+    if (isLoading[projectId]) {
+      return;
+    }
     const cachedData = localStorage.getItem(`project_users_${projectId}`);
     if (cachedData) {
       const cached = JSON.parse(cachedData);
@@ -91,17 +92,17 @@ const Projects = (props) => {
       }
     }
 
-    if (projectUsernamesMap[projectId]) return;
-
+    if (projectUsernamesMap[projectId]) {
+      return;
+    }
     try {
       setIsLoading(prev => ({ ...prev, [projectId]: true }));
+        const userProjectsRes = await fetch(`http://localhost:8080/user_projects?project_id=${projectId}`);
+        const userProjects = await userProjectsRes.json();
+        const userIds = userProjects.map(up => up.user_id);
+        const matchedUsers = allUsers.filter(user => userIds.includes(user.id));
+        const usernames = matchedUsers.map(user => user.username).join(", ");
       
-      const userProjectsRes = await fetch(`http://localhost:8080/user_projects?project_id=${projectId}`);
-      const userProjects = await userProjectsRes.json();
-      
-      const userIds = userProjects.map(up => up.user_id);
-      const matchedUsers = allUsers.filter(user => userIds.includes(user.id));
-      const usernames = matchedUsers.map(user => user.username).join(", ");
       
       localStorage.setItem(`project_users_${projectId}`, JSON.stringify({
         usernames: usernames || "No users",
@@ -120,14 +121,35 @@ const Projects = (props) => {
   }, [allUsers]);
 
   useEffect(() => {
-    if (!allUsers.length) return;
-    
+    if (!allUsers.length) {
+      return;
+    }
     filterVar.forEach(project => {
       findProjectUsers(project.id);
     });
   }, [filterVar, allUsers]);
 
+  useEffect(() => {
+    const refetchUserProjects = () => {
+      if (!allUsers.length) return;
+      
+      // Clear existing cache to force refetch
+      filterVar.forEach(project => {
+        localStorage.removeItem(`project_users_${project.id}`);
+        findProjectUsers(project.id);
+      });
+    };
 
+    // Call refetch immediately
+    refetchUserProjects();
+
+    // Set up listener for when user returns to page
+    window.addEventListener('focus', refetchUserProjects);
+    
+    return () => {
+      window.removeEventListener('focus', refetchUserProjects);
+    };
+  }, [allUsers.length]);
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
