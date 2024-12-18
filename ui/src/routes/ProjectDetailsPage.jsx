@@ -5,6 +5,7 @@ import { useCookies } from 'react-cookie';
 import CommentsSection from '../components/CommentsSection';
 import ProjectDetailActions from '../components/ProjectDetailActions';
 import ProjectDetailHeader from '../components/ProjectDetailHeader';
+import './ProjectDetailsPage.css'
 
 const ProjectDetailsPage = () => {
   const [project, setproject] = useState(null);

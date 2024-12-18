@@ -237,11 +237,25 @@ const HomePage = () => {
                                                 gap: '10px',
                                                 marginBottom: '15px'
                                             }}>
+                                                
+                                                <div style={{ gridColumn: '1 / -1', fontWeight: 'bold', fontSize: '1.2em', marginBottom: '10px' }}>
+                                                    {userProject.details?.url && (
+                                                        <img
+                                                            src={userProject.details.url}
+                                                            alt="Project Image"
+                                                            style={{ width: '100%', maxWidth: '200px', height: 'auto', borderRadius: '10px' }}
+                                                        />
+                                                    )}
+                                                </div>
                                                 <div style={{ gridColumn: '1 / -1', fontWeight: 'bold', fontSize: '1.2em', marginBottom: '10px' }}>
                                                     {userProject.details?.name || 'Project name unknown'}
                                                 </div>
-                                                <div style={{ fontWeight: 'bold' }}>End Date:</div>
-                                                <div>{userProject.details?.end_date || 'No end date'}</div>
+                                                <div style={{ fontWeight: 'bold' }}>Target Need Date:</div>
+                                                <div>
+                                                    {userProject.details?.end_date
+                                                        ? new Date(userProject.details.end_date).toLocaleDateString()
+                                                        : 'No end date'}
+                                                </div>
                                                 <div style={{ fontWeight: 'bold' }}>Working Repository:</div>
                                                 <div>
                                                     {userProject.details?.github_url ?
