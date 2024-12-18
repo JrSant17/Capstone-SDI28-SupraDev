@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import eventEmitter from './eventEmitter';
 
 const milestones = [
     "Kickoff",
@@ -11,7 +10,7 @@ const milestones = [
     "Program of Record"
 ];
 
-export default function MilestoneBar({ id }) {
+export default function MilestoneBar({ id, update_trigger }) {
     const [milestoneData, setMilestoneData] = useState([]);
     const [currentMilestoneIndex, setCurrentMilestoneIndex] = useState(-1);
 
@@ -44,20 +43,8 @@ export default function MilestoneBar({ id }) {
     };
 
     useEffect(() => {
-
         syncMilestonesWithBackend();
-
-        const handleMilestoneChange = () => {
-            console.log('Milestone change detected, re-syncing with backend...');
-            syncMilestonesWithBackend();
-        };
-
-        eventEmitter.on('milestoneIndexChanged', handleMilestoneChange);
-
-        return () => {
-            eventEmitter.off('milestoneIndexChanged', handleMilestoneChange);
-        };
-    }, [id]);
+    }, [id, update_trigger]); 
 
     return (
         <div className="milestone-container">

@@ -14,6 +14,13 @@ const ProjectDetailsPage = () => {
   const [newComment, setNewComment] = useState("");
   const [chatposts, setChatposts] = useState([]);
   const [userdata, setUserdata] = useState([]);
+  const projectSubmitter = userdata.find((user) => user.id === project?.submitter_id);
+
+  const InfoItem = ({ label, value }) => (
+    <Typography variant="h6" style={{ fontWeight: "500", color: "#616161" }}>
+      {label}: {value || "Not available"}
+    </Typography>
+  );
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -69,6 +76,7 @@ const ProjectDetailsPage = () => {
       .catch((error) => {
         console.error("There was an error fetching the project:", error);
       });
+
       fetchPosts();
       fetchUsers();
   }, []);
@@ -371,63 +379,76 @@ const ProjectDetailsPage = () => {
           )}
 
           <Divider style={{ marginBottom: "1.5rem" }} />
-          <Typography
-            variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}
-          >
-            Project Details:
-          </Typography>
-          <Typography
-            paragraph
-            style={{
-              fontSize: "1rem",
-              marginTop: "0.5rem",
-              marginBottom: "1.5rem",
-            }}
-          >
-            {project.problem_statement}
-          </Typography>
-          <Typography
-            variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}
-          >
-            Submitter ID: {project.submitter_id}
-          </Typography>
-          {/* Git Text render */}
+          <div>
+            <Typography
+              variant="h6"
+              style={{ fontWeight: "500", color: "#616161" }}
+            >
+              Project Details:
+            </Typography>
+            <Typography
+              paragraph
+              style={{
+                fontSize: "1rem",
+                marginTop: "0.5rem",
+                marginBottom: "1.5rem",
+              }}
+            >
+              {project.problem_statement}
+            </Typography>
+            <InfoItem
+              label="Project Submitter Name"
+              value={`${projectSubmitter?.first_name || 'Unknown First Name'} ${projectSubmitter?.last_name || ''}`}
+            />
+            <InfoItem
+              label="Project Submitter Username"
+              value={projectSubmitter?.username}
+            />
+            <InfoItem
+              label="Contact Info"
+              value={projectSubmitter?.email}
+            />
+            <InfoItem
+              label="Github Link"
+              value={project.github_url}
+            />
+            <InfoItem
+              label="SupraCoders Needed"
+              value={project.coders_needed !== undefined ? project.coders_needed : "Loading..."}
+            />
+            <InfoItem
+              label="Tech Stack"
+              value={project.program_languages}
+            />
+            <InfoItem
+              label="Need By Date"
+              value={project.end_date}
+            />
+            <InfoItem
+              label="Funding Source"
+              value={project.funding_department}
+            />
+            <InfoItem
+              label="Funding Source Details"
+              value={project.funding_source}
+            />
+            <InfoItem
+              label="Problem Statement"
+              value={project.problem_statement}
+            />
+            <InfoItem
+              label="Requirements"
+              value={project.requirements}
+            />
+            <InfoItem
+              label="Last Updated"
+              value={project.last_updated}
+            />
 
-          <Typography
-            variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}
-          >
-            Contact Info:{" "}
-            {userdata.find((user) => user.id === project.submitter_id)?.email ||
-              "No Email available"}
-          </Typography>
-
-          <Typography
-            variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}
-          >
-            Github Link: {project.github_url}
-          </Typography>
-          {/* Git Text render */}
-          <Typography
-            variant="h6"
-            style={{ fontWeight: "500", color: "#616161" }}
-          >
-            SupraCoders Needed:{" "}
-            {project.coders_needed !== undefined
-              ? project.coders_needed
-              : "loading..."}
-          </Typography>
-
-          <Typography
-            color="textSecondary"
-            align="right"
-            style={{ marginTop: "1.5rem" }}
-          >
-            Thank you for viewing this Project. Check back often for updates!
-          </Typography>
+            <Typography color="textSecondary" align="right" style={{ marginTop: "1.5rem" }}>
+              Thank you for viewing this Project. Check back often for updates!
+            </Typography>
+          </div>
 
           {sessionCookies.userPriv_Token === true &&
           project.is_approved === false &&
