@@ -21,6 +21,7 @@ const ProjectSubmission = () => {
   const [dueDate, setDueDate] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogContent, setDialogContent] = useState("");
+  const [appPic, setAppPic] = useState("")
 
   const handleLanguageChange = (event) => {
     setLanguages(event.target.value);
@@ -43,7 +44,8 @@ const ProjectSubmission = () => {
       program_languages: languages,
       project_owner: sessionCookies.user_id_token,
       requirements: requirements,
-      end_date: dueDate
+      end_date: dueDate,
+      url: appPic
     };
 
     fetch('http://localhost:8080/projects', {
@@ -103,7 +105,7 @@ const ProjectSubmission = () => {
           </div>
           <div className="tooltip">
             <h4>Project Description</h4>
-            <span className="tooltiptext">Choose a descriptive name for your project</span>
+            <span className="tooltiptext">Describe the purpose of your application</span>
             <TextField
               className="input-text"
               label='Project Description'
@@ -118,7 +120,7 @@ const ProjectSubmission = () => {
           </div>
           <div className="tooltip">
             <h4>Requirements</h4>
-            <span className="tooltiptext">Choose a descriptive name for your project</span>
+            <span className="tooltiptext">Please list detailed requirements and features desired in your application</span>
             <TextField
               className="input-text"
               label='Requirements'
@@ -131,10 +133,23 @@ const ProjectSubmission = () => {
               rows={4}
             />
           </div>
+          <div className="tooltip">
+            <h4>Picture</h4>
+            <span className="tooltiptext">Please provide a URL to be used for your applicaiton logo</span>
+            <TextField
+              className="input-text"
+              label='URL'
+              variant="outlined"
+              type='url'  
+              value={appPic}  
+              onChange={(e) => setAppPic(e.target.value)} 
+              size='small'
+            />
+          </div>
           <div className="date-coders-container">
             <div className="tooltip">
               <h4>Due Date</h4>
-              <span className="tooltiptext">Choose a descriptive name for your project</span>
+              <span className="tooltiptext">Select the estimated need date</span>
               <TextField
                 className="input-text-small"
                 label='Due Date'
@@ -150,7 +165,7 @@ const ProjectSubmission = () => {
             </div>
             <div className="tooltip">
               <h4>Coders needed</h4>
-              <span className="tooltiptext">Choose a descriptive name for your project</span>
+              <span className="tooltiptext">How many Supracoders do you expect to need?</span>
               <TextField
                 className="input-text-small"
                 label='numCoders'

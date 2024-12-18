@@ -41,7 +41,8 @@ const projectFields = [
   'funding_source',
   'funding_poc',
   'estimated_cost',
-  'funding_department'
+  'funding_department',
+  'url'
 ];
 
 /**
@@ -216,6 +217,7 @@ router.post('/', async (req, res) => {
       project_owner,
       requirements,
       end_date,
+      url,
     } = req.body;
 
     if (!submitter_id || !name || !coders_needed || !problem_statement || !project_owner) {
@@ -246,7 +248,8 @@ router.post('/', async (req, res) => {
         date_created: knex.fn.now(),
         end_date: end_date || null,
         coders_needed: coders_needed || 0,
-        requirements: requirements || null
+        requirements: requirements || null,
+        url: url || null,
       })
       .returning('*');
 
@@ -351,6 +354,7 @@ router.patch('/:id', (req, res) => {
       end_date: req.body.end_date,
       coders_needed: req.coders_needed,
       project_state: req.body.project_state,
+      url: req.body.url,
     })
     .then(() => res.status(200).send('project updated'))
 });

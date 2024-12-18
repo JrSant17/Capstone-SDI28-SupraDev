@@ -21,8 +21,8 @@ const ProjectStatus = () => {
     const [updateTrigger, setUpdateTrigger] = useState(false);
     const { id } = useParams();
     const [sessionCookies, setSessionCookies] = useCookies([
-        'username_token', 
-        'user_id_token', 
+        'username_token',
+        'user_id_token',
         'userPriv_Token',
         'user_type'
     ])
@@ -352,11 +352,18 @@ const ProjectStatus = () => {
                 <Paper elevation={5} style={{ borderRadius: '25px', background: 'rgba(255,255,255, 0.85)', padding: '40px', marginTop: '25px', maxWidth: '800px', width: '100%', overflow: 'auto', marginBottom: "50px" }}>
 
                     <Typography
-
                         variant="h4"
                         gutterBottom
                         style={{ fontWeight: "bold", marginBottom: "1.5rem" }}>
-                        {bounty.name}
+                        <div className='title-container'>{bounty.name}</div>
+
+                        <div className="image-container">
+                            {bounty.url ? (
+                                <img className="project-image" src={bounty.url} alt="Project Image" />
+                            ) : (
+                                <p>No image available</p>
+                            )}
+                        </div>
                         <div>
                             <small className='details-container'>
                                 {kickoffStartDate ? (
@@ -397,41 +404,41 @@ const ProjectStatus = () => {
                                         Previous Milestone
                                     </button>
 
-                                    <button
-                                        className="milestone-button"
-                                        onClick={moveToNextMilestone}
-                                        disabled={currentMilestoneIndex >= milestones.length - 1}
-                                    >
-                                        Next Milestone
-                                    </button>
+                                        <button
+                                            className="milestone-button"
+                                            onClick={moveToNextMilestone}
+                                            disabled={currentMilestoneIndex >= milestones.length - 1}
+                                        >
+                                            Next Milestone
+                                        </button>
 
-                                    <button
-                                        className="milestone-button"
-                                        onClick={removeTimestamp}
-                                        disabled={milestoneTimestamps[currentMilestoneIndex]?.started === null &&
-                                            milestoneTimestamps[currentMilestoneIndex]?.completed === null}
-                                    >
-                                        Remove Timestamp
-                                    </button>
+                                        <button
+                                            className="milestone-button"
+                                            onClick={removeTimestamp}
+                                            disabled={milestoneTimestamps[currentMilestoneIndex]?.started === null &&
+                                                milestoneTimestamps[currentMilestoneIndex]?.completed === null}
+                                        >
+                                            Remove Timestamp
+                                        </button>
 
-                                    <button
-                                        className="milestone-button"
-                                        onClick={startCurrentMilestone}
-                                        disabled={!canStartCurrentMilestone || currentMilestoneIndex < 0}
-                                    >
-                                        Start Milestone
-                                    </button>
+                                        <button
+                                            className="milestone-button"
+                                            onClick={startCurrentMilestone}
+                                            disabled={!canStartCurrentMilestone || currentMilestoneIndex < 0}
+                                        >
+                                            Start Milestone
+                                        </button>
 
-                                    <button
-                                        className="milestone-button"
-                                        onClick={completeCurrentMilestone}
-                                        disabled={ !canCompleteCurrentMilestone || 
-                                            currentMilestoneIndex < 0 || 
-                                            milestoneTimestamps[currentMilestoneIndex]?.completed}
-                                    >
-                                        Complete Milestone
-                                    </button>
-                                </div>
+                                        <button
+                                            className="milestone-button"
+                                            onClick={completeCurrentMilestone}
+                                            disabled={!canCompleteCurrentMilestone ||
+                                                currentMilestoneIndex < 0 ||
+                                                milestoneTimestamps[currentMilestoneIndex]?.completed}
+                                        >
+                                            Complete Milestone
+                                        </button>
+                                    </div>
                                 ) : (
                                     <>
                                     </>
@@ -511,13 +518,13 @@ const ProjectStatus = () => {
                         <List>
                             {chatposts.map((comment, index) => (
                                 <div key={index}>
-                                <ListItem>
-                                    <div style={{ display: 'flex' }}>
-                                        <div>{userImgRender(comment.user_id)}</div>
-                                        <Typography>{comment.post_text}</Typography>
-                                    </div>
-                                </ListItem>
-                            </div>
+                                    <ListItem>
+                                        <div style={{ display: 'flex' }}>
+                                            <div>{userImgRender(comment.user_id)}</div>
+                                            <Typography>{comment.post_text}</Typography>
+                                        </div>
+                                    </ListItem>
+                                </div>
                             ))}
                         </List>
                         <TextField fullWidth variant="outlined" placeholder="Add a comment" value={newComment} onChange={handleCommentChange} />
