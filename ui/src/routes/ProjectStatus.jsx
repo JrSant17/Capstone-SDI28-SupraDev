@@ -4,6 +4,8 @@ import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Ava
 import { useCookies } from 'react-cookie';
 import MilestoneBar from '../components/milestoneBar';
 import './ProjectStatus.css';
+import eventEmitter from '../components/eventEmitter';
+
 
 const milestones = [
     "Kickoff",
@@ -73,7 +75,9 @@ const ProjectStatus = () => {
     
                     const activeMilestone = fetchedMilestoneData.find(m => m.is_active);
                     if (activeMilestone) {
-                        setCurrentMilestoneIndex(activeMilestone.index - 1);
+                        const updatedIndex = activeMilestone.index - 1;
+                        setCurrentMilestoneIndex(updatedIndex);
+                        eventEmitter.emit('milestoneIndexChanged', updatedIndex);
                     }
                 } else {
                     throw new Error('Milestone data is not an array');
@@ -83,6 +87,10 @@ const ProjectStatus = () => {
                 console.error('Error syncing milestones:', error);
             }
         };
+
+        // useEffect(() => {
+        //     syncMilestonesWithBackend();
+        // }, [id]);
     
         const createDefaultMilestones = async () => {
             try {

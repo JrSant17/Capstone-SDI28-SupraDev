@@ -1,5 +1,5 @@
-import { useCookies } from 'react-cookie';
 import React, { useEffect, useState } from 'react';
+import eventEmitter from './eventEmitter';
 
 const milestones = [
     "Kickoff",
@@ -10,6 +10,7 @@ const milestones = [
     "Deployment",
     "Program of Record"
 ];
+
 export default function MilestoneBar({ id }) {
     const [milestoneData, setMilestoneData] = useState([]);
     const [currentMilestoneIndex, setCurrentMilestoneIndex] = useState(-1);
@@ -24,33 +25,44 @@ export default function MilestoneBar({ id }) {
                 }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+
             const fetchedMilestoneData = await response.json();
-    
             if (!Array.isArray(fetchedMilestoneData)) {
                 throw new Error('Milestone data is not an array');
             }
+
             setMilestoneData(fetchedMilestoneData);
+
             const activeMilestone = fetchedMilestoneData.find(m => m.is_active);
             if (activeMilestone) {
                 setCurrentMilestoneIndex(activeMilestone.index - 1);
             }
-    
         } catch (error) {
-            if (error.message !== 'HTTP error! status: 404') {
-                console.error('Error syncing milestones:', error);
-            }
+            console.error('Error syncing milestones:', error);
             setMilestoneData([]);
         }
     };
 
     useEffect(() => {
+
         syncMilestonesWithBackend();
-    }, [id])
+
+        const handleMilestoneChange = () => {
+            console.log('Milestone change detected, re-syncing with backend...');
+            syncMilestonesWithBackend();
+        };
+
+        eventEmitter.on('milestoneIndexChanged', handleMilestoneChange);
+
+        return () => {
+            eventEmitter.off('milestoneIndexChanged', handleMilestoneChange);
+        };
+    }, [id]);
 
     return (
         <div className="milestone-container">
             {milestones.map((milestone, index) => (
-                <div key={index} className={`milestone ${index === currentMilestoneIndex ? 'active' : 'inactive'} `}>
+                <div key={index} className={`milestone ${index === currentMilestoneIndex ? 'active' : 'inactive'}`}>
                     {milestone}
                 </div>
             ))}
