@@ -44,7 +44,8 @@ const ProjectSubmission = () => {
       program_languages: languages,
       project_owner: sessionCookies.user_id_token,
       requirements: requirements,
-      end_date: dueDate
+      end_date: dueDate,
+      url: appPic
     };
 
     fetch('http://localhost:8080/projects', {
