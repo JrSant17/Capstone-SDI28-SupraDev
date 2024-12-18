@@ -59,7 +59,6 @@ const projectFields = [
  */
 router.get('/', (req, res) => {
   let params = req.query;
-  console.log(`request for ${req.path} with params: ${JSON.stringify(params)}`);
 
   if (Object.keys(params).length === 0) {
     //normal request for ALL projects with no parameter fields
@@ -378,6 +377,24 @@ router.delete('/:id', (req, res) => {
     .where({ id: req.params.id })
     .del()
     .then(res.status(204).send('project deleted'))
+});
+
+/**
+ */
+router.delete('/:id/messages', (req, res) => {
+  knex('chatposts')
+    .where({
+      project_id: req.body.project_id,
+      id: req.body.post_id
+    })
+    .del()
+    .then(() => {
+      res.status(200).json('message deleted')
+    })
+    .catch(err => {
+      console.error("Error delete chat messages:", err);
+      res.status(500).send("Internal Server Error");
+    });
 });
 
 module.exports = router;
