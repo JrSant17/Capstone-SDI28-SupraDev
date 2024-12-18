@@ -186,9 +186,9 @@ const SupracoderProfilePage = () => {
                 <Box flex={1} pl="20px">
                     <Box display="flex" alignItems="center" gap="20px" mb="30px" style={{position: 'relative'}}>
                         <Avatar src={userObj.profile_pic} alt="User Avatar" style={{ width: '150px', height: '150px' }} />
-                        <h2 style={{position: 'absolute', top: '0', right: '0', display: 'flex', marginLeft: '100px', float: 'right'}}>
-                            <p>Earned Doubloons:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '27px', marginLeft: '25px', marginRight: '7px'}} alt='supradoubloons' height='30px' width='30px'/><p style={{color: 'blue'}}>{userObj.supradoubloons}</p>
-                        </h2>
+                        {/* <h2 style={{position: 'absolute', top: '0', right: '0', display: 'flex', marginLeft: '100px', float: 'right'}}>
+                            {/* <p>Earned Doubloons:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{marginTop: '27px', marginLeft: '25px', marginRight: '7px'}} alt='supradoubloons' height='30px' width='30px'/><p style={{color: 'blue'}}>{userObj.supradoubloons}</p>
+                        // </h2> */} 
                         <Box>
                             <Typography variant="h5" gutterBottom>{userObj.username}</Typography>
                             {personalInfoRender()}
@@ -206,14 +206,14 @@ const SupracoderProfilePage = () => {
 
                         <Card variant="outlined" style={{ flex: 1 }}>
                             <CardContent>
-                                <Typography variant="h6">Bounties Claimed</Typography>
+                                <Typography variant="h6">Projects Approved</Typography>
                                 <Typography variant="h4" color="secondary">{numAcceptedProjs}</Typography>
                             </CardContent>
                         </Card>
 
                         <Card variant="outlined" style={{ flex: 1 }}>
                             <CardContent>
-                                <Typography variant="h6">Bounties Completed</Typography>
+                                <Typography variant="h6">Projects Closed</Typography>
                                 <Typography variant="h4" color="primary">{numCompletedProjs}</Typography>
                             </CardContent>
                         </Card>
@@ -224,7 +224,7 @@ const SupracoderProfilePage = () => {
                         <Typography variant="h6" mb="20px">Latest Notifications</Typography>
                         <List>
                             <ListItem>
-                                <ListItemText primary="Notification 1: Someone claimed your bounty." secondary="2 hours ago" />
+                                <ListItemText primary="Notification 1: Project Accepted ." secondary="2 hours ago" />
                             </ListItem>
                             <ListItem>
                                 <ListItemText primary="Notification 2: Your project has been approved." secondary="5 hours ago" />
