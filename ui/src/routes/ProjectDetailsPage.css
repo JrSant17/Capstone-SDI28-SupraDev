@@ -1,0 +1,25 @@
+ 
+  /* To center the image container and ensure it's full height */
+  .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+  }
+  
+  /* Styling the image */
+  .project-image {
+    width: 300px;  /* Fixed width */
+    height: 300px; /* Fixed height */
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+    border-radius: 15px; /* Rounded border */
+    border: 2px solid #ddd; /* Optional light border */
+    display: block;  /* Remove any extra space under the image (inline-blocks often have space below them) */
+  }
+
+  .title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

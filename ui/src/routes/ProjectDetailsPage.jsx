@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar, } from '@mui/material';
 import { useCookies } from 'react-cookie';
+import './ProjectDetailsPage.css'
 
 const ProjectDetailsPage = () => {
   const [project, setproject] = useState(null);
@@ -241,12 +242,20 @@ const ProjectDetailsPage = () => {
           }}
         >
           <Typography
+            className='title-container'
             variant="h4"
             gutterBottom
             style={{ fontWeight: "bold", marginBottom: "1.5rem" }}
           >
             {project.name}
           </Typography>
+          <div className="image-container">
+            {project.url ? (
+              <img className="project-image" src={project.url} alt="Project Image" />
+            ) : (
+              <p>No image available</p> // Optional fallback message
+            )}
+          </div>
           <Button
             variant="contained"
             color="primary"
