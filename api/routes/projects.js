@@ -5,7 +5,9 @@
  */
 const express = require('express');
 const router = express.Router();
-const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV || 'development']);
+const knex = require('knex')(
+require('../knexfile.js')
+[process.env.NODE_ENV || 'development']);
 const projectFields = [
   'id',
   'name',
@@ -56,7 +58,7 @@ const projectFields = [
  *       500:
  *         description: Internal Server Error
  */
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   let params = req.query;
   console.log(`request for ${req.path} with params: ${JSON.stringify(params)}`);
 
@@ -334,7 +336,7 @@ router.patch('/:id', (req, res) => {
       program_language_type: req.body.program_language_type,
       date_created: req.body.date_created,
       end_date: req.body.end_date,
-      desired_number_coders: req.body.desired_number_coders,
+      coders_needed: req.body.coders_needed,
       project_state: req.body.project_state,
     })
     .then(() => res.status(200).send('project updated'))

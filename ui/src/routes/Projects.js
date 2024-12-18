@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Tabs, Tab, Typography, Box, Card, Avatar } from "@mui/material";
@@ -18,6 +18,9 @@ const Projects = (props) => {
   const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token']);
   const [allUsers, setAllUsers] = useState([]);
   const [projectUsers, setProjectUsers] = useState([]);
+  const [projectUsernames, setProjectUsernames] = useState({});
+  const [projectUsernamesMap, setProjectUsernamesMap] = useState({});
+  const [isLoading, setIsLoading] = useState({});
 
   useEffect(() => {
     fetch("http://localhost:8080/projects")
@@ -73,32 +76,58 @@ const Projects = (props) => {
     }
   };
 
-  const findProjectUsers = (projectId) => {
-    console.log("Finding users for project:", projectId);
+  const findProjectUsers = useCallback(async (projectId) => {
+    if (isLoading[projectId]) return;
     
-    fetch(`http://localhost:8080/user_projects?project_id=${projectId}`)
-      .then(res => res.json())
-      .then(userProjects => {
-        console.log("User Projects:", userProjects);
-        
-        // Get user IDs from user_projects
-        const userIds = userProjects.map(up => up.user_id);
-        console.log("User IDs:", userIds);
-        
-        // Find matching users from allUsers
-        const matchedUsers = allUsers.filter(user => userIds.includes(user.id));
-        console.log("Matched Users:", matchedUsers);
-        
-        // Create username string
-        const usernames = matchedUsers.map(user => user.username).join(", ");
-        console.log("Username String:", usernames);
-        return usernames;
-      })
-      .catch(err => {
-        console.error("Error fetching project users:", err);
-        return "";
-      });
-  };
+    const cachedData = localStorage.getItem(`project_users_${projectId}`);
+    if (cachedData) {
+      const cached = JSON.parse(cachedData);
+      if (cached.timestamp > Date.now() - 5 * 60 * 1000) {
+        setProjectUsernamesMap(prev => ({
+          ...prev,
+          [projectId]: cached.usernames
+        }));
+        return;
+      }
+    }
+
+    if (projectUsernamesMap[projectId]) return;
+
+    try {
+      setIsLoading(prev => ({ ...prev, [projectId]: true }));
+      
+      const userProjectsRes = await fetch(`http://localhost:8080/user_projects?project_id=${projectId}`);
+      const userProjects = await userProjectsRes.json();
+      
+      const userIds = userProjects.map(up => up.user_id);
+      const matchedUsers = allUsers.filter(user => userIds.includes(user.id));
+      const usernames = matchedUsers.map(user => user.username).join(", ");
+      
+      localStorage.setItem(`project_users_${projectId}`, JSON.stringify({
+        usernames: usernames || "No users",
+        timestamp: Date.now()
+      }));
+
+      setProjectUsernamesMap(prev => ({
+        ...prev,
+        [projectId]: usernames || "No users"
+      }));
+    } catch (err) {
+      console.error("Error fetching project users:", err);
+    } finally {
+      setIsLoading(prev => ({ ...prev, [projectId]: false }));
+    }
+  }, [allUsers]);
+
+  useEffect(() => {
+    if (!allUsers.length) return;
+    
+    filterVar.forEach(project => {
+      findProjectUsers(project.id);
+    });
+  }, [filterVar, allUsers]);
+
+
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -126,9 +155,8 @@ const Projects = (props) => {
     }
   };
 
-  const handleProjectClick = (id) => {
-    console.log(`navigating to project with id: ${id}`)
-    navigate(`/projects/${id}`);
+  const handleProjectClick = (projectId) => {
+    navigate(`/projects/${projectId}`);
   };
 
   const HoverCard = styled(motion(Card))({
@@ -214,15 +242,14 @@ const Projects = (props) => {
                     ? "green"
                     : project.is_accepted
                       ? "blue"
-                      : "red",
+                      : "blue",
                 }}>
-                {project.is_completed
-                  ? `Completed by ${findProjectUsers(project.id)}`
-                  : project.is_accepted
-                    ? `Joined by ${findProjectUsers(project.id)}`
+                 {project.is_completed
+                  ? `Completed by ${projectUsernamesMap[project.id] || 'Loading...'}`
+                  : projectUsernamesMap[project.id] && projectUsernamesMap[project.id] !== "No users"
+                    ? `Joined by ${projectUsernamesMap[project.id]}`
                     : "No one has joined"}
               </h3>
-
               <p style={{ marginLeft: "4px", marginTop: 'auto', textAlign: "left" }}>
                 Project Details: {truncateText(project.problem_statement, maxLength)}
               </p>
