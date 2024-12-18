@@ -55,6 +55,13 @@ const ProjectDetailsPage = () => {
       <Typography variant="h6" style={{ fontWeight: "500", color: "#616161" }}>
         Project Details:
       </Typography>
+      <div className="image-container">
+        {project.url ? (
+          <img className="project-image" src={project.url} alt="Project Image" />
+        ) : (
+          <p>No image available</p>
+        )}
+      </div>
       <Typography
         paragraph
         style={{
@@ -81,7 +88,7 @@ const ProjectDetailsPage = () => {
 
 
   return (
-<Box display="flex" justifyContent="center" minHeight="100vh" bgcolor="rgba(255, 255, 255, 0)">
+<Box display="flex" justifyContent="center" minHeight="100vh" bgcolor="rgba(255, 255, 255, 0)" flexDirection="column">
       <Paper
         elevation={5}
         style={{
@@ -93,6 +100,7 @@ const ProjectDetailsPage = () => {
           width: "100%",
           overflow: "auto",
           marginBottom: "50px",
+          flexDirection: "column"
         }}
       >
         <ProjectDetailHeader projectName={project.name} projectId={id}/>
