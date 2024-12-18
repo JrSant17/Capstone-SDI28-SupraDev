@@ -40,7 +40,7 @@ const SupracoderProfilePage = () => {
     useEffect(() => {
         userRefetch();
         projectsRefetch();
-    })
+    }, [])
 
     const calcBountyStats = () => {
         for (let element in projects) {

@@ -4,8 +4,6 @@ import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Ava
 import { useCookies } from 'react-cookie';
 import MilestoneBar from '../components/milestoneBar';
 import './ProjectStatus.css';
-import eventEmitter from '../components/eventEmitter';
-
 
 const milestones = [
     "Kickoff",
@@ -20,6 +18,7 @@ const milestones = [
 
 const ProjectStatus = () => {
     const [bounty, setBounty] = useState(null);
+    const [updateTrigger, setUpdateTrigger] = useState(false);
     const { id } = useParams();
     const [sessionCookies, setSessionCookies] = useCookies([
         'username_token', 
@@ -57,7 +56,6 @@ const ProjectStatus = () => {
     
                 const fetchedMilestoneData = await response.json();
                 console.log('Fetched milestone data:', fetchedMilestoneData);
-                // const milestonesDataArray = milestoneData.milestones || [];
     
                 setMilestoneData(fetchedMilestoneData);
     
@@ -77,7 +75,6 @@ const ProjectStatus = () => {
                     if (activeMilestone) {
                         const updatedIndex = activeMilestone.index - 1;
                         setCurrentMilestoneIndex(updatedIndex);
-                        eventEmitter.emit('milestoneIndexChanged', updatedIndex);
                     }
                 } else {
                     throw new Error('Milestone data is not an array');
@@ -88,9 +85,6 @@ const ProjectStatus = () => {
             }
         };
 
-        // useEffect(() => {
-        //     syncMilestonesWithBackend();
-        // }, [id]);
     
         const createDefaultMilestones = async () => {
             try {
@@ -145,6 +139,7 @@ const ProjectStatus = () => {
                 if (!response.ok) {
                     throw new Error(`Error updating milestone: ${response.statusText}`);
                 }
+                setUpdateTrigger(prev => !prev);
                 const updatedMilestones = await response.json();
                 console.log('Updated milestones:', updatedMilestones);
                 setCurrentMilestoneIndex(newIndex);
@@ -391,7 +386,7 @@ const ProjectStatus = () => {
                         <p className='product-status'>Application Development Status:</p>
                         <div>
                             <div className="milestone-wrapper">
-                                <MilestoneBar id={id} />
+                                <MilestoneBar id={id} update_trigger={updateTrigger} />
                             {sessionCookies.user_type === 4 ? (
                                 <div className="button-container">
                                     <button
