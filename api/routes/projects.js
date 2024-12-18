@@ -205,54 +205,69 @@ router.get('/:id/messages', (req, res) => {
  */
 
 router.post('/', async (req, res) => {
+  //whenever a person creates a project they need to be automatically associated with it!
   try {
     const {
-      submitter_name, 
-      submitter_email, 
-      submitter_unit,  
-      project_title, 
-      project_description,
-      requirements,  
-      due_date        
+      submitter_id,
+      name,
+      coders_needed,
+      problem_statement,
+      program_languages,
+      project_owner,
+      requirements,
+      end_date,
     } = req.body;
 
-    if (!submitter_name || !submitter_email || !project_title || !project_description) {
+    if (!submitter_id || !name || !coders_needed || !problem_statement || !project_owner) {
+      console.log(`missing fields`);
       return res.status(400).json({ 
-        message: "submitter_name, submitter_email, project_title, and project_description are required." 
+        message: "Missing required fields." 
       });
     }
 
-    const [submitter] = await knex("user_table").where('email', submitter_email);
+    const [submitter] = await knex("user_table").where('id', submitter_id);
 
     if (!submitter) {
-      return res.status(400).json({ message: "Submitter email is not registered in the system." });
+      return res.status(400).json({ message: "Submitter id is not registered in the system." });
     }
 
     const [newProject] = await knex("project_table")
       .insert({
-        name: project_title, 
-        problem_statement: project_description, 
-        submitter_id: submitter.id, 
-        accepted_by_id: null, 
-        is_approved: false, 
+        name: name,
+        problem_statement: problem_statement,
+        submitter_id: submitter.id,
+        accepted_by_id: null,
+        is_approved: false,
         is_accepted: false,
         is_completed: false,
-        bounty_payout: 0, 
-        github_url: null, 
-        program_languages: requirements || null, 
-        date_created: knex.fn.now(), 
-        end_date: due_date || null, 
-        coders_needed: 0 
+        bounty_payout: 0,
+        github_url: null,
+        program_languages: program_languages || null,
+        date_created: knex.fn.now(),
+        end_date: end_date || null,
+        coders_needed: coders_needed || 0,
+        requirements: requirements || null
       })
       .returning('*');
+
+    try {
+      const addSubmitterProject = await knex('user_projects')
+      .insert({ user_id: submitter_id, project_id: newProject.id})
+      .catch(err => {
+        console.error("Error creating user project association:", err);
+        res.status(500).json({ error: "Internal server error" });
+      });
+
+    } catch(err) {
+      console.log(`${err} failed to add user to association table for new project: ${JSON.stringify(newProject)}`);
+    }
 
     return res.status(201).json({
       message: "Project successfully created.",
       project: newProject,
       submitter: {
-        name: submitter_name,
-        email: submitter_email,
-        unit: submitter_unit || "N/A"
+        project_name: name,
+        email: submitter.email,
       }
     });
 
@@ -334,7 +349,7 @@ router.patch('/:id', (req, res) => {
       program_language_type: req.body.program_language_type,
       date_created: req.body.date_created,
       end_date: req.body.end_date,
-      desired_number_coders: req.body.desired_number_coders,
+      coders_needed: req.coders_needed,
       project_state: req.body.project_state,
     })
     .then(() => res.status(200).send('project updated'))
