@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar, } from '@mui/material';
 import { useCookies } from 'react-cookie';
+import CommentsSection from '../components/CommentsSection';
+import ProjectDetailActions from '../components/ProjectDetailActions';
+import ProjectDetailHeader from '../components/ProjectDetailHeader';
 import './ProjectDetailsPage.css'
 
 const ProjectDetailsPage = () => {
