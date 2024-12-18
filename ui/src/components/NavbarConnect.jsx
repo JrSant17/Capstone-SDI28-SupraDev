@@ -28,7 +28,7 @@ const NavbarConnect = () => {
     }
   }, [sessionCookies.user_id_token]);
   const RectangularSpeedDialIcon = () => (
-    <Avatar src={userObj.profile_pic} alt="User Avatar" style={{ float: 'right', outlineWidth: '1px', outlineColor: 'red', width: '60px', height: '60px' }} />
+    <Avatar src={userObj.avatar_url} alt="User Avatar" style={{ float: 'right', outlineWidth: '1px', outlineColor: 'red', width: '60px', height: '60px' }} />
   );
   const adminActions = [
     { icon: <HomeIcon />, name: 'Home', link: '/' },

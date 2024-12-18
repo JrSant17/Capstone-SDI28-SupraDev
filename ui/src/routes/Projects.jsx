@@ -15,7 +15,7 @@ const Projects = (props) => {
   const [filterVar, setFilterVar] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const navigate = useNavigate();
-  const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token']);
+  const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token', 'user_type']);
   const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
@@ -161,7 +161,7 @@ const Projects = (props) => {
           <Tab label="Unaccepted" />
           <Tab label="Accepted" />
           <Tab label="Complete" />
-          {sessionCookies.userPriv_Token === true && <Tab label="Pending" />}
+          {sessionCookies.user_type === 4 && <Tab label="Pending" />}
         </Tabs>
 
       </Box>
