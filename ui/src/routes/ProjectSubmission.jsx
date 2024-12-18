@@ -90,7 +90,7 @@ const ProjectSubmission = () => {
         <form className='projectSubmit' onSubmit={handleSubmit}>       
           <div className="tooltip">
             <h4>Project Title</h4>
-            <span class="tooltiptext">Choose a descriptive name for your project</span>
+            <span className="tooltiptext">Choose a descriptive name for your project</span>
             <TextField
               className="input-text"
               label='Project Title'
@@ -103,7 +103,7 @@ const ProjectSubmission = () => {
           </div>
           <div className="tooltip">
             <h4>Project Description</h4>
-            <span class="tooltiptext">Choose a descriptive name for your project</span>
+            <span className="tooltiptext">Choose a descriptive name for your project</span>
             <TextField
               className="input-text"
               label='Project Description'
@@ -118,7 +118,7 @@ const ProjectSubmission = () => {
           </div>
           <div className="tooltip">
             <h4>Requirements</h4>
-            <span class="tooltiptext">Choose a descriptive name for your project</span>
+            <span className="tooltiptext">Choose a descriptive name for your project</span>
             <TextField
               className="input-text"
               label='Requirements'
@@ -134,7 +134,7 @@ const ProjectSubmission = () => {
           <div className="date-coders-container">
             <div className="tooltip">
               <h4>Due Date</h4>
-              <span class="tooltiptext">Choose a descriptive name for your project</span>
+              <span className="tooltiptext">Choose a descriptive name for your project</span>
               <TextField
                 className="input-text-small"
                 label='Due Date'
@@ -150,7 +150,7 @@ const ProjectSubmission = () => {
             </div>
             <div className="tooltip">
               <h4>Coders needed</h4>
-              <span class="tooltiptext">Choose a descriptive name for your project</span>
+              <span className="tooltiptext">Choose a descriptive name for your project</span>
               <TextField
                 className="input-text-small"
                 label='numCoders'

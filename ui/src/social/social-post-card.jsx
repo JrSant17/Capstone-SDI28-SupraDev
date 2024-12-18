@@ -151,23 +151,23 @@ export const SocialPostCard = (props) => {
   );
 };
 
-SocialPostCard.propTypes = {
-  authorAvatar: PropTypes.string.isRequired,
-  authorName: PropTypes.string.isRequired,
-  comments: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      message: PropTypes.string.isRequired,
-      createdAt: PropTypes.number.isRequired,
-      author: PropTypes.shape({
-        avatar: PropTypes.string,
-        name: PropTypes.string.isRequired,
-      }).isRequired,
-    })
-  ).isRequired,
-  createdAt: PropTypes.number.isRequired,
-  isLiked: PropTypes.bool.isRequired,
-  likes: PropTypes.number.isRequired,
-  media: PropTypes.string,
-  message: PropTypes.string.isRequired,
-};
+// SocialPostCard.propTypes = {
+//   authorAvatar: PropTypes.string.isRequired,
+//   authorName: PropTypes.string.isRequired,
+//   comments: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       id: PropTypes.string.isRequired,
+//       message: PropTypes.string.isRequired,
+//       createdAt: PropTypes.number.isRequired,
+//       author: PropTypes.shape({
+//         avatar: PropTypes.string,
+//         name: PropTypes.string.isRequired,
+//       }).isRequired,
+//     })
+//   ).isRequired,
+//   createdAt: PropTypes.number.isRequired,
+//   isLiked: PropTypes.bool.isRequired,
+//   likes: PropTypes.number.isRequired,
+//   media: PropTypes.string,
+//   message: PropTypes.string.isRequired,
+// };

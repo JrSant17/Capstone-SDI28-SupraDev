@@ -63,8 +63,8 @@ export const SocialTimeline = (props) => {
         <Grid lg={8} xs={12}>
           <Stack spacing={3}>
             <SocialPostAdd
-              authorAvatar={userObj.profile_pic}
-              authorName={userObj.first_name + " " + userObj.last_name}
+              // authorAvatar={userObj.profile_pic}
+              // authorName={userObj.first_name + " " + userObj.last_name}
             />
             {posts.map((post) => (
               <SocialPostCard
@@ -88,5 +88,4 @@ export const SocialTimeline = (props) => {
 
 SocialTimeline.propTypes = {
   posts: PropTypes.array,
-  profile: PropTypes.object.isRequired,
 };

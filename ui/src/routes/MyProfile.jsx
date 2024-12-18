@@ -257,7 +257,6 @@ useEffect(() => {
       flexDirection="column"
       alignItems="center"
       sx={{
-          backgroundImage: 'url(/path-to-your-background-image)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           '.heroSection': {
@@ -303,7 +302,9 @@ useEffect(() => {
                   >
                     {userObj.job_title}
                   </Typography>
-                  <Typography variant="h4">{userObj.first_name} {userObj.last_name}</Typography>
+                  <Typography variant="h6">First Name:{userObj.first_name}</Typography>
+                  <Typography variant='h6'>Last Name:{userObj.last_name}</Typography>
+                  <Typography variant="h5">Username: {userObj.username}</Typography>
                 </div>
               </Stack>
               <Box sx={{ flexGrow: 1 }} />
@@ -363,6 +364,7 @@ useEffect(() => {
               <SocialTimeline
                 posts={posts}
                 profile={userObj.avatar_url}
+                
               />
             )}
             {currentTab === 'projects' && (
