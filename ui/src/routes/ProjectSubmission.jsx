@@ -141,7 +141,7 @@ const ProjectSubmission = () => {
               variant="outlined"
               type='url'  
               value={appPic}  
-              onChange={(e) => setRequirements(e.target.value)} 
+              onChange={(e) => setAppPic(e.target.value)} 
               size='small'
             />
           </div>
