@@ -43,7 +43,7 @@ const Navbar = () => {
 
     if (sessionCookies.username_token) {
         logoutButton = <Button onClick={() => { removeSessionCookies('username_token'); removeSessionCookies('user_id_token'); removeSessionCookies('userPriv_Token'); alert('You have been logged out'); navigate('/login') }} variant='outlined' color='error' style={{ textAlign: 'center', gap: '10px', margin: '10px', backgroundColor: 'transparent', color: "red", borderColor: "red" }}>Logout</Button>;
-        currentUserInfo = <Avatar src={userObj.profile_pic} alt="User Avatar" style={{ float: 'right', outlineWidth: '1px', outlineColor: 'red', width: '50px', height: '50px' }} />
+        currentUserInfo = <Avatar src={userObj.avatar_url} alt="User Avatar" style={{ float: 'right', outlineWidth: '1px', outlineColor: 'red', width: '50px', height: '50px' }} />
         requestsButton = <Button onClick={() => navigate('/requests')} variant='outlined' color='secondary' style={{ textAlign: 'center', gap: '10px', margin: '10px', backgroundColor: 'transparent', color: "#ffffff", borderColor: "#ffffff" }}>Submit Request</Button>;
         if (sessionCookies.user_type === 4) {
 
