@@ -257,14 +257,14 @@ export const SocialAbout = (props) => {
   );
 };
 
-SocialAbout.propTypes = {
-  currentCity: PropTypes.string.isRequired,
-  currentJobCompany: PropTypes.string.isRequired,
-  currentJobTitle: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
-  originCity: PropTypes.string.isRequired,
-  previousJobCompany: PropTypes.string.isRequired,
-  previousJobTitle: PropTypes.string.isRequired,
-  profileProgress: PropTypes.number.isRequired,
-  quote: PropTypes.string.isRequired,
-};
+// SocialAbout.propTypes = {
+//   currentCity: PropTypes.string.isRequired,
+//   currentJobCompany: PropTypes.string.isRequired,
+//   currentJobTitle: PropTypes.string.isRequired,
+//   email: PropTypes.string.isRequired,
+//   originCity: PropTypes.string.isRequired,
+//   previousJobCompany: PropTypes.string.isRequired,
+//   previousJobTitle: PropTypes.string.isRequired,
+//   profileProgress: PropTypes.number.isRequired,
+//   quote: PropTypes.string.isRequired,
+// };
