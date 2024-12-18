@@ -12,7 +12,7 @@ exports.up = function(knex) {
     table.string('job_title');
     table.string('p1_account');
     table.string('p1_auth');
-    table.integer('type');
+    table.integer('type').defaultTo(3).checkIn([0, 1, 2, 3, 4]); // Role type: 0 = pending, 1 = supracoder, 2 = leadership, 3 = normal, 4 = admin
     table.string('password').notNullable();
     table.string('availability');
     table.string('experience');

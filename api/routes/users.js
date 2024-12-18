@@ -156,38 +156,71 @@ router.post('/', async (req, res) => {
     command
   } = req.body;
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    // Map role types to integers (handling both string and integer inputs)
+    let roleType;
+    if (!type || type === "normal" || type === 3) {
+      roleType = 3; // Default to "normal" role
+    } else if (type === "leadership" || type === 2) {
+      roleType = 0; // Pending approval for leadership
+    } else if (type === "supracoder" || type === 1) {
+      roleType = 0; // Pending approval for supracoder
+    } else if (type === "admin" || type === 4) {
+      roleType = 0; // Pending approval for admin
+    } else {
+      return res.status(400).json({ message: "Invalid role type provided." });
+    }
 
-  const userFields = {
-    first_name, last_name, username,
-    password: hashedPassword, job_title, profile_pic, user_summary,
-    email, p1_account, p1_auth,
-    type, availability, experience,
-    languages, operating_systems, avatar_url,
-    time_available, is_supracoder, supradoubloons,
-    command
-  };
-  console.log(`received userFields : ${JSON.stringify(userFields)}`)
+    console.log(`Calculated roleType: ${roleType} for user type: ${type}`);
 
-  knex("user_table")
-    .insert(userFields)
-    .then(() => {
-      res.status(201).send("User created successfully");
-      console.log("User creation was successful");
-    })
-    .catch(err => {
-      console.error("Error creating user:", err);
-      if (err.code === '23505') {
-        res.status(409).json({
-          error: `${err.detail}`,
-          username: userFields.username,
-          email: userFields.email
-        });
-      } else {
-        res.status(500).send("Internal Server Error");
-      }
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const userFields = {
+      first_name,
+      last_name,
+      username,
+      password: hashedPassword,
+      profile_pic,
+      user_summary,
+      job_title,
+      email,
+      p1_account,
+      p1_auth,
+      type: roleType, // Use the calculated role type
+      availability,
+      experience,
+      languages,
+      operating_systems,
+      avatar_url,
+      time_available,
+      is_supracoder: roleType === 1, // Set true only for supracoder
+      supradoubloons,
+      command
+    };
+
+    console.log(`Creating user with fields: ${JSON.stringify(userFields)}`);
+    await knex("user_table").insert(userFields);
+
+    if (roleType === 1) {
+      return res.status(201).send("Account created successfully. Your role is pending admin approval.");
+    }
+    res.status(201).send("User created successfully");
+  } catch (err) {
+    console.error("Error creating user:", err);
+    if (err.code === '23505') {
+      res.status(409).json({
+        error: `${err.detail}`,
+        username: userFields.username,
+        email: userFields.email
+      });
+    } else {
+      res.status(500).send("Internal Server Error");
+    }
+  }
 });
+
+
+
 
 /**
  * @swagger
@@ -237,6 +270,35 @@ router.patch('/:id', (req, res) => {
       res.status(500).send("Internal Server Error");
     });
 });
+
+router.patch('/:id/approve', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { type } = req.body;
+
+    if (!['supracoder', 'leadership', 'admin'].includes(type)) {
+      return res.status(400).send("Invalid role type for approval");
+    }
+
+    const updatedRows = await knex('user_table')
+    .where({ id, type: 1 })
+    .andWhere({ type: 1 }) //user is pending approval
+    .update({
+      type: type === 'supracoder' ? 3 : type === 'leadership' ? 2 : 4,
+      is_supracoder: type === 'supracoder',
+    });
+
+  if (!updatedRows) {
+    return res.status(404).json({ error: "User not found or not pending approval" });
+  }
+
+  res.status(200).json({ message: "User role approved successfully" });
+} catch (error) {
+  console.error("Error approving user:", error);
+  res.status(500).json({ error: "Internal server error" });
+}
+});
+
 
 /**
  * @swagger
