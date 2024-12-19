@@ -13,7 +13,6 @@ router.get('/', (req, res) => {
     let params = req.query;
     console.log(`request for ${req.path} with params: ${JSON.stringify(params)}`);
   
-  
     if (Object.keys(params).length === 0) {
       //normal request for ALL users with no parameter fields
       knex('user_projects')
@@ -116,6 +115,41 @@ router.delete('/', (req, res) => {
           console.error("Error removing user project association:", err);
           res.status(500).json({ error: "Internal server error" });
       });
+});
+
+/**
+ * @swagger
+ * /projects/{id}:
+ *   delete:
+ *     summary: deletes a user_project entry
+ *     tags: [Projects]
+ *     parameters:
+ *       - in: path
+ *         name: user_id, project_id
+ *         required: true
+ *     responses:
+ *       204:
+ *         description: Project deleted successfully!
+ */
+router.delete('/:id', (req, res) => {
+  const { user_id, project_id } = req.body; 
+  if (!user_id || !project_id) {
+    return res.status(400).send('user_id and project_id are required');
+  }
+  knex('user_projects')
+  .where({ id: req.params.id, user_id, project_id })
+  .del()
+  .then((deletedCount) => {
+    if (deletedCount) {
+      return res.status(204).send('entry removed');
+    } else {
+      return res.status(404).send('entry not found');
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+    return res.status(500).send('Internal server error');
+  });
 });
 
 module.exports = router;

@@ -2,10 +2,13 @@
     "name": "supradev",
     "private": false,
     "workspaces": [
-      "api",
-      "ui"
+        "api",
+        "ui"
     ],
     "devDependencies": {
-      "eslint": "^8.x.x"
+        "eslint": "^8.x.x"
+    },
+    "dependencies": {
+        "events": "^3.3.0"
     }
-  }
+}

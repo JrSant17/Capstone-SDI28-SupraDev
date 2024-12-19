@@ -27,6 +27,8 @@ exports.up = function(knex) {
     table.string('funding_poc');
     table.decimal('estimated_cost', 14, 2);
     table.string('funding_department');
+    table.text('requirements');
+    table.string('url');
     table.dateTime('last_updated').defaultTo(knex.fn.now());
   });
 };

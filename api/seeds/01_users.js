@@ -161,7 +161,7 @@ exports.seed = async function(knex) {
       password: hashedPassword,
       availability: 'Evenings and Weekends',
       experience: 'Business,Software Development,Security',
-      languages: 'English',
+      languages: 'C++, C, Javascript, Ruby',
       operating_systems: 'Linux,Windows',
       avatar_url: 'https://i.pinimg.com/736x/98/72/73/9872732415e47ec3ed6c1cece23cfc86.jpg',
       profile_pic: 'bruce_profile.jpg',
