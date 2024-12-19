@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Tabs, Tab, Typography, Box, Card, Avatar } from "@mui/material";
@@ -17,6 +17,10 @@ const Projects = (props) => {
   const navigate = useNavigate();
   const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token', 'user_type']);
   const [allUsers, setAllUsers] = useState([]);
+  const [projectUsers, setProjectUsers] = useState([]);
+  const [projectUsernames, setProjectUsernames] = useState({});
+  const [projectUsernamesMap, setProjectUsernamesMap] = useState({});
+  const [isLoading, setIsLoading] = useState({});
 
   useEffect(() => {
     fetch("http://localhost:8080/projects")
@@ -72,35 +76,126 @@ const Projects = (props) => {
     }
   };
 
-  const handleChange = (event, newValue) => {
-    setSelectedTab(newValue);
-
-    switch (newValue) {
-      case 0:
-        setFilterVar(projects.filter((p) => p.is_approved));
-        break;
-      case 1:
-        setFilterVar(projects.filter((p) => !p.is_accepted && !p.is_completed && p.is_approved));
-        break;
-      case 2:
-        setFilterVar(projects.filter((p) => p.is_accepted && p.is_approved));
-        break;
-      case 3:
-        setFilterVar(projects.filter((p) => p.is_completed && p.is_approved));
-        break;
-      case 4:
-        setFilterVar(projects.filter((p) => !p.is_approved));
-        break;
-
-      default:
-        setFilterVar(projects.filter((p) => p.is_approved));
-        break;
+  const findProjectUsers = useCallback(async (projectId) => {
+    if (isLoading[projectId]) {
+      return;
     }
-  };
+    const cachedData = localStorage.getItem(`project_users_${projectId}`);
+    if (cachedData) {
+      const cached = JSON.parse(cachedData);
+      if (cached.timestamp > Date.now() - 5 * 60 * 1000) {
+        setProjectUsernamesMap(prev => ({
+          ...prev,
+          [projectId]: cached.usernames
+        }));
+        return;
+      }
+    }
 
-  const handleProjectClick = (id) => {
-    console.log(`navigating to project with id: ${id}`)
-    navigate(`/projects/${id}`);
+    if (projectUsernamesMap[projectId]) {
+      return;
+    }
+    try {
+      setIsLoading(prev => ({ ...prev, [projectId]: true }));
+        const userProjectsRes = await fetch(`http://localhost:8080/user_projects?project_id=${projectId}`);
+        const userProjects = await userProjectsRes.json();
+        const userIds = userProjects.map(up => up.user_id);
+        const matchedUsers = allUsers.filter(user => userIds.includes(user.id));
+        const usernames = matchedUsers.map(user => user.username).join(", ");
+      
+      
+      localStorage.setItem(`project_users_${projectId}`, JSON.stringify({
+        usernames: usernames || "No users",
+        timestamp: Date.now()
+      }));
+
+      setProjectUsernamesMap(prev => ({
+        ...prev,
+        [projectId]: usernames || "No users"
+      }));
+    } catch (err) {
+      console.error("Error fetching project users:", err);
+    } finally {
+      setIsLoading(prev => ({ ...prev, [projectId]: false }));
+    }
+  }, [allUsers]);
+
+  useEffect(() => {
+    if (!allUsers.length) {
+      return;
+    }
+    filterVar.forEach(project => {
+      findProjectUsers(project.id);
+    });
+  }, [filterVar, allUsers]);
+
+  useEffect(() => {
+    const refetchUserProjects = () => {
+      if (!allUsers.length) return;
+      
+      filterVar.forEach(project => {
+        localStorage.removeItem(`project_users_${project.id}`);
+        findProjectUsers(project.id);
+      });
+    };
+
+    // Call refetch immediately
+    refetchUserProjects();
+
+    // Set up listener for when user returns to page
+    window.addEventListener('focus', refetchUserProjects);
+    
+    return () => {
+      window.removeEventListener('focus', refetchUserProjects);
+    };
+  }, [allUsers.length]);
+
+  // const handleChange = (event, newValue) => {
+  //   setSelectedTab(newValue);
+
+    const handleChange = async (event, newValue) => {
+      setSelectedTab(newValue);
+  
+      switch (newValue) {
+        case 0:
+          setFilterVar(projects.filter((p) => p.is_approved));
+          break;
+        case 2: {
+          // Get projects with users
+          const projectsWithUsers = await Promise.all(
+            projects.filter(p => p.is_approved).map(async (project) => {
+              const response = await fetch(`http://localhost:8080/user_projects?project_id=${project.id}`);
+              const userProjects = await response.json();
+              return { ...project, hasUsers: userProjects.length > 0 };
+            })
+          );
+          setFilterVar(projectsWithUsers.filter(p => p.hasUsers));
+          break;
+        }
+        case 1: {
+          // Get projects without users
+          const projectsWithoutUsers = await Promise.all(
+            projects.filter(p => p.is_approved).map(async (project) => {
+              const response = await fetch(`http://localhost:8080/user_projects?project_id=${project.id}`);
+              const userProjects = await response.json();
+              return { ...project, hasUsers: userProjects.length > 0 };
+            })
+          );
+          setFilterVar(projectsWithoutUsers.filter(p => !p.hasUsers));
+          break;
+        }
+        case 3:
+          setFilterVar(projects.filter((p) => p.is_completed === true));
+          break;
+
+        default:
+          setFilterVar(projects.filter((p) => !p.is_approved));
+          break;
+      }
+    };
+
+  const handleProjectClick = (projectId) => {
+    navigate(`/projects/${projectId}`);
   };
 
   const HoverCard = styled(motion(Card))({
@@ -157,11 +252,11 @@ const Projects = (props) => {
           indicatorColor="primary"
           textColor="primary"
           bgcolor="primary">
-          <Tab label="All" />
-          <Tab label="Unaccepted" />
-          <Tab label="Accepted" />
-          <Tab label="Complete" />
-          {sessionCookies.user_type === 4 && <Tab label="Pending" />}
+          <Tab label="All Projects" />
+          <Tab label="Unjoined Projects" />
+          <Tab label="Joined Projects" />
+          <Tab label="Completed Projects" />
+         <Tab label="Pending" />
         </Tabs>
 
       </Box>
@@ -186,15 +281,14 @@ const Projects = (props) => {
                     ? "green"
                     : project.is_accepted
                       ? "blue"
-                      : "red",
+                      : "blue",
                 }}>
-                {project.is_completed
-                  ? `Completed by ${findAcceptor(project.accepted_by_id)}`
-                  : project.is_accepted
-                    ? `Accepted by ${findAcceptor(project.accepted_by_id)}`
-                    : "Not Accepted"}
+                 {project.is_completed
+                  ? `Completed by ${projectUsernamesMap[project.id] || 'Loading...'}`
+                  : projectUsernamesMap[project.id] && projectUsernamesMap[project.id] !== "No users"
+                    ? `Joined by ${projectUsernamesMap[project.id]}`
+                    : "No one has joined"}
               </h3>
-
               <p style={{ marginLeft: "4px", marginTop: 'auto', textAlign: "left" }}>
                 Project Details: {truncateText(project.problem_statement, maxLength)}
               </p>
