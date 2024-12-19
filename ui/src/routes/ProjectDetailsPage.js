@@ -191,6 +191,10 @@ const ProjectDetailsPage = () => {
     }
 
     if (window.confirm("Are you sure you want to sponsor this Project")) {
+      // Get sponsor's email
+      const sponsor = userdata.find(user => user.id === sessionCookies.user_id_token);
+      const sponsorEmail = sponsor ? sponsor.email : '';
+
       fetch(`http://localhost:8080/projects/${id}`, {
         method: "PATCH",
         headers: {
@@ -200,6 +204,7 @@ const ProjectDetailsPage = () => {
           is_approved: true,
           sponsored_by_id: sessionCookies.user_id_token,
           user_type: sessionCookies.user_type,
+          funding_poc: sponsorEmail
         }),
       })
         .then((response) => {
@@ -466,7 +471,7 @@ const ProjectDetailsPage = () => {
           {project.is_approved === true && project.is_completed === false && (
             <>
               {project.coders_needed > 0 && sessionCookies.user_type === 1 &&
-              isUserJoined !== true ? (
+              project.accepted_by_id !== sessionCookies.user_id_token ? (
                 <Button
                   onClick={() => handleJoin()}
                   variant="contained"
@@ -530,7 +535,7 @@ const ProjectDetailsPage = () => {
             <></>
           )}
 
-          {isUserJoined === true &&
+          {project.accepted_by_id === sessionCookies.user_id_token &&
           project.is_completed === false &&
           project.is_accepted === true ? (
             <Button
@@ -589,6 +594,14 @@ const ProjectDetailsPage = () => {
           >
             Github Link: {project.github_url}
           </Typography>
+          {project.funding_poc && (
+            <Typography
+              variant="h6"
+              style={{ fontWeight: "500", color: "#616161" }}
+            >
+              Project Funded! POC: {project.funding_poc}
+            </Typography>
+          )}
           {/* Git Text render */}
           <Typography
             variant="h6"
@@ -597,20 +610,6 @@ const ProjectDetailsPage = () => {
             {project.coders_needed > 0
               ? `SupraCoders Needed: ${project.coders_needed}`
               : "SupraCoder requirement met"}
-          </Typography>
-
-          <Typography
-          variant="h6"
-          style={{ fontWeight: "500", color: "#616161" }}
-          >
-          Languages Requested: {project.program_languages}
-          </Typography>
-
-          <Typography
-          variant="h6"
-          style={{ fontWeight: "500", color: "#616161" }}
-          >
-          Project End Date: {project.end_date}
           </Typography>
 
           <Typography
