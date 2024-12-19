@@ -10,7 +10,7 @@ const Projects = (props) => {
   const { profile, ...other } = props;
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
-  const maxLength = 22;
+  const maxLength = 50;
   const [filterVar, setFilterVar] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const navigate = useNavigate();
@@ -199,6 +199,9 @@ const Projects = (props) => {
       boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
     },
     transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+    display: 'flex',
+    flexDirection: 'column', 
+    justifyContent: 'space-between', 
   });
 
   function truncateText(text, maxLength) {
@@ -207,94 +210,134 @@ const Projects = (props) => {
     }
     return text.slice(0, maxLength) + '...';
   }
-
+  
   const cardStyle = {
     position: 'relative',
-    height: 200,
-    width: '25%',
-    margin: 8,
-    padding: 8,
+    height: 300,
+    width: '300px',
+    margin: '16px',
+    padding: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     textAlign: 'center',
-    borderRadius: "15px",
-    background: "rgba(255,255,255, 0.85)",
-    cursor: "pointer"
+    borderRadius: '15px',
+    background: 'rgba(255,255,255, 0.85)',
   };
 
   return (
     <div>
-      <p>  </p>
-      <Box
-        padding="20px"
-        height="90%"
+  <Box
+    padding="20px"
+    height="90%"
+    style={{
+      marginTop: "25px",
+      marginLeft: "50px",
+      marginRight: "50px",
+      marginBottom: "50px",
+      backgroundColor: "rgba(255,255,255, 0.85)",
+      borderRadius: "25px",
+    }}
+  >
+    <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
+      Projects {users.username}
+    </Typography>
+
+    <Tabs
+      value={selectedTab}
+      onChange={handleChange}
+      variant="fullWidth"
+      indicatorColor="primary"
+      textColor="primary"
+      bgcolor="primary"
+    >
+      <Tab label="All Projects" />
+      <Tab label="Unjoined Projects" />
+      <Tab label="Joined Projects" />
+      <Tab label="Completed Projects" />
+      <Tab label="Pending" />
+    </Tabs>
+  </Box>
+
+  <div
+    style={{
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      marginTop: "20px",
+    }}
+  >
+    {filterVar.map((project) => (
+      <HoverCard
         style={{
-          marginTop: "25px",
-          marginLeft: "50px",
-          marginRight: "50px",
-          marginBottom: "50px",
-          backgroundColor: "rgba(255,255,255, 0.85)",
-          borderRadius: "25px",
-        }}>
-        <Typography variant="h4" gutterBottom style={{ textAlign: "center" }}>
-          {" "}
-          Projects{" "}
-          {users.username}
-        </Typography>
+          ...cardStyle,
+          background: "rgba(255,255,255, 0.85)", // Keeping background consistent
+        }}
+        key={project.id}
+        onClick={() => handleProjectClick(project.id)}
+      >
+        {project.url ? (
+          <img
+            className="project-image"
+            src={project.url}
+            alt="Project Image"
+            style={{
+              width: "100%",
+              height: "120px",
+              objectFit: "cover",
+              borderRadius: "8px",
+              marginBottom: "12px",
+            }}
+          />
+        ) : (
+          <Typography
+            variant="body2"
+            style={{
+              color: "#888",
+              marginBottom: "12px",
+            }}
+          >
+            No image available
+          </Typography>
+        )}
 
-        <Tabs
-          value={selectedTab}
-          onChange={handleChange}
-          variant="fullWidth"
-          indicatorColor="primary"
-          textColor="primary"
-          bgcolor="primary">
-          <Tab label="All Projects" />
-          <Tab label="Unjoined Projects" />
-          <Tab label="Joined Projects" />
-          <Tab label="Completed Projects" />
-         <Tab label="Pending" />
-        </Tabs>
-
-      </Box>
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          marginTop: "20px",
-        }}>
-        {filterVar.map((project) => (
-          <HoverCard
-            style={cardStyle}
-            key={project.id}
-            onClick={() => handleProjectClick(project.id)}>
-            <div key={project.id} style={{ textAlign: "center", marginBottom: 'auto' }}>
-              <h2>{truncateText(project.name, maxLength)}</h2>
-              <h3
-                style={{
-                  color: project.is_completed
-                    ? "green"
-                    : project.is_accepted
-                      ? "blue"
-                      : "blue",
-                }}>
-                 {project.is_completed
-                  ? `Completed by ${projectUsernamesMap[project.id] || 'Loading...'}`
-                  : projectUsernamesMap[project.id] && projectUsernamesMap[project.id] !== "No users"
-                    ? `Joined by ${projectUsernamesMap[project.id]}`
-                    : "No one has joined"}
-              </h3>
-              <p style={{ marginLeft: "4px", marginTop: 'auto', textAlign: "left" }}>
-                Project Details: {truncateText(project.problem_statement, maxLength)}
-              </p>
-            </div>
-            <div style={{ display: 'flex' }}>
-              {findSubmitter(project.submitter_id)}
-            </div>
-          </HoverCard>
-        ))}
-      </div>
-    </div>
+        <div style={{ textAlign: "center", marginBottom: "auto" }}>
+          <h2>{truncateText(project.name, maxLength)}</h2>
+          <h3
+            style={{
+              color: project.is_completed
+                ? "green"
+                : project.is_accepted
+                ? "blue"
+                : "blue",
+            }}
+          >
+            {project.is_completed
+              ? `Completed by ${
+                  projectUsernamesMap[project.id] || "Loading..."
+                }`
+              : projectUsernamesMap[project.id] &&
+                projectUsernamesMap[project.id] !== "No users"
+              ? `Joined by ${projectUsernamesMap[project.id]}`
+              : "No one has joined"}
+          </h3>
+          <p
+            style={{
+              marginLeft: "4px",
+              marginTop: "auto",
+              textAlign: "left",
+            }}
+          >
+            {/* Project Details: {truncateText(project.problem_statement, maxLength)} */}
+          </p>
+        </div>
+        <div style={{ display: "flex" }}>
+          {findSubmitter(project.submitter_id)}
+        </div>
+      </HoverCard>
+    ))}
+  </div>
+</div>
   );
 };
 

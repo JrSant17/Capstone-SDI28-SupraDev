@@ -88,7 +88,14 @@ const ProjectDetailsPage = () => {
 
 
   return (
-<Box display="flex" justifyContent="center" minHeight="100vh" bgcolor="rgba(255, 255, 255, 0)" flexDirection="column">
+<Box 
+  display="flex"
+  justifyContent="center"
+  alignItems="center"
+  minHeight="100vh"
+  bgcolor="rgba(255, 255, 255, 0)"
+  flexDirection="column"
+>
       <Paper
         elevation={5}
         style={{
@@ -100,7 +107,7 @@ const ProjectDetailsPage = () => {
           width: "100%",
           overflow: "auto",
           marginBottom: "50px",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <ProjectDetailHeader projectName={project.name} projectId={id}/>

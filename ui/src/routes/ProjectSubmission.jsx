@@ -135,7 +135,7 @@ const ProjectSubmission = () => {
           </div>
           <div className="tooltip">
             <h4>Picture</h4>
-            <span className="tooltiptext">Please provide a URL to be used for your applicaiton logo</span>
+            <span className="tooltiptext">Please provide a URL to be used for your application logo</span>
             <TextField
               className="input-text"
               label='URL'
