@@ -133,7 +133,6 @@ const Projects = (props) => {
     const refetchUserProjects = () => {
       if (!allUsers.length) return;
       
-      // Clear existing cache to force refetch
       filterVar.forEach(project => {
         localStorage.removeItem(`project_users_${project.id}`);
         findProjectUsers(project.id);
@@ -151,31 +150,49 @@ const Projects = (props) => {
     };
   }, [allUsers.length]);
 
-  const handleChange = (event, newValue) => {
-    setSelectedTab(newValue);
+  // const handleChange = (event, newValue) => {
+  //   setSelectedTab(newValue);
 
-    switch (newValue) {
-      case 0:
-        setFilterVar(projects.filter((p) => p.is_approved));
-        break;
-      case 1:
-        setFilterVar(projects.filter((p) => !p.is_accepted && !p.is_completed && p.is_approved));
-        break;
-      case 2:
-        setFilterVar(projects.filter((p) => p.is_accepted && p.is_approved));
-        break;
-      case 3:
-        setFilterVar(projects.filter((p) => p.is_completed && p.is_approved));
-        break;
-      case 4:
-        setFilterVar(projects.filter((p) => !p.is_approved));
-        break;
+    const handleChange = async (event, newValue) => {
+      setSelectedTab(newValue);
+  
+      switch (newValue) {
+        case 0:
+          setFilterVar(projects.filter((p) => p.is_approved));
+          break;
+        case 2: {
+          // Get projects with users
+          const projectsWithUsers = await Promise.all(
+            projects.filter(p => p.is_approved).map(async (project) => {
+              const response = await fetch(`http://localhost:8080/user_projects?project_id=${project.id}`);
+              const userProjects = await response.json();
+              return { ...project, hasUsers: userProjects.length > 0 };
+            })
+          );
+          setFilterVar(projectsWithUsers.filter(p => p.hasUsers));
+          break;
+        }
+        case 1: {
+          // Get projects without users
+          const projectsWithoutUsers = await Promise.all(
+            projects.filter(p => p.is_approved).map(async (project) => {
+              const response = await fetch(`http://localhost:8080/user_projects?project_id=${project.id}`);
+              const userProjects = await response.json();
+              return { ...project, hasUsers: userProjects.length > 0 };
+            })
+          );
+          setFilterVar(projectsWithoutUsers.filter(p => !p.hasUsers));
+          break;
+        }
+        case 3:
+          setFilterVar(projects.filter((p) => p.is_completed === true));
+          break;
 
-      default:
-        setFilterVar(projects.filter((p) => p.is_approved));
-        break;
-    }
-  };
+        default:
+          setFilterVar(projects.filter((p) => !p.is_approved));
+          break;
+      }
+    };
 
   const handleProjectClick = (projectId) => {
     navigate(`/projects/${projectId}`);
