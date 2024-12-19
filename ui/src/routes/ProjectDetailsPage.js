@@ -1,33 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar, } from '@mui/material';
+import { Button, Paper, Typography, Box, Divider, TextField, List, ListItem, Avatar } from '@mui/material';
 import { useCookies } from "react-cookie";
 
-const ProjectDetailsPage = () => {
-  const [project, setproject] = useState(null);
-  const { id } = useParams();
-  const [doubloons, setDoubloons] = useState("");
-  const [gitlink, setGitlink] = useState("");
-  const [sessionCookies, setSessionCookies] = useCookies([
-    "username_token",
-    "user_id_token",
-    "userPriv_Token",
-    "user_type",
-  ]);
-  const navigate = useNavigate();
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
-  const [chatposts, setChatposts] = useState([]);
-  const [userdata, setUserdata] = useState([]);
-  const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
+
+const useProject = (id) => {
+  const [project, setProject] = useState(null);
   const [isJoining, setIsJoining] = useState(false);
   const [isUserJoined, setIsUserJoined] = useState(false);
+  const [sessionCookies] = useCookies(["username_token", "user_id_token", "userPriv_Token", "user_type"]);
 
-
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      setComments((prevComments) => [...prevComments, newComment]);
-      setNewComment("");
+  const fetchProject = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/projects/${id}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (data) setProject(data);
+    } catch (error) {
+      console.error("Error fetching project:", error);
     }
   };
 
@@ -41,37 +31,321 @@ const ProjectDetailsPage = () => {
     }
   };
 
-  const handleCommentChange = (e) => {
-    setNewComment(e.target.value);
-  };
+  useEffect(() => {
+    fetchProject();
+    checkUserProjectStatus();
+  }, [id]);
+
+  return { project, setProject, isJoining, setIsJoining, isUserJoined, checkUserProjectStatus };
+};
+
+const useUsers = () => {
+  const [userdata, setUserdata] = useState([]);
+  const [currentUserDoubloons, setCurrentUserDoubloons] = useState();
+  const [sessionCookies] = useCookies(["user_id_token"]);
 
   const fetchUsers = async () => {
-    await fetch(`http://localhost:8080/users`)
-      .then((res) => res.json())
-      .then((fetchedUserData) => setUserdata(fetchedUserData));
+    try {
+      const response = await fetch(`http://localhost:8080/users`);
+      const data = await response.json();
+      setUserdata(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
 
   const fetchCurrentUserDoubloons = async () => {
-    await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`)
-      .then((res) => res.json())
-      .then((doubloonies) => {
-        setCurrentUserDoubloons(doubloonies.supradoubloons);
+    try {
+      const response = await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`);
+      const data = await response.json();
+      setCurrentUserDoubloons(data.supradoubloons);
+    } catch (error) {
+      console.error("Error fetching doubloons:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  return { userdata, currentUserDoubloons, fetchCurrentUserDoubloons };
+};
+
+
+const useComments = (id) => {
+  const [chatposts, setChatposts] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState([]);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/projects/${id}/messages`);
+      const data = await response.json();
+      setChatposts(data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, [id]);
+
+  return { chatposts, newComment, setNewComment, comments, setComments, fetchPosts };
+};
+
+const ProjectDetailsPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [sessionCookies] = useCookies(["username_token", "user_id_token", "userPriv_Token", "user_type"]);
+  const [doubloons, setDoubloons] = useState("");
+  const [gitlink, setGitlink] = useState("");
+
+  const { project, setProject, isJoining, setIsJoining, isUserJoined } = useProject(id);
+  const { userdata, currentUserDoubloons, fetchCurrentUserDoubloons } = useUsers();
+  const { chatposts, newComment, setNewComment, fetchPosts } = useComments(id);
+
+  if (!project) {
+    return <Typography align="center" style={{ marginTop: "2rem" }}>Loading...</Typography>;
+  }
+
+  const handleApprove = async () => {
+    if (sessionCookies.user_type !== 4) {
+      alert("Only administrators can approve projects");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/projects/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_approved: true }),
       });
+
+      if (response.ok) {
+        alert("Project approved successfully");
+        navigate("/projects");
+      } else {
+        alert("Error approving project");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error approving project");
+    }
+  };
+
+  const postCommentFetch = async () => {
+    try {
+      await fetch(`http://localhost:8080/projects/${id}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          project_id: parseInt(id),
+          user_id: sessionCookies.user_id_token,
+          post_text: newComment,
+        }),
+      });
+      fetchPosts();
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
+
+  const handleSponsor = async () => {
+    if (sessionCookies.user_type === 1 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4) {
+      alert("Only sponsors can fund projects");
+      return;
+    }
+
+    if (!project.is_approved || project.coders_needed > 0) {
+      alert("Project cannot be sponsored at this time");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to sponsor this Project")) {
+      const sponsor = userdata.find(user => user.id === sessionCookies.user_id_token);
+      const sponsorEmail = sponsor ? sponsor.email : '';
+
+      try {
+        const response = await fetch(`http://localhost:8080/projects/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            is_approved: true,
+            user_type: sessionCookies.user_type,
+            funding_poc: sponsorEmail
+          }),
+        });
+
+        if (response.ok) {
+          alert("Project has been successfully sponsored");
+          window.location.reload();
+        } else {
+          alert("Error sponsoring project");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error Sponsoring Project");
+      }
+    }
+  };
+
+  const handleUnsponsor = async () => {
+    if (window.confirm("Are you sure you want to unsponsor this Project?")) {
+      try {
+        const response = await fetch(`http://localhost:8080/projects/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ funding_poc: null }),
+        });
+
+        if (response.ok) {
+          alert("Project has been successfully unsponsored");
+          window.location.reload();
+        } else {
+          alert("Error unsponsoring project");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error Unsponsoring Project");
+      }
+    }
+  };
+
+  const handleJoin = async () => {
+    if (isJoining) return;
+
+    if (sessionCookies.user_type !== 1 || !project.is_approved) {
+      alert("Cannot join project at this time");
+      return;
+    }
+
+    if (window.confirm("Are you sure you want to join this project")) {
+      setIsJoining(true);
+      const isMember = project.accepted_by_id === sessionCookies.user_id_token;
+
+      if (isMember) {
+        alert("You have already joined this project!");
+        setIsJoining(false);
+        return;
+      }
+
+      const updatedCodersNeeded = project.coders_needed - 1;
+      if (updatedCodersNeeded < 0) {
+        alert("This project has met its SupraCoder requirement");
+        return;
+      }
+
+      try {
+        const projectResponse = await fetch(`http://localhost:8080/projects/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            is_accepted: true,
+            accepted_by_id: sessionCookies.user_id_token,
+            github_url: gitlink,
+            coders_needed: updatedCodersNeeded,
+          }),
+        });
+
+        if (!projectResponse.ok) throw new Error(`HTTP error! status: ${projectResponse.status}`);
+
+        const userProjectResponse = await fetch(`http://localhost:8080/user_projects`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: sessionCookies.user_id_token,
+            project_id: parseInt(id),
+            datetime_joined: new Date().toISOString()
+          }),
+        });
+
+        if (!userProjectResponse.ok) throw new Error(`HTTP error! status: ${userProjectResponse.status}`);
+
+        setProject(prev => ({ ...prev, coders_needed: updatedCodersNeeded }));
+        alert("Project joined successfully!");
+        window.location.reload();
+      } catch (error) {
+        console.error("Error:", error);
+        alert(`Error accepting project: ${error.message}`);
+      } finally {
+        setIsJoining(false);
+      }
+    }
+  };
+
+  const handleUnjoining = async () => {
+    try {
+      const updatedCodersNeeded = project.coders_needed + 1;
+      const projectResponse = await fetch(`http://localhost:8080/projects/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          is_accepted: false,
+          accepted_by_id: null,
+          coders_needed: updatedCodersNeeded,
+        }),
+      });
+
+      if (!projectResponse.ok) throw new Error("Failed to update project");
+
+      const userProjectResponse = await fetch(`http://localhost:8080/user_projects`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: sessionCookies.user_id_token,
+          project_id: parseInt(id)
+        }),
+      });
+
+      if (!userProjectResponse.ok) throw new Error("Failed to remove user from project");
+
+      setProject(prev => ({ ...prev, coders_needed: updatedCodersNeeded }));
+      navigate("/projects");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error dropping project");
+    }
+  };
+
+  const updateUserDoubloonCount = async () => {
+    await fetchCurrentUserDoubloons();
+    const newDoubloonCount = currentUserDoubloons + project.project_payout;
+
+    try {
+      await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ supradoubloons: newDoubloonCount }),
+      });
+    } catch (error) {
+      console.error("Error updating doubloons:", error);
+    }
+  };
+
+  const handleComplete = () => {
+    updateUserDoubloonCount();
+    navigate("/projects");
+  };
+
+  const thanosSnap = async () => {
+    try {
+      await fetch(`http://localhost:8080/projects/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      navigate("/projects");
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
   };
 
   const userImgRender = (userIdFromPost) => {
-    let imgToRender = "";
-    let idOfMatch;
-    for (let element in userdata) {
-      if (userdata[element].id === userIdFromPost) {
-        imgToRender = userdata[element].profile_pic;
-        idOfMatch = userdata[element].id;
-      }
-    }
-    return (
+    const user = userdata.find(u => u.id === userIdFromPost);
+    return user ? (
       <div>
         <Avatar
-          src={imgToRender}
+          src={user.profile_pic}
           alt="User Avatar"
           style={{
             float: "left",
@@ -82,318 +356,9 @@ const ProjectDetailsPage = () => {
           }}
         />
       </div>
-    );
+    ) : null;
   };
 
-  const fetchPosts = async () => {
-    await fetch(`http://localhost:8080/projects/${id}/messages`)
-      .then((res) => res.json())
-      .then((commentData) => setChatposts(commentData));
-    await fetch(`http://localhost:8080/projects/${id}`)
-      .then((res) => res.json())
-      .then((data) => setproject(data));
-  };
-
-  useEffect(() => {
-    fetch(`http://localhost:8080/projects/${id}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data) {
-          setproject(data);
-        }
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the project:", error);
-      });
-    fetchPosts();
-    fetchUsers();
-    checkUserProjectStatus();
-  }, []);
-
-  if (!project) {
-    return (
-      <Typography align="center" style={{ marginTop: "2rem" }}>
-        Loading...
-      </Typography>
-    );
-  }
-
-  const handleApprove = () => {
-    // Only allow type 4 users (Admins) to approve projects
-    if (sessionCookies.user_type !== 4) {
-      alert("Only administrators can approve projects");
-      return;
-    }
-
-    fetch(`http://localhost:8080/projects/${id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        is_approved: true,
-      }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          alert("Project approved successfully");
-          navigate("/projects");
-        } else {
-          alert("Error approving project");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        alert("Error approving project");
-      });
-  };
-
-  const postCommentFetch = () => {
-    console.log(typeof parseInt(id));
-    console.log(typeof sessionCookies.user_id_token);
-    console.log(typeof newComment);
-
-    fetch(`http://localhost:8080/projects/${id}/messages`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        project_id: parseInt(id),
-        user_id: sessionCookies.user_id_token,
-        post_text: newComment,
-      }),
-    });
-  };
-
-  const handleSponsor = () => {
-    // Only allow type 2 users (Sponsors) to sponsor projects
-    if (sessionCookies.user_type === 1 || sessionCookies.user_type === 3 || sessionCookies.user_type === 4) {
-      alert("Only sponsors can fund projects");
-      return;
-    }
-
-    // Check if project is approved
-    if (!project.is_approved) {
-      alert("This project is pending approval and cannot be sponsored yet");
-      return;
-    }
-
-    // Check if project has met SupraCoder requirement
-    if (project.coders_needed > 0) {
-      alert("This project needs more SupraCoders before it can be sponsored");
-      return;
-    }
-
-    if (window.confirm("Are you sure you want to sponsor this Project")) {
-      // Get sponsor's email
-      const sponsor = userdata.find(user => user.id === sessionCookies.user_id_token);
-      const sponsorEmail = sponsor ? sponsor.email : '';
-
-      fetch(`http://localhost:8080/projects/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          is_approved: true,
-          sponsored_by_id: sessionCookies.user_id_token,
-          user_type: sessionCookies.user_type,
-          funding_poc: sponsorEmail
-        }),
-      })
-        .then((response) => {
-          if (response.ok) {
-            alert("Project has been successfully sponsored");
-            window.location.reload();
-          } else {
-            alert("error sponsoring project");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          alert("Error Sponsoring Project");
-        });
-    }
-  };
-
-  const handleJoin = () => {
-    if (isJoining) {
-      return; // Prevent multiple clicks while processing
-    }
-
-    // Only allow type 1 users (SupraCoders) to join projects
-    if (sessionCookies.user_type !== 1) {
-      alert("Only SupraCoders can join projects");
-      return;
-    }
-
-    // Check if project is approved
-    if (!project.is_approved) {
-      alert("This project is pending approval and cannot be joined yet");
-      return;
-    }
-
-    if (window.confirm("Are you sure you want to join this project")) {
-      setIsJoining(true);
-      // Check if user is already a member
-      const isMember = project.accepted_by_id === sessionCookies.user_id_token;
-
-      if (isMember) {
-        alert("You have already joined this project!");
-        setIsJoining(false);
-        return;
-      }
-
-      const updatedCodersNeeded = project.coders_needed - 1;
-      console.log('Current coders needed:', project.coders_needed);
-      console.log('Updated coders needed:', updatedCodersNeeded);
-      
-      if (updatedCodersNeeded < 0) {
-        alert("This project has met its SupraCoder requirement");
-        return;
-      }
-
-      const requestBody = {
-        is_accepted: true,
-        accepted_by_id: sessionCookies.user_id_token,
-        github_url: gitlink,
-        coders_needed: updatedCodersNeeded,
-      };
-      console.log('Sending request with body:', requestBody);
-
-      // First update the project
-      fetch(`http://localhost:8080/projects/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      })
-        .then(async (response) => {
-          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-          
-          // Then create the user_project association
-          return fetch(`http://localhost:8080/user_projects`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              user_id: sessionCookies.user_id_token,
-              project_id: parseInt(id),
-              datetime_joined: new Date().toISOString()
-            })
-          });
-        })
-        .then(async (response) => {
-          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-          
-          setproject((prevproject) => ({
-            ...prevproject,
-            coders_needed: updatedCodersNeeded,
-          }));
-          
-          alert("Project joined successfully!");
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          alert(`Error accepting project: ${error.message}`);
-        })
-        .finally(() => {
-          setIsJoining(false); // Set loading state to false
-        });
-    }
-  };
-  
-  const handleUnjoining = async () => {
-    try {
-      // First update the project
-      const updatedCodersNeeded = project.coders_needed + 1;
-      const projectResponse = await fetch(
-        `http://localhost:8080/projects/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            is_accepted: false,
-            accepted_by_id: null,
-            coders_needed: updatedCodersNeeded,
-          }),
-        },
-      );
-
-      if (!projectResponse.ok) {
-        throw new Error("Failed to update project");
-      }
-
-      // Then delete the user_project association
-      const userProjectResponse = await fetch(
-        `http://localhost:8080/user_projects`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: sessionCookies.user_id_token,
-            project_id: parseInt(id)
-          }),
-        }
-      );
-
-      if (!userProjectResponse.ok) {
-        throw new Error("Failed to remove user from project");
-      }
-
-      setproject((prev) => ({ ...prev, coders_needed: updatedCodersNeeded }));
-      navigate("/projects");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error dropping project");
-    }
-  };
-
-  const updateUserDoubloonCount = async () => {
-    await fetchCurrentUserDoubloons();
-    console.log(currentUserDoubloons);
-    console.log(project.project_payout);
-    let newDoubloonCount = currentUserDoubloons + project.project_payout;
-    console.log(newDoubloonCount);
-
-    await fetch(`http://localhost:8080/users/${sessionCookies.user_id_token}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        supradoubloons: newDoubloonCount,
-      }),
-    });
-  };
-
-  const handleComplete = () => {
-    updateUserDoubloonCount();
-    navigate("/projects");
-  };
-
-  const thanosSnap = () => {
-    fetch(`http://localhost:8080/projects/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    navigate("/projects");
-  };
 
   return (
     <>
@@ -481,20 +446,31 @@ const ProjectDetailsPage = () => {
                   Join this Project as a Coder
                 </Button>
              ) : null}
-              {sessionCookies.user_type === 2 && project.coders_needed === 0 && (
-                <Button
-                  onClick={() => handleSponsor()}
-                  variant="contained"
-                  color="primary"
-                  style={{ margin: "5px" }}
-                >
-                  Sponsor this Project
-                </Button>
+               {sessionCookies.user_type === 2 && project.coders_needed === 0 && (
+                <>
+                  {project.funding_poc === userdata.find(user => user.id === sessionCookies.user_id_token)?.email ? (
+                    <Button
+                      onClick={() => handleUnsponsor()}
+                      variant="contained"
+                      color="error"
+                      style={{ margin: "5px" }}
+                    >
+                      Unsponsor this Project
+                    </Button>
+                  ) : !project.funding_poc && (
+                    <Button
+                      onClick={() => handleSponsor()}
+                      variant="contained"
+                      color="primary"
+                      style={{ margin: "5px" }}
+                    >
+                      Sponsor this Project
+                    </Button>
+                  )}
+                </>
               )}
             </>
           )}
-
-          {/* Github REPO Text Input */}
 
           {sessionCookies.user_type === 1 &&
           project.is_approved === true &&
@@ -515,7 +491,6 @@ const ProjectDetailsPage = () => {
           ) : (
             <></>
           )}
-          {/* Github REPO Text Input */}
 
           {isUserJoined 
            &&
@@ -577,7 +552,6 @@ const ProjectDetailsPage = () => {
               return user ? `${user.first_name} ${user.last_name}` : "Name not available";
             })()}
           </Typography>
-          {/* Git Text render */}
 
           <Typography
             variant="h6"
@@ -602,7 +576,6 @@ const ProjectDetailsPage = () => {
               Project Funded! POC: {project.funding_poc}
             </Typography>
           )}
-          {/* Git Text render */}
           <Typography
             variant="h6"
             style={{ fontWeight: "500", color: "#616161" }}
@@ -649,15 +622,14 @@ const ProjectDetailsPage = () => {
           ) : (
             <></>
           )}
-          {/* Comments Section */}
           <Box marginTop="2rem">
             <Typography variant="h5">Comments</Typography>
             <List>
               {chatposts.map((comment, index) => (
-                <div>
-                  <ListItem key={index}>
+                <div key={index}>
+                  <ListItem>
                     <div style={{ display: "flex" }}>
-                      <div style={{}}>{userImgRender(comment.user_id)}</div>
+                      <div>{userImgRender(comment.user_id)}</div>
                       <Typography>{comment.post_text}</Typography>
                     </div>
                   </ListItem>
@@ -669,7 +641,7 @@ const ProjectDetailsPage = () => {
               variant="outlined"
               placeholder="Add a comment"
               value={newComment}
-              onChange={handleCommentChange}
+              onChange={(e) => setNewComment(e.target.value)}
             />
             <Button
               onClick={() => {
@@ -689,4 +661,4 @@ const ProjectDetailsPage = () => {
   );
 };
 
-export default ProjectDetailsPage;
+export default ProjectDetailsPage

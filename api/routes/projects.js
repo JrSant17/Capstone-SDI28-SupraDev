@@ -338,6 +338,7 @@ router.patch('/:id', (req, res) => {
       end_date: req.body.end_date,
       coders_needed: req.body.coders_needed,
       project_state: req.body.project_state,
+      funding_poc: req.body.funding_poc,
     })
     .then(() => res.status(200).send('project updated'))
 });
