@@ -10,6 +10,22 @@ const ProjectDetailActions = ({ userType, projectState }) => {
   const [isMemberOfProject, setIsMemberOfProject] =  useState(false);
   const navigate = useNavigate();
 
+  const handleComplete = () => {
+    // patchToComplete();
+    navigate('/projects');
+  }
+
+  const thanosSnap = () => {
+
+    fetch(`http://localhost:8080/projects/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    navigate('/projects');
+  }
+
   const handleApprove = () => {
 
     fetch(`http://localhost:8080/projects/${projectState.id}`, {

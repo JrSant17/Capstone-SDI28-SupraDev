@@ -10,15 +10,12 @@ const Projects = (props) => {
   const { profile, ...other } = props;
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
-  const [username, setUsername] = useState("");
   const maxLength = 22;
   const [filterVar, setFilterVar] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const navigate = useNavigate();
   const [sessionCookies, setSessionCookies, removeSessionCookies] = useCookies(['username_token', 'user_id_token', 'userPriv_Token', 'user_type']);
   const [allUsers, setAllUsers] = useState([]);
-  const [projectUsers, setProjectUsers] = useState([]);
-  const [projectUsernames, setProjectUsernames] = useState({});
   const [projectUsernamesMap, setProjectUsernamesMap] = useState({});
   const [isLoading, setIsLoading] = useState({});
 
@@ -121,37 +118,35 @@ const Projects = (props) => {
   }, [allUsers]);
 
   useEffect(() => {
-    if (!allUsers.length) {
+    if (!allUsers.length || !sessionCookies.user_id_token || sessionCookies.user_id_token === '') {
+      console.log(`User not logged in or no users loaded`);
       return;
     }
+  
+    console.log(`Proceeding with findProjectUsers for ${filterVar.length} projects`);
     filterVar.forEach(project => {
       findProjectUsers(project.id);
     });
-  }, [filterVar, allUsers]);
+  }, [filterVar, sessionCookies.user_id_token]);
 
-  useEffect(() => {
-    const refetchUserProjects = () => {
-      if (!allUsers.length) return;
+  // useEffect(() => {
+  //   //TODO: Critical error, 
+  //   const refetchUserProjects = () => {
+  //     if (!allUsers.length) return;
       
-      filterVar.forEach(project => {
-        localStorage.removeItem(`project_users_${project.id}`);
-        findProjectUsers(project.id);
-      });
-    };
+  //     filterVar.forEach(project => {
+  //       localStorage.removeItem(`project_users_${project.id}`);
+  //       findProjectUsers(project.id);
+  //     });
+  //   };
 
-    // Call refetch immediately
-    refetchUserProjects();
-
-    // Set up listener for when user returns to page
-    window.addEventListener('focus', refetchUserProjects);
+  //   refetchUserProjects();
+  //   window.addEventListener('focus', refetchUserProjects);
     
-    return () => {
-      window.removeEventListener('focus', refetchUserProjects);
-    };
-  }, [allUsers.length]);
-
-  // const handleChange = (event, newValue) => {
-  //   setSelectedTab(newValue);
+  //   return () => {
+  //     window.removeEventListener('focus', refetchUserProjects);
+  //   };
+  // }, [allUsers.length]);
 
     const handleChange = async (event, newValue) => {
       setSelectedTab(newValue);
@@ -295,9 +290,6 @@ const Projects = (props) => {
             </div>
             <div style={{ display: 'flex' }}>
               {findSubmitter(project.submitter_id)}
-              {/* <strong style={{ position: 'absolute', bottom: '0', right: '0', display: 'flex', marginRight: '8px' }}>
-                <p>Reward:</p><img src='https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true' style={{ marginTop: '18px', marginLeft: '5px', marginRight: '2px' }} alt='supradoubloons' height='20px' width='20px' /><p style={{ color: 'blue' }}>{project.bounty_payout}</p>
-              </strong> */}
             </div>
           </HoverCard>
         ))}

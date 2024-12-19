@@ -13,7 +13,6 @@ router.get('/', (req, res) => {
     let params = req.query;
     console.log(`request for ${req.path} with params: ${JSON.stringify(params)}`);
   
-  
     if (Object.keys(params).length === 0) {
       //normal request for ALL users with no parameter fields
       knex('user_projects')
