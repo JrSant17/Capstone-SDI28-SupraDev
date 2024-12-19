@@ -13,7 +13,6 @@ router.get('/', (req, res) => {
     let params = req.query;
     console.log(`request for ${req.path} with params: ${JSON.stringify(params)}`);
   
-  
     if (Object.keys(params).length === 0) {
       //normal request for ALL users with no parameter fields
       knex('user_projects')
@@ -71,7 +70,7 @@ router.get('/:id', (req, res) => {
       if (!user_projects) {
         return res.status(404).send("user_projects not found");
       }
-      console.log(`user proejects is ${JSON.stringify(user_projects)}`);
+      console.log(`user projects is ${JSON.stringify(user_projects)}`);
       res.status(200).send(user_projects)
     })
     .catch(err => {
@@ -96,6 +95,26 @@ router.post('/', (req, res) => {
             console.error("Error creating user project association:", err);
             res.status(500).json({ error: "Internal server error" });
         });
+});
+router.delete('/', (req, res) => {
+  const { user_id, project_id } = req.body;
+  if (!user_id || !project_id) {
+      return res.status(400).json({ error: "missing fields" });
+  }
+
+  knex('user_projects')
+      .where({ 
+          user_id: user_id,
+          project_id: project_id
+      })
+      .del()
+      .then(() => {
+          res.status(200).json({ message: "User project association removed" });
+      })
+      .catch(err => {
+          console.error("Error removing user project association:", err);
+          res.status(500).json({ error: "Internal server error" });
+      });
 });
 
 /**

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Paper, Typography, Box, Divider } from '@mui/material';
 import { useCookies } from 'react-cookie';
 import CommentsSection from '../components/CommentsSection';
-import ProjectDetailActions from '../components/ProjectDetailActions';
+import ProjectDetailActions from '../components/ProjectDetailActions'
 import ProjectDetailHeader from '../components/ProjectDetailHeader';
 import './ProjectDetailsPage.css'
 

@@ -64,34 +64,49 @@ const UsersProjects = () => {
     return user ? user.username : "Unknown";
   };
 
-  const handleChange = (event, newValue) => {
+  const handleChange = async (event, newValue) => {
     setSelectedTab(newValue);
+
+    if (newValue === 3) {
+      try {
+        const response = await fetch(`http://localhost:8080/user_projects?user_id=${sessionCookies.user_id_token}`);
+        const userProjects = await response.json();
+        const userProjectIds = userProjects.map(up => up.project_id);
+        
+        const filtered = projects.filter(p => 
+          userProjectIds.includes(p.id) && 
+          p.is_accepted && 
+          p.is_approved
+        );
+        setFilterVar(filtered);
+        return;
+      } catch (err) {
+        console.error("Error fetching user projects:", err);
+      }
+    }
 
     const filtered = projects.filter((p) => {
       switch (newValue) {
-        case 0:
-          return p.is_approved && p.submitter_id === sessionCookies.user_id_token;
         case 1:
+          return p.is_approved && p.submitter_id === sessionCookies.user_id_token;
+        case 2:
           return (
-            !p.is_accepted &&
             !p.is_completed &&
-            p.is_approved &&
+            !p.is_approved &&
             p.submitter_id === sessionCookies.user_id_token
           );
-        case 2:
+        case 3:
           return (
             p.is_accepted &&
             p.is_approved &&
             p.submitter_id === sessionCookies.user_id_token
           );
-        case 3:
+        case 4:
           return (
             p.is_completed &&
             p.is_approved &&
             p.submitter_id === sessionCookies.user_id_token
           );
-        case 4:
-          return !p.is_approved && p.submitter_id === sessionCookies.user_id_token;
         default:
           return p.is_approved && p.submitter_id === sessionCookies.user_id_token;
       }
@@ -99,7 +114,7 @@ const UsersProjects = () => {
 
     setFilterVar(filtered);
   };
-
+   
   const handleProjectClick = (projectId) => {
     navigate(`/projects/${projectId}`);
   };
@@ -149,10 +164,10 @@ const UsersProjects = () => {
           textColor="primary"
         >
           <Tab label="All" />
-          <Tab label="Unaccepted" />
-          <Tab label="Accepted" />
+          <Tab label="Approved" />
+          <Tab label="Unapproved" />
+          <Tab label="Joined" />
           <Tab label="Complete" />
-          {sessionCookies.userPriv_Token && <Tab label="Pending" />}
         </Tabs>
       </Box>
 
@@ -181,26 +196,26 @@ const UsersProjects = () => {
                     : "red",
                 }}
               >
-                {project.is_completed
+                {/* {project.is_completed
                   ? `Completed by ${findAcceptor(project.accepted_by_id)}`
                   : project.is_accepted
-                  ? `Accepted by ${findAcceptor(project.accepted_by_id)}`
-                  : "Not Accepted"}
+                  ? `Approved by ${findAcceptor(project.accepted_by_id)}`
+                  : "Not Approved"} */}
               </h3>
               <p>Problem Statement: {truncateText(project.problem_statement)}</p>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               {findSubmitter(project.submitter_id)}
               <strong style={{ display: "flex", alignItems: "center" }}>
-                <span>Reward:</span>
-                <img
-                  src="https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true"
-                  alt="supradoubloons"
+                {/* <span>Reward:</span> */}
+                {/* <img
+                  // src="https://github.com/jsanders36/Capstone-SDI18-SupraDev/blob/main/ui/public/supradoubloon.png?raw=true"
+                  // alt="supradoubloons"
                   style={{ marginLeft: 5, height: 20, width: 20 }}
-                />
-                <span style={{ color: "blue", marginLeft: 5 }}>
+                /> */}
+                {/* <span style={{ color: "blue", marginLeft: 5 }}>
                   {project.bounty_payout}
-                </span>
+                </span> */}
               </strong>
             </div>
           </HoverCard>
