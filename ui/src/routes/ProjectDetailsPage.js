@@ -341,8 +341,10 @@ const ProjectDetailsPage = () => {
   };
 
   const userImgRender = (userIdFromPost) => {
-    const user = userdata.find(u => u.id === userIdFromPost);
-    return user ? (
+    const user = userdata.find(user => user.id === userIdFromPost);
+    if (!user) return null;
+    
+    return (
       <div>
         <Avatar
           src={user.profile_pic}
@@ -356,8 +358,9 @@ const ProjectDetailsPage = () => {
           }}
         />
       </div>
-    ) : null;
+    );
   };
+
 
 
   return (
