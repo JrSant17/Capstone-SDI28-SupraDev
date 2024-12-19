@@ -66,6 +66,20 @@ const SupracoderProfilePage = () => {
             .catch((err) => console.error("Error changing password:", err));
     };
 
+    const ChangePasswordComponent = () => {
+        if (changePassword === true) {
+            return(
+                <Card variant="outlined" style={{width: '400px'}}>
+                    <p><TextField variant="outlined" onChange={(e) => setNewPassword(e.target.value)} label="New Password" type="text" size="small"  style={{ margin: '5px' }}></TextField></p>
+                    <p><Button variant="contained" color="secondary" onClick={() => patchPassword()}  style={{ margin: '5px' }}>Submit</Button>
+                    <Button variant="contained" color="error" onClick={() => setChangePassword(false)}  style={{ margin: '5px' }}>Cancel</Button></p>
+                </Card>
+            )
+        } else {
+            return(<></>)
+        }
+    };
+
     const approvePendingAccount = (id, type) => {
         fetch(`http://localhost:8080/users/${id}/approve`, {
             method: 'PATCH',
@@ -215,9 +229,9 @@ const SupracoderProfilePage = () => {
                 </Box>
             </Box>
         );
+
     } else {
         return <p>Sorry, chief, this person ain't a coder</p>;
-    }
-}
+    }};
 
 export default SupracoderProfilePage;
