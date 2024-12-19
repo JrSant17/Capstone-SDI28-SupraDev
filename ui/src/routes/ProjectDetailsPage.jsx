@@ -104,7 +104,7 @@ const ProjectDetailsPage = () => {
             Project Information:
           </Typography>
           <InfoItem label="Tech Stack" value={project.program_languages} />
-          <InfoItem label="SupraCoders Needed" value={project.coders_needed ?? "Loading..."} />
+          <InfoItem label="SupraCoders Needed" value={project.coders_needed ?? "0"} />
           <InfoItem label="Github Link" value={project.github_url} />
         </section>
 
