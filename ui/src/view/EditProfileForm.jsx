@@ -49,19 +49,23 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const formData = new FormData(e.target);
+  
     const updatedUser = {
-      first_name: firstName,
-      last_name: lastName,
-      job_title: jobTitle,
-      profile_pic: profilePic,
-      email: email,
-      user_summary: userSummary,
+      first_name: formData.get('firstName'),
+      last_name: formData.get('lastName'),
+      job_title: formData.get('jobTitle'),
+      command: formData.get('command'),
+      profile_pic: formData.get('profilePic'),
+      email: formData.get('email'),
+      user_summary: formData.get('userSummary'),
       experience: experience,
       languages: languages,
       operating_systems: operatingSystems,
-      time_available: time_available,
+      time_available: formData.get('week_hours'),
       availability: availability
     };
+  
     window.location.reload();
     onSubmit(updatedUser)
       .then(() => {
@@ -89,9 +93,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="First Name"
               variant="outlined"
               id="firstName"
-              value={firstName}
-              style={{marginBottom: '10px'}}
-              onChange={(e) => setFirstName(e.target.value)}
+              defaultValue={firstName}
+              style={{ marginBottom: '10px' }}
             />
           </div>
           <div className="form-group">
@@ -100,9 +103,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="Last Name"
               variant="outlined"
               id="lastName"
-              value={lastName}
+              defaultValue={lastName}
               style={{marginBottom: '10px'}}
-              onChange={(e) => setLastName(e.target.value)}
             />
           </div>
           <div className="form-group">
@@ -111,9 +113,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="Job Title"
               variant="outlined"
               id="jobTitle"
-              value={jobTitle}
+              defaultValue={jobTitle}
               style={{marginBottom: '10px'}}
-              onChange={(e) => setJobTitle(e.target.value)}
             />
           </div>
           <div className="form-group">
@@ -122,9 +123,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="Profile Picture URL"
               variant="outlined"
               id="profilePic"
-              value={profilePic}
+              defaultValue={profilePic}
               style={{marginBottom: '10px'}}
-              onChange={(e) => setProfilePic(e.target.value)}
             />
           </div>
           <div className="form-group">
@@ -133,9 +133,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="Email"
               variant="outlined"
               id="email"
-              value={email}
+              defaultValue={email}
               style={{marginBottom: '10px'}}
-              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           
@@ -205,9 +204,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="Working Hours"
               variant="outlined"
               id="week_hours"
-              value={time_available}
+              defaultValue={time_available}
               style={{marginBottom: '10px'}}
-              onChange={(e) => setTimeAvailable(e.target.value)}
             />
           </div>
           <div className="form-group">
@@ -225,8 +223,7 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="User Summary"
               variant="outlined"
               id="userSummary"
-              value={userSummary}
-              onChange={(e) => setUserSummary(e.target.value)}
+              defaultValue={userSummary}
             />
           </div>
           <div className="form-actions">
@@ -248,10 +245,9 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             fullWidth
             label="First Name"
             variant="outlined"
+            defaultValue={firstName}
             id="firstName"
-            value={firstName}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setFirstName(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -259,10 +255,9 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             fullWidth
             label="Last Name"
             variant="outlined"
+            defaultValue={lastName}
             id="lastName"
-            value={lastName}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setLastName(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -271,9 +266,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Job Title"
             variant="outlined"
             id="jobTitle"
-            value={jobTitle}
+            defaultValue={jobTitle}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setJobTitle(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -282,9 +276,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Command"
             variant="outlined"
             id="jobTitle"
-            value={command}
+            defaultValue={command}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setCommand(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -293,9 +286,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Profile Picture URL"
             variant="outlined"
             id="profilePic"
-            value={profilePic}
+            defaultValue={profilePic}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setProfilePic(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -304,9 +296,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Email"
             variant="outlined"
             id="email"
-            value={email}
+            defaultValue={email}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -315,9 +306,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Experience"
             variant="outlined"
             id="exp"
-            value={experience}
+            defaultValue={experience}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setExperience(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -326,9 +316,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Languages"
             variant="outlined"
             id="exp"
-            value={languages}
+            defaultValue={languages}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setLanguages(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -337,9 +326,8 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="Operating Systems Experience"
             variant="outlined"
             id="exp"
-            value={operatingSystems}
+            defaultValue={operatingSystems}
             style={{marginBottom: '10px'}}
-            onChange={(e) => setOperatingSystems(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -348,13 +336,12 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
               label="Working Hours"
               variant="outlined"
               id="week_hours"
-              value={time_available}
+              defaultValue={time_available}
               style={{marginBottom: '10px'}}
-              onChange={(e) => setTimeAvailable(e.target.value)}
             />
           </div>
           <div className="form-group">
-              <RadioGroup id='radio-group' defaultValue="Available!"  name="radio-buttons-group" onChangeCapture={(e) => setAvailability(e.target.value)}>
+              <RadioGroup id='radio-group' defaultValue="Available!"  name="radio-buttons-group">
                 <FormControlLabel value={true} control={<Radio />} label='Available! :)'/>
                 <FormControlLabel value={false} control={<Radio />} label='Not Available! :( (leave, sick call, etc.)'/>
               </RadioGroup>
@@ -368,8 +355,7 @@ const EditProfileForm = ({ user, onSubmit, onCancel }) => {
             label="User Summary"
             variant="outlined"
             id="userSummary"
-            value={userSummary}
-            onChange={(e) => setUserSummary(e.target.value)}
+            defaultValue={userSummary}
           />
         </div>
         <div className="form-actions">
