@@ -15,9 +15,10 @@ const ProjectDetailsPage = () => {
   const projectSubmitter = userdata.find((user) => user.id === project?.submitter_id);
 
   const InfoItem = ({ label, value }) => (
-    <Typography variant="h6" style={{ fontWeight: "500", color: "#616161" }}>
-      {label}: {value || "Not available"}
-    </Typography>
+    <div className="info-item">
+      <span className={`info-label ${label === "Name" ? "bold" : ""}`}>{label}:</span>
+      <span className="info-value">{value || "Not available"}</span>
+    </div>
   );
 
   const fetchUsers = async () => {
@@ -50,11 +51,10 @@ const ProjectDetailsPage = () => {
     return <Typography align="center" style={{ marginTop: '2rem' }}>Loading...</Typography>;
   }
 
+  
   const renderProjectDetails = () => (
     <div>
-      <Typography variant="h6" style={{ fontWeight: "500", color: "#616161" }}>
-        Project Details:
-      </Typography>
+
       <div className="image-container">
         {project.url ? (
           <img className="project-image" src={project.url} alt="Project Image" />
@@ -62,27 +62,64 @@ const ProjectDetailsPage = () => {
           <p>No image available</p>
         )}
       </div>
-      <Typography
-        paragraph
-        style={{
-          fontSize: "1rem",
-          marginTop: "0.5rem",
-          marginBottom: "1.5rem",
-        }}
-      >
-        {project.problem_statement}
-      </Typography>
-      <InfoItem label="Project Submitter Name" value={`${projectSubmitter?.first_name || 'Unknown'} ${projectSubmitter?.last_name || ''}`} />
-      <InfoItem label="Project Submitter Username" value={projectSubmitter?.username} />
-      <InfoItem label="Contact Info" value={projectSubmitter?.email} />
-      <InfoItem label="Github Link" value={project.github_url} />
-      <InfoItem label="SupraCoders Needed" value={project.coders_needed ?? "Loading..."} />
-      <InfoItem label="Tech Stack" value={project.program_languages} />
-      <InfoItem label="Need By Date" value={project.end_date} />
-      <InfoItem label="Funding Source" value={project.funding_department} />
-      <InfoItem label="Funding Source Details" value={project.funding_source} />
-      <InfoItem label="Requirements" value={project.requirements} />
-      <InfoItem label="Last Updated" value={project.last_updated} />
+      <div className="project-details">
+        <section className="description-section">
+          <Typography variant="h6" className="section-title">
+            Project Description:
+          </Typography>
+          <Typography paragraph className="section-text">
+            {project.problem_statement}
+          </Typography>
+        </section>
+
+        <section className="requirements-section">
+          <Typography variant="h6" className="section-title">
+            Requirements:
+          </Typography>
+          <Typography paragraph className="section-text">
+            {project.requirements}
+          </Typography>
+        </section>
+
+        <section className="date-section">
+          <Typography variant="h6" className="section-title">
+            Estimated Need Date:
+          </Typography>
+          <Typography paragraph className="section-text">
+          {new Date(project.end_date).toLocaleDateString()}
+          </Typography>
+        </section>
+
+        <section className="submitter-info">
+          <Typography variant="h6" className="section-title">
+            Project Submitter Information:
+          </Typography>
+          <InfoItem label="Name" value={`${projectSubmitter?.first_name || 'Unknown'} ${projectSubmitter?.last_name || ''}`} />
+          <InfoItem label="Username" value={projectSubmitter?.username} />
+          <InfoItem label="Email" value={projectSubmitter?.email} />
+        </section>
+
+        <section className="project-info">
+          <Typography variant="h6" className="section-title">
+            Project Information:
+          </Typography>
+          <InfoItem label="Tech Stack" value={project.program_languages} />
+          <InfoItem label="SupraCoders Needed" value={project.coders_needed ?? "0"} />
+          <InfoItem label="Github Link" value={project.github_url} />
+        </section>
+
+        <section className="funding-section">
+          <Typography variant="h6" className="section-title">
+            Funding:
+          </Typography>
+          <InfoItem label="Funding Source" value={project.funding_department} />
+          <InfoItem label="Funding Source Details" value={project.funding_source} />
+        </section>
+
+        <section className="update-info">
+          <InfoItem label="Last Updated" value={project.last_updated} />
+        </section>
+      </div>
     </div>
   );
 

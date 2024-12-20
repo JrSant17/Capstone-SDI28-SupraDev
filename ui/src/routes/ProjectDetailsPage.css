@@ -1,25 +1,164 @@
- 
-  /* To center the image container and ensure it's full height */
-  .image-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #eef1f7;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+
+.project-details {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 25px;
+  background-color: #b7b7b8a8;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.project-details:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.project-image {
+  width: 500px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 15px;
+  border: 3px solid #ddd;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+}
+
+.project-image:hover {
+  transform: scale(1.05);
+  border-color: #007bff;
+}
+
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #1a73e8; 
+  margin-bottom: 10px;
+  border-left: 5px solid #007bff;
+  padding-left: 10px;
+}
+
+
+.section-text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #555555;
+  text-align: justify;
+}
+
+
+.submitter-info,
+.project-info,
+.funding-section,
+.requirements-section,
+.description-section,
+.date-section,
+.update-info {
+  background: linear-gradient(135deg, #f9f9f9, #ffffff);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.submitter-info:hover,
+.project-info:hover,
+.funding-section:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed #ddd;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-item label {
+  font-weight: 600;
+  color: #444444;
+}
+
+.info-item value {
+  font-weight: 400;
+  color: #007bff;
+}
+
+
+button {
+  background-color: #1a73e8;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+
+@media (max-width: 768px) {
+  .project-details {
     padding: 20px;
-    width: 100%;
-  }
-  
-  /* Styling the image */
-  .project-image {
-    width: 300px;  /* Fixed width */
-    height: 300px; /* Fixed height */
-    object-fit: cover; /* Ensures the image covers the area without distortion */
-    border-radius: 15px; /* Rounded border */
-    border: 2px solid #ddd; /* Optional light border */
-    display: block;  /* Remove any extra space under the image (inline-blocks often have space below them) */
   }
 
-  .title-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .section-title {
+    font-size: 1.4rem;
   }
+
+  .section-text {
+    font-size: 0.95rem;
+  }
+
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+  }
+  
+  .info-label {
+    color: #616161;
+    font-weight: 500;
+  }
+  
+  .info-label.bold {
+    font-weight: bold;
+  }
+  
+  .info-value {
+    font-weight: 400;
+    color: #333333;
+  }
+
+
